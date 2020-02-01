@@ -20,5 +20,5 @@ module.exports = app => {
   // 权限管理
   router.get('/admin/access', controller.admin.access.index);
   router.get('/admin/access/add', controller.admin.access.add);
-  router.get('/admin/access/edit', controllser.admin.access.edit);
+  router.get('/admin/access/edit', controller.admin.access.edit);
 };
