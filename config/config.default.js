@@ -18,10 +18,11 @@ module.exports = appInfo => {
   // add your middleware config here
   config.middleware = [];
 
-  // ejs conf
+  // templates conf
   config.view = {
     mapping: {
       '.html': 'ejs',
+      '.nj': 'nunjucks',
     },
   };
 

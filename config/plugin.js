@@ -12,4 +12,8 @@ module.exports = {
     enable: true,
     package: 'egg-view-ejs',
   },
+  nunjucks: {
+    enable: true,
+    package: 'egg-view-nunjucks',
+  },
 };
