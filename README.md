@@ -1,6 +1,14 @@
 # node-egg-shop
 
+## 项目结构
 
+- 后台管理系统
+
+- 前端页面展示
+
+- API提供
+
+- 其他服务
 
 ## QuickStart
 
