@@ -7,10 +7,10 @@ module.exports = app => {
   const { router, controller } = app;
   router.get('/', controller.home.index);
 
-  // 用户管理
-  router.get('/admin/user', controller.admin.user.index);
-  router.get('/admin/user/add', controller.admin.user.add);
-  router.get('/admin/user/edit', controller.admin.user.edit);
+  // 管理员管理
+  router.get('/admin/manager', controller.admin.manager.index);
+  router.get('/admin/manager/add', controller.admin.manager.add);
+  router.get('/admin/manager/edit', controller.admin.manager.edit);
 
   // 角色管理
   router.get('/admin/role', controller.admin.role.index);
