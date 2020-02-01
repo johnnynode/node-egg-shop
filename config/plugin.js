@@ -6,4 +6,10 @@ module.exports = {
   // static: {
   //   enable: true,
   // }
+
+  // ejs 配置
+  ejs: {
+    enable: true,
+    package: 'egg-view-ejs',
+  },
 };

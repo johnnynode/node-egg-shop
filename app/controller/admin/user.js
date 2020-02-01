@@ -5,7 +5,8 @@ const Controller = require('egg').Controller;
 class UserController extends Controller {
   async index() {
     const { ctx } = this;
-    ctx.body = '管理员列表';
+    // ctx.body = '管理员列表';
+    await ctx.render('admin/user/index', { username: 'zhangsan' });
   }
   async add() {
     const { ctx } = this;
