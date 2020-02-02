@@ -6,14 +6,17 @@ class AccessController extends Controller {
   async index() {
     const { ctx } = this;
     ctx.body = '权限列表';
+    await ctx.render('admin/access/index');
   }
   async add() {
     const { ctx } = this;
-    ctx.body = '权限增加';
+    // ctx.body = '权限增加';
+    await ctx.render('admin/access/add');
   }
   async edit() {
     const { ctx } = this;
-    ctx.body = '权限编辑';
+    // ctx.body = '权限编辑';
+    await ctx.render('admin/access/edit');
   }
   async delete() {
     const { ctx } = this;

@@ -7,6 +7,9 @@ module.exports = app => {
   const { router, controller } = app;
   router.get('/', controller.home.index);
 
+  // 后台登录
+  router.get('/admin/login', controller.admin.login.index);
+
   // 管理员管理
   router.get('/admin/manager', controller.admin.manager.index);
   router.get('/admin/manager/add', controller.admin.manager.add);
