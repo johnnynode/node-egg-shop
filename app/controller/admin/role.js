@@ -1,8 +1,8 @@
 'use strict';
 
-const Controller = require('egg').Controller;
+const BaseController = require('./base');
 
-class RoleController extends Controller {
+class RoleController extends BaseController {
   async index() {
     const { ctx } = this;
     // ctx.body = '角色列表';

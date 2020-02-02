@@ -1,8 +1,8 @@
 'use strict';
 
-const Controller = require('egg').Controller;
+const BaseController = require('./base');
 
-class AccessController extends Controller {
+class AccessController extends BaseController {
   async index() {
     const { ctx } = this;
     ctx.body = '权限列表';
