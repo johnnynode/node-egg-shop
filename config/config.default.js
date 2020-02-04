@@ -38,10 +38,10 @@ module.exports = appInfo => {
     },
   };
 
-  // mongoose
+  // mongoose 注意url最后面不能 添加多余的 /
   config.mongoose = {
     client: {
-      url: 'mongodb://eggshopadmin:123456@127.0.0.1/eggshop/',
+      url: 'mongodb://eggshopadmin:123456@127.0.0.1/eggshop',
       options: {},
     },
   };
