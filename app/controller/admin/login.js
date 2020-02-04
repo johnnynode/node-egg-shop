@@ -44,7 +44,7 @@ class LoginController extends BaseController {
       const result = await ctx.model.Admin.find({ username, password });
       if (result.length) {
         // 登录成功
-        // 1、保存用户信息
+        // 1、保存用户信息到session
         this.ctx.session.userinfo = result[0];
         // 2、跳转到用户中心
         ctx.redirect('/admin/manager');

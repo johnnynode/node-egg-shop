@@ -7,13 +7,19 @@ module.exports = {
   //   enable: true,
   // }
 
-  // ejs 配置
+  // ejs template conf
   ejs: {
     enable: true,
     package: 'egg-view-ejs',
   },
+  // nunjucks template conf
   nunjucks: {
     enable: true,
     package: 'egg-view-nunjucks',
+  },
+  // mongoose conf
+  mongoose: {
+    enable: true,
+    package: 'egg-mongoose',
   },
 };

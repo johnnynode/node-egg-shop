@@ -38,6 +38,14 @@ module.exports = appInfo => {
     },
   };
 
+  // mongoose
+  config.mongoose = {
+    client: {
+      url: 'mongodb://127.0.0.1/eggshop',
+      options: {},
+    },
+  };
+
   // add your user config here
   const userConfig = {
     // myAppName: 'egg',
