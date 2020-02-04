@@ -12,6 +12,7 @@ module.exports = app => {
   router.post('/admin/doLogin', controller.admin.login.doLogin);
   // 验证码
   router.get('/admin/verify', controller.admin.base.verify);
+  router.get('/admin/loginOut', controller.admin.login.loginOut);
 
   // 管理员管理
   router.get('/admin/manager', controller.admin.manager.index);

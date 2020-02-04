@@ -41,7 +41,7 @@ module.exports = appInfo => {
   // mongoose
   config.mongoose = {
     client: {
-      url: 'mongodb://127.0.0.1/eggshop',
+      url: 'mongodb://eggshopadmin:123456@127.0.0.1/eggshop/',
       options: {},
     },
   };

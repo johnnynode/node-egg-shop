@@ -12,6 +12,7 @@ module.exports = options => {
     const pathname = url.parse(ctx.request.url).pathname;
 
     if (ctx.session.userinfo) {
+      ctx.state.userinfo = ctx.session.userinfo; // 挂载全局变量
       await next();
     } else {
       // 排除不需要做权限判断的页面  /admin/verify?mt=0.7466881301614958

@@ -56,6 +56,13 @@ class LoginController extends BaseController {
       await this.error('/admin/login', '验证码错误');
     }
   }
+
+  // 退出登录
+  async loginOut() {
+    const { ctx } = this;
+    ctx.session.userinfo = null;
+    ctx.redirect('/admin/login');
+  }
 }
 
 module.exports = LoginController;
