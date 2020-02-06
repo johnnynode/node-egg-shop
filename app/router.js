@@ -22,6 +22,8 @@ module.exports = app => {
   // 角色管理
   router.get('/admin/role', controller.admin.role.index);
   router.get('/admin/role/add', controller.admin.role.add);
+  router.post('/admin/role/doAdd', controller.admin.role.doAdd);
+  router.post('/admin/role/doEdit', controller.admin.role.doEdit);
   router.get('/admin/role/edit', controller.admin.role.edit);
 
   // 权限管理

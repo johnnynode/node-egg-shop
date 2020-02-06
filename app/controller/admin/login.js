@@ -32,6 +32,12 @@ class LoginController extends BaseController {
     const { ctx } = this;
     // console.log(ctx.request.body);
 
+    // c56d0e9a7ccec67b4ea131655038d604 123456
+    // 硬编码
+    this.ctx.session.userinfo = { username: 'Joh' };
+    ctx.redirect('/admin/manager');
+
+    return;
     // 获取提交的数据
     const code = ctx.request.body.code;
 
@@ -40,6 +46,7 @@ class LoginController extends BaseController {
       // 获取提交的数据
       const username = ctx.request.body.username;
       const password = await this.service.tools.md5(ctx.request.body.password); // 前端也要三次加密
+
       // 通过model查询数据库
       const result = await ctx.model.Admin.find({ username, password });
       if (result.length) {

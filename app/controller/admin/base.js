@@ -1,18 +1,21 @@
+// 父类
 'use strict';
-
-// 基类ctrl, 所有控制器都要集成基类控制器
 
 const Controller = require('egg').Controller;
 
 class BaseController extends Controller {
-  async success(redirectUrl) {
-    const { ctx } = this;
-    await ctx.render('admin/public/success', { redirectUrl });
+  async success(redirectUrl, message) {
+    await this.ctx.render('admin/public/success', {
+      redirectUrl,
+      message: message || '操作成功!',
+    });
   }
 
-  async error(redirectUrl) {
-    const { ctx } = this;
-    await ctx.render('admin/public/error', { redirectUrl });
+  async error(redirectUrl, message) {
+    await this.ctx.render('admin/public/error', {
+      redirectUrl,
+      message: message || '操作失败!',
+    });
   }
 
   async verify() {
