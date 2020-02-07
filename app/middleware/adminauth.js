@@ -9,6 +9,7 @@ module.exports = options => {
         2、只有登录以后才可以访问后台管理系统
     */
     ctx.state.csrf = ctx.csrf; // 全局变量
+    ctx.state.prevPage = ctx.request.headers.referer; // 全局变量
     const pathname = url.parse(ctx.request.url).pathname;
 
     if (ctx.session.userinfo) {
