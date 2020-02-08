@@ -21,6 +21,7 @@ module.exports = app => {
   // 管理员管理
   router.get('/admin/manager', controller.admin.manager.index);
   router.get('/admin/manager/add', controller.admin.manager.add);
+  router.post('/admin/manager/doAdd', controller.admin.manager.doAdd);
   router.get('/admin/manager/edit', controller.admin.manager.edit);
 
   // 角色管理
