@@ -32,15 +32,10 @@ class LoginController extends BaseController {
     const { ctx } = this;
     // console.log(ctx.request.body);
 
-    // c56d0e9a7ccec67b4ea131655038d604 123456
-    // 硬编码
-    this.ctx.session.userinfo = { username: 'Joh' };
-    ctx.redirect('/admin/manager');
-
-    return;
     // 获取提交的数据
     const code = ctx.request.body.code;
-
+    console.log('code: ', code);
+    console.log('.........');
     // 相关校验工作 先校验验证码
     if (code.toUpperCase() === ctx.session.code.toUpperCase()) {
       // 获取提交的数据
