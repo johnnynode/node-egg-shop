@@ -34,8 +34,8 @@ class LoginController extends BaseController {
 
     // 获取提交的数据
     const code = ctx.request.body.code;
-    console.log('code: ', code);
-    console.log('.........');
+    // console.log('code: ', code);
+    // console.log('.........');
     // 相关校验工作 先校验验证码
     if (code.toUpperCase() === ctx.session.code.toUpperCase()) {
       // 获取提交的数据

@@ -41,7 +41,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        
                         <%for(var i=0;i<list.length;i++){%>
                             <tr>
                                 <td><%=list[i].module_name%></td>
@@ -55,15 +54,11 @@
                                         <%}%>
                                 </td>
                                 <td><%=list[i].action_name%></td>
-
                                 <td><%=list[i].url%></td>
                                 <td><%=list[i].sort%></td>
-
                                 <td><%=list[i].description%></td>
-                            
                                 <td class="text-center">修改  删除</td>
                             </tr>
-
                             <%for(var j=0;j<list[i].items.length;j++){%>
                                         <tr>
                                                 <td>----<%=list[i].items[j].module_name%></td>
@@ -77,22 +72,16 @@
                                                         <%}%>
                                                 </td>
                                                 <td><%=list[i].items[j].action_name%></td>
-                
                                                 <td><%=list[i].items[j].url%></td>
                                                 <td><%=list[i].items[j].sort%></td>
-                
                                                 <td><%=list[i].items[j].description%></td>
-                                            
                                                 <td class="text-center">修改  删除</td>
                                             </tr>
-
                             <%}%>
                         <%}%>
-
                     </tbody>
                 </table>
             </div>
-
         </div>
     </div>
 </div>

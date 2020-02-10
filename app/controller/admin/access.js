@@ -25,7 +25,6 @@ class AccessController extends BaseController {
       },
     ]);
 
-    console.log(result);
     await this.ctx.render('admin/access/index', {
       list: result,
     });
@@ -41,10 +40,11 @@ class AccessController extends BaseController {
   async doAdd() {
     const addResult = this.ctx.request.body;
     const module_id = addResult.module_id;
-
+    // console.log('addResult: ', addResult);
     // 菜单  或者操作
-    if (module_id) {
-      addResult.module_id = this.app.mongoose.Types.ObjectId(module_id); // 调用mongoose里面的方法把字符串转换成ObjectId
+    if (module_id !== '0') {
+      // 调用mongoose里面的方法把字符串转换成ObjectId
+      addResult.module_id = this.app.mongoose.Types.ObjectId(module_id);
     }
     const access = new this.ctx.model.Access(addResult);
     access.save();
