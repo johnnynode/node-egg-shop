@@ -42,7 +42,7 @@
 ### 权限控制相关的数据库表
 
 <div align="center">
-    <img with="600" src="./screenshot/1.jpg">
+    <img with="400" src="./screenshot/1.jpg">
 </div>
 
 - admin

@@ -14,6 +14,7 @@ module.exports = app => {
   // 验证码
   router.get('/admin/verify', controller.admin.base.verify);
   router.get('/admin/loginOut', controller.admin.login.loginOut);
+  router.get('/admin/changeStatus', controller.admin.base.changeStatus);
 
   // 通用删除功能
   router.get('/admin/delete', controller.admin.base.delete);
