@@ -1,27 +1,16 @@
 <ul class="aside">
+    <%for(var i=0;i<sideList.length;i++){%>
     <li>
-        <h4>管理员管理</h4>
-        <ul>
-            <li  class="list-group-item"> <a href="/admin/manager"> 管理员列表</a></li>
-            <li class="list-group-item"> <a href="/admin/manager/add">增加管理员</a></li>
-        </ul>
+            <%if((sideList[i].checked && sideList[i].type==1) || (userinfo.is_super==1&& sideList[i].type==1)){%>
+                <h4> <%=sideList[i].module_name %></h4>                     
+                <ul>
+                        <%for(var j=0;j<sideList[i].items.length;j++){%> 
+                            <%if((sideList[i].items[j].checked && sideList[i].items[j].type!=3) || (userinfo.is_super==1 && sideList[i].items[j].type!=3)){%>
+                                <li  class="list-group-item"> <a href="<%=sideList[i].items[j].url%>">  <%=sideList[i].items[j].action_name %></a></li>
+                            <%}%>
+                        <%}%>
+                </ul>
+            <%}%>
     </li>
-
-    <li>
-        <h4>角色管理</h4>
-        <ul>
-            <li  class="list-group-item"> <a href="/admin/role"> 角色列表</a></li>
-            
-            <li class="list-group-item"> <a href="/admin/role/add" >增加角色</a></li>
-        </ul>
-    </li>
-
-    <li>
-            <h4>权限管理</h4>
-            <ul>
-                <li  class="list-group-item"> <a href="/admin/access"> 权限列表</a></li>
-                
-                <li class="list-group-item"> <a href="/admin/access/add" >增加权限</a></li>
-            </ul>
-    </li>
+    <%}%>
 </ul>

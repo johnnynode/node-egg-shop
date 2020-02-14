@@ -10,7 +10,7 @@ class ToolsService extends Service {
   // 生成验证码
   async captcha() {
     const captcha = svgCaptcha.create({
-      size: 6,
+      size: 4,
       fontSize: 50,
       width: 100,
       height: 40,

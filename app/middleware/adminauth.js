@@ -2,7 +2,7 @@
 
 const url = require('url');
 
-module.exports = options => {
+module.exports = (options, app) => {
   return async function adminauth(ctx, next) {
     /*
         1、用户没有登录跳转到登录页面
@@ -14,7 +14,17 @@ module.exports = options => {
 
     if (ctx.session.userinfo) {
       ctx.state.userinfo = ctx.session.userinfo; // 挂载全局变量
-      await next();
+      const hasAuth = await ctx.service.admin.checkAuth();
+      // console.log('hasAuth', hasAuth);
+      if (hasAuth) {
+        // 获取权限列表
+        ctx.state.sideList = await ctx.service.admin.getAuthList(ctx.session.userinfo.role_id);
+        // console.log('ctx.session.userinfo.role_id', ctx.session.userinfo.role_id);
+        // console.log('ctx.state.sideList', ctx.state.sideList);
+        await next();
+      } else {
+        ctx.body = '您没有权限访问当前地址';
+      }
     } else {
       // 排除不需要做权限判断的页面  /admin/verify?mt=0.7466881301614958
       if (pathname === '/admin/login' || pathname === '/admin/doLogin' || pathname === '/admin/verify') {
