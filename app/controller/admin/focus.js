@@ -41,3 +41,21 @@ class FocusController extends Controller {
 }
 
 module.exports = FocusController;
+
+/*
+其他说明信息：
+为了防止浏览器卡死，建议在上传失败的时候，将上传文件流消费掉
+const sendToWormhole = require('stream-wormhole');
+try {
+  result = await ctx.oss.put(name, stream);
+} catch(err) {
+  // 必须将上传的文件流消费掉，要不然浏览器响应会卡死
+  await sendToWormhole(stream);
+  throw err;
+}
+
+上面是之前的eggjs官方处理版本，可参考新官方说明，找到文件上传部分：
+https://eggjs.org/zh-cn/basics/controller.html#stream-%E6%A8%A1%E5%BC%8F
+
+我们实现的部分 pump 模块底层已经做了这些工作
+*/

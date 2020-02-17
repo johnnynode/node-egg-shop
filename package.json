@@ -13,6 +13,8 @@
     "egg-view-ejs": "^2.0.1",
     "egg-view-nunjucks": "^2.2.0",
     "md5": "^2.2.1",
+    "mz-modules": "^2.1.0",
+    "pump": "^3.0.0",
     "svg-captcha": "^1.4.0"
   },
   "devDependencies": {
