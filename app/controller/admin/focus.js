@@ -36,7 +36,28 @@ class FocusController extends Controller {
   }
 
   async doMultiUpload() {
+    // { autoFields: true }:可以将除了文件的其它字段提取到 parts 的 filed 中
     // 多个图片/文件
+    const parts = this.ctx.multipart({ autoFields: true });
+    const files = [];
+    let stream;
+    // 为了程序的严谨性和避免用户的误操作造成的服务器崩溃，建议加上try catch
+    while ((stream = await parts())) {
+      if (!stream.filename) { // 注意如果没有传入图片直接返回
+        return;
+      }
+      const fieldname = stream.fieldname; // file表单的名字  face
+      const target = 'app/public/admin/upload/' + path.basename(stream.filename);
+      const writeStream = fs.createWriteStream(target);
+      await pump(stream, writeStream); // 写入并销毁当前流   (egg  demo提供的)
+      files.push({
+        [fieldname]: target,
+      });
+    }
+    this.ctx.body = {
+      files,
+      fields: parts.field, // 所有表单字段都能通过 `parts.fields`            放在while循环后面
+    };
   }
 }
 
