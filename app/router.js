@@ -42,10 +42,15 @@ module.exports = app => {
   router.get('/admin/access/edit', controller.admin.access.edit);
   router.post('/admin/access/doEdit', controller.admin.access.doEdit);
 
+  // 轮播图 上传图片
+  router.get('/admin/focus/single', controller.admin.focus.single); // 测试程序
+  router.get('/admin/focus/multi', controller.admin.focus.multi); // 测试程序
+  router.post('/admin/focus/doSingleUpload', controller.admin.focus.doSingleUpload); // 测试程序
+  router.post('/admin/focus/doMultiUpload', controller.admin.focus.doMultiUpload); // 测试程序
 
-  // 上传图片演示
   router.get('/admin/focus', controller.admin.focus.index);
-  router.get('/admin/focus/multi', controller.admin.focus.multi);
-  router.post('/admin/focus/doSingleUpload', controller.admin.focus.doSingleUpload);
-  router.post('/admin/focus/doMultiUpload', controller.admin.focus.doMultiUpload);
+  router.get('/admin/focus/add', controller.admin.focus.add);
+  router.get('/admin/focus/edit', controller.admin.focus.edit);
+  router.post('/admin/focus/doEdit', controller.admin.focus.doEdit);
+  router.post('/admin/focus/doAdd', controller.admin.focus.doAdd);
 };

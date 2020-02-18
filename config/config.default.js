@@ -38,6 +38,14 @@ module.exports = appInfo => {
     },
   };
 
+  // 文件上传加入白名单
+  config.multipart = {
+    fileExtensions: [ '.apk', '.pdf' ], // 加入白名单
+  };
+
+  // 文件上传配置的路径
+  config.uploadDir = 'app/public/admin/upload';
+
   // mongoose 注意url最后面不能 添加多余的 /
   config.mongoose = {
     client: {
