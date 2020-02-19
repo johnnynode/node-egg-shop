@@ -5,6 +5,7 @@ $(function() {
 var app = {
   init() {
     this.toggleAside();
+    this.deleteConfirm();
   },
   toggleAside() {
     $('.aside h4').click(function() {
@@ -18,6 +19,12 @@ var app = {
       if (data.success) {
 		  el.src = '/public/admin/images/' + (data.status ? 'yes.gif' : 'no.gif');
       }
+    });
+  },
+
+  deleteConfirm() {
+    $('.delete').click(function() {
+      return confirm('您确定要删除吗?');
     });
   },
 };

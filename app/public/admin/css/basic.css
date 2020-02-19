@@ -79,3 +79,7 @@ input[type=file]{
 .navbar{
 	border-radius: 0px;
 }
+
+table .pic {
+    width: 120px;
+}

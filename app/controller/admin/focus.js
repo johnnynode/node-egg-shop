@@ -123,7 +123,7 @@ class FocusController extends BaseController {
     const parts = this.ctx.multipart({ autoFields: true });
     let files = {};
     let stream;
-    while ((stream = await parts()) != null) {
+    while ((stream = await parts())) {
       if (!stream.filename) {
         break;
       }
