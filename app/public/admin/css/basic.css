@@ -83,3 +83,8 @@ input[type=file]{
 table .pic {
     width: 120px;
 }
+
+.table .text-center span {
+    display: block;
+    cursor: pointer;
+}

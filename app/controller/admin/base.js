@@ -43,8 +43,6 @@ class BaseController extends Controller {
 
   // 改变状态的方法  Api接口
   async changeStatus() {
-
-
     const model = this.ctx.request.query.model; /* 数据库表 Model*/
     const attr = this.ctx.request.query.attr; /* 更新的属性 如:status is_best */
     const id = this.ctx.request.query.id; /* 更新的 id*/
@@ -59,6 +57,27 @@ class BaseController extends Controller {
       } else {
         this.ctx.body = { message: '更新失败', success: false };
       }
+    } else {
+      // 接口
+      this.ctx.body = { message: '更新失败,参数错误', success: false };
+    }
+  }
+
+  // 通用的改变值的方法
+  async editVal() {
+    const model = this.ctx.request.query.model; /* 数据库表 Model*/
+    const attr = this.ctx.request.query.attr; /* 更新的属性 如:sort */
+    const id = this.ctx.request.query.id; /* 更新的 id*/
+    const val = this.ctx.request.query.val; /* 数量*/
+    const result = await this.ctx.model[model].find({ _id: id });
+
+    if (result.length) {
+      const json = {
+        [attr]: val,
+      };
+      // 执行更新操作
+      const updateResult = await this.ctx.model[model].updateOne({ _id: id }, json);
+      this.ctx.body = updateResult ? { message: '更新成功', success: true } : { message: '更新失败', success: false };
     } else {
       // 接口
       this.ctx.body = { message: '更新失败,参数错误', success: false };

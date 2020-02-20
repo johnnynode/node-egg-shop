@@ -11,10 +11,11 @@ module.exports = app => {
   router.get('/admin/login', controller.admin.login.index);
   router.post('/admin/doLogin', controller.admin.login.doLogin);
 
-  // 验证码
+  // 通用功能路由
   router.get('/admin/verify', controller.admin.base.verify);
   router.get('/admin/loginOut', controller.admin.login.loginOut);
   router.get('/admin/changeStatus', controller.admin.base.changeStatus);
+  router.get('/admin/editVal', controller.admin.base.editVal);
 
   // 通用删除功能
   router.get('/admin/delete', controller.admin.base.delete);
