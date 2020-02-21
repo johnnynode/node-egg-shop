@@ -1,16 +1,21 @@
 <ul class="aside">
     <%for(var i=0;i<sideList.length;i++){%>
-    <li>
+        <li>
             <%if((sideList[i].checked && sideList[i].type==1) || (userinfo.is_super==1&& sideList[i].type==1)){%>
-                <h4> <%=sideList[i].module_name %></h4>                     
+                <h4>
+                    <%=sideList[i].module_name %> <span class="nav_open"></span></h4>
                 <ul>
-                        <%for(var j=0;j<sideList[i].items.length;j++){%> 
-                            <%if((sideList[i].items[j].checked && sideList[i].items[j].type!=3) || (userinfo.is_super==1 && sideList[i].items[j].type!=3)){%>
-                                <li  class="list-group-item"> <a href="<%=sideList[i].items[j].url%>">  <%=sideList[i].items[j].action_name %></a></li>
+                    <%for(var j=0;j<sideList[i].items.length;j++){%>
+                        <%if((sideList[i].items[j].checked && sideList[i].items[j].type!=3) || (userinfo.is_super==1 && sideList[i].items[j].type!=3)){%>
+                            <li class="list-group-item">
+                                <a href="<%=sideList[i].items[j].url%>" target="rightMain">
+                                    <%=sideList[i].items[j].action_name %>
+                                </a>
+                            </li>
                             <%}%>
-                        <%}%>
+                                <%}%>
                 </ul>
-            <%}%>
-    </li>
-    <%}%>
+                <%}%>
+        </li>
+        <%}%>
 </ul>
