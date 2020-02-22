@@ -77,6 +77,14 @@
     * description
     * add_time
 
+### 商城前台
+
+**ER图**
+
+<div align="center">
+    <img with="800" src="./screenshot/2.jpg">
+</div>
+
 ## QuickStart
 
 <!-- add docs here for user -->
