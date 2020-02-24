@@ -61,8 +61,9 @@ var app = {
     },
 
     resizeIframe() {
-        const heights = document.documentElement.clientHeight - 100;
-        document.getElementById('rightMain').height = heights;
+        const h = $('html').height() - 100;
+        const rightMain = $('#rightMain');
+        rightMain && rightMain.height(h);
     },
 };
 
