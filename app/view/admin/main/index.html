@@ -28,3 +28,14 @@
     </body>
 
     </html>
+
+    <script>
+        // 初始化设置高度
+        $(function() {
+            app.resizeIframe();
+            // 监听窗口变化，进行高度设置
+            $(window).resize(function() {
+                app.resizeIframe();
+            });
+        })
+    </script>

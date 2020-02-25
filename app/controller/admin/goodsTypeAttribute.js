@@ -6,6 +6,10 @@ class GoodsTypeAttributeController extends BaseController {
         // 显示对应类型的属性
         // 获取当前属性的类型id   分类id
         const cate_id = this.ctx.request.query.id;
+        // console.log(cate_id);
+        // 获取当前的类型
+        const goodsType = await this.ctx.model.GoodsType.find({ _id: cate_id });
+        //  var result=await this.ctx.model.GoodsTypeAttribute.find({"cate_id":cate_id});
         const result = await this.ctx.model.GoodsTypeAttribute.aggregate([{
                 $lookup: {
                     from: 'goods_type',
@@ -25,6 +29,7 @@ class GoodsTypeAttributeController extends BaseController {
         await this.ctx.render('admin/goodsTypeAttribute/index', {
             list: result,
             cate_id,
+            goodsType: goodsType[0],
         });
     }
 
@@ -47,23 +52,23 @@ class GoodsTypeAttributeController extends BaseController {
     // 功能还没有实现
     async edit() {
         const id = this.ctx.query.id;
-        const result = await this.ctx.model.GoodsType.find({ _id: id });
-        console.log('result', result);
-        console.log('.......');
-        await this.ctx.render('admin/goodsType/edit', {
+        const result = await this.ctx.model.GoodsTypeAttribute.find({ _id: id });
+        const goodsTypes = await this.ctx.model.GoodsType.find({});
+        await this.ctx.render('admin/goodsTypeAttribute/edit', {
             list: result[0],
+            goodsTypes,
         });
     }
 
     async doEdit() {
         const _id = this.ctx.request.body._id;
-        const title = this.ctx.request.body.title;
-        const description = this.ctx.request.body.description;
-        await this.ctx.model.GoodsType.updateOne({ _id }, {
-            title,
-            description,
-        });
-        await this.success('/admin/goodsType', '编辑类型成功');
+        // var title=this.ctx.request.body.title;
+        // var cate_id=this.ctx.request.body.cate_id;
+        // var attr_type=this.ctx.request.body.attr_type;
+        // var attr_value=this.ctx.request.body.attr_value;
+        // console.log(this.ctx.request.body);
+        await this.ctx.model.GoodsTypeAttribute.updateOne({ _id }, this.ctx.request.body);
+        await this.success('/admin/goodsTypeAttribute?id=' + this.ctx.request.body.cate_id, '修改商品类型属性成功');
     }
 }
 module.exports = GoodsTypeAttributeController;

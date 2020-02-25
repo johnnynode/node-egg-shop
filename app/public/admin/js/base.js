@@ -6,7 +6,6 @@ var app = {
     init() {
         this.toggleAside();
         this.deleteConfirm();
-        this.resizeIframe(); // 初始化调用一次
     },
     toggleAside() {
         $('.aside h4').click(function() {
@@ -66,8 +65,3 @@ var app = {
         rightMain && rightMain.height(h);
     },
 };
-
-// 监听窗口变化
-$(window).resize(function() {
-    app.resizeIframe();
-});
