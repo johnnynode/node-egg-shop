@@ -19,6 +19,16 @@ ul {
     display: block;
 }
 
+.input {
+    width: 600px;
+}
+
+.form_input span {
+    display: inline-block;
+    width: 100px;
+    text-align: right;
+}
+
 .panel-heading span {
     position: relative;
     top: 10px;
@@ -100,7 +110,7 @@ table .th {
 }
 
 
-/*值*/
+/*数量*/
 
 .table .text-center span {
     display: block;
