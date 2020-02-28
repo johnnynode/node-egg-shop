@@ -12,17 +12,31 @@ id    name              pid
 7      小米T恤            3
 */
 
-const path = require('path');
 const fs = require('fs');
 const pump = require('mz-modules/pump');
 
 const BaseController = require('./base.js');
 class GoodsCateController extends BaseController {
     async index() {
-        const result = await this.ctx.model.GoodsCate.find({});
-        console.log(result);
-        // 获取分类的数据
-        this.ctx.body = '商品分类模块列表';
+        // 表自关联进行分类查询
+        const result = await this.ctx.model.GoodsCate.aggregate([{
+                $lookup: {
+                    from: 'goods_cate',
+                    localField: '_id',
+                    foreignField: 'pid',
+                    as: 'items',
+                },
+            },
+            {
+                $match: {
+                    pid: '0',
+                },
+            },
+        ]);
+        // console.log(JSON.stringify(result));
+        await this.ctx.render('admin/goodsCate/index', {
+            list: result,
+        });
     }
     async add() {
         const result = await this.ctx.model.GoodsCate.find({ pid: '0' });
@@ -49,6 +63,10 @@ class GoodsCateController extends BaseController {
             files = Object.assign(files, {
                 [fieldname]: dir.saveDir,
             });
+
+            // 上传图片成功以后生成缩略图
+            this.service.tools.jimpImg(target);
+
         }
         // console.log(parts.field.pid);
         if (parts.field.pid !== '0') {
