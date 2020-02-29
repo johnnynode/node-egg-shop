@@ -76,4 +76,7 @@ module.exports = app => {
     router.get('/admin/goodsCate', controller.admin.goodsCate.index);
     router.get('/admin/goodsCate/add', controller.admin.goodsCate.add);
     router.post('/admin/goodsCate/doAdd', controller.admin.goodsCate.doAdd);
+    router.get('/admin/goodsCate/edit', controller.admin.goodsCate.edit);
+    router.post('/admin/goodsCate/doEdit', controller.admin.goodsCate.doEdit);
+
 };
