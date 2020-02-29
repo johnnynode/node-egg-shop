@@ -33,6 +33,7 @@ class GoodsCateController extends BaseController {
                 },
             },
         ]);
+        // console.log('===========');
         // console.log(JSON.stringify(result));
         await this.ctx.render('admin/goodsCate/index', {
             list: result,
