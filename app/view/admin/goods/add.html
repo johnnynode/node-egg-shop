@@ -1,5 +1,17 @@
 <%- include ../public/header.html %>
 
+    <!-- Include CSS for icons. -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+    <!-- Include Editor style. -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/froala-editor/2.5.1/css/froala_editor.pkgd.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/froala-editor/2.5.1/css/froala_style.min.css" rel="stylesheet" type="text/css" />
+
+    <!-- 引入jquery -->
+    <!-- Include Editor JS files. -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/froala-editor/2.5.1//js/froala_editor.pkgd.min.js"></script>
+    <script type="text/javascript" src="/public/admin/wysiwyg-editor/js/zh_cn.js"></script>
+
     <div class="panel panel-default">
         <div class="panel-body">
             <div class="table-responsive input-form">
@@ -90,6 +102,7 @@
 
     <script>
         $(function() {
+            // 动态表单渲染
             $('#goods_type_id').change(function() {
                 // alert($(this).val());
                 var cate_id = $(this).val();
@@ -119,5 +132,21 @@
                     $('#goods_type_attribute').html(str);
                 })
             })
-        })
+
+            // 富文本编辑器
+            $('#content').froalaEditor({
+                height: 300, //给编辑器设置默认的高度
+                language: 'zh_cn',
+                //根据不同的分辨率加载不同的配置
+                toolbarButtons: ['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript',
+                    'superscript', '|', 'fontFamily', 'fontSize', 'color'
+                ],
+                toolbarButtonsMD: ['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript',
+                    'superscript', '|', 'fontFamily', 'fontSize', 'color'
+                ],
+                toolbarButtonsSM: ['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript',
+                    'superscript', '|', 'fontFamily', 'fontSize', 'color'
+                ]
+            });
+        });
     </script>
