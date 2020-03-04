@@ -1,5 +1,7 @@
 'use strict';
 
+const fs = require('fs');
+const pump = require('mz-modules/pump');
 const BaseController = require('./base.js');
 
 class GoodsController extends BaseController {
@@ -34,6 +36,33 @@ class GoodsController extends BaseController {
         this.ctx.body = {
             result: goodsTypeAttribute,
         };
+    }
+
+    async goodsUploadImage() {
+        // 实现图片上传
+        const parts = this.ctx.multipart({ autoFields: true });
+        let files = {};
+        let stream;
+        while ((stream = await parts())) {
+            if (!stream.filename) {
+                break;
+            }
+            const fieldname = stream.fieldname; // file表单的名字
+
+            // 上传图片的目录
+            const dir = await this.service.tools.getUploadFile(stream.filename);
+            const target = dir.uploadDir;
+            const writeStream = fs.createWriteStream(target);
+
+            await pump(stream, writeStream);
+
+            files = Object.assign(files, {
+                [fieldname]: dir.saveDir,
+            });
+        }
+        console.log(files);
+        // 图片的地址转化成 {link: 'path/to/image.jpg'}
+        this.ctx.body = { link: files.file };
     }
 }
 
