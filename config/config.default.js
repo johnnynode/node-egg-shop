@@ -59,7 +59,7 @@ module.exports = appInfo => {
         csrf: {
             // 判断是否需要 ignore 的方法，请求上下文 context 作为第一个参数
             ignore: ctx => {
-                if (ctx.request.url === '/admin/goods/goodsUploadImage') {
+                if (ctx.request.url === '/admin/goods/goodsUploadImage' || ctx.request.url == '/admin/goods/goodsUploadPhoto') {
                     return true;
                 }
                 return false;

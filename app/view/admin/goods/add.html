@@ -10,13 +10,18 @@
     <!-- 引入jquery -->
     <!-- Include Editor JS files. -->
     <script type="text/javascript" src="/public/admin/wysiwyg-editor/js/froala_editor.pkgd.min.js"></script>
-
     <script type="text/javascript" src="/public/admin/wysiwyg-editor/js/zh_cn.js"></script>
+
+    <!-- 批量上传图片插件 -->
+    <link rel="stylesheet" type="text/css" href="/public/admin/webuploader/css/webuploader.css">
+    <link rel="stylesheet" type="text/css" href="/public/admin/webuploader/css/diyUpload.css">
+    <script type="text/javascript" src="/public/admin/webuploader/js/webuploader.html5only.min.js"></script>
+    <script type="text/javascript" src="/public/admin/webuploader/js/diyUpload.js"></script>
 
     <div class="panel panel-default">
         <div class="panel-body">
             <div class="table-responsive input-form">
-                <form action="/admin/goods/doAdd" method="post" class="goods_content">
+                <form action="/admin/goods/doAdd?_csrf=<%=csrf%>" method="post" class="goods_content" enctype="multipart/form-data">
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" class="active"><a href="#general" role="tab" data-toggle="tab">通用信息</a></li>
@@ -34,7 +39,14 @@
                                 <li> <span> 附属标题:</span> <input type="text" name="sub_title" class="input" /></li>
                                 <li> <span>商品版本:</span> <input type="text" name="goods_version" class="input" /></li>
                                 <li> <span>所属分类:</span>
-                                    <select name="cid" id="cid"></select>
+                                    <select name="cid" id="cid">
+                                        <%for(var i=0;i<goodsCate.length;i++){%>
+                                                <option value="<%=goodsCate[i]._id%>"><%=goodsCate[i].title%></option>
+                                                <%for(var j=0;j<goodsCate[i].items.length;j++){%>
+                                                        <option value="<%=goodsCate[i].items[j]._id%>">----<%=goodsCate[i].items[j].title%></option>
+                                                <%}%>
+                                        <%}%>
+                                    </select>
                                     <input type="hidden" name="cname" id="cname" />
                                 </li>
                                 <li> <span> 商品图片:</span> <input type="file" name="pic" /></li>
@@ -89,8 +101,8 @@
                             <ul class="form_input" id="goods_type_attribute"></ul>
                         </div>
                         <div role="tabpanel" class="tab-pane" id="photo">
-
-                            商品相册
+                            <div id="photoLib" class="photoLib"></div>
+                            <div id="photoList"></div>
                         </div>
                     </div>
 
@@ -144,5 +156,21 @@
                 toolbarButtonsMD: ['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertImage', 'insertVideo', 'embedly', 'insertFile', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'spellChecker', 'help', 'html', '|', 'undo', 'redo'],
                 toolbarButtonsSM: ['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertImage', 'insertVideo', 'embedly', 'insertFile', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'spellChecker', 'help', 'html', '|', 'undo', 'redo']
             });
+
+            //批量上传图片
+            $(function() {
+                var photoStr = '';
+                $('#photoLib').diyUpload({
+                    url: '/admin/goods/goodsUploadPhoto',
+                    success: function(response) {
+                        // console.info( data );
+                        photoStr = '<input type="hidden" name="goods_image_list[]" value=' + response.link + ' />';
+                        $('#photoList').append(photoStr);
+                    },
+                    error: function(err) {
+                        console.info(err);
+                    }
+                });
+            })
         });
     </script>
