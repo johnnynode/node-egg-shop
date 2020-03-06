@@ -6,7 +6,11 @@ const BaseController = require('./base.js');
 
 class GoodsController extends BaseController {
     async index() {
-        await this.ctx.render('admin/goods/index');
+        const goodsResult = await this.ctx.model.Goods.find({});
+        // console.log('goodsResult', goodsResult);
+        await this.ctx.render('admin/goods/index', {
+            list: goodsResult,
+        });
     }
 
     async add() {
@@ -58,11 +62,120 @@ class GoodsController extends BaseController {
                 [fieldname]: dir.saveDir,
             });
         }
-        console.log(Object.assign(files, parts.field));
+        const formFields = Object.assign(files, parts.field);
+        console.log(formFields);
 
-        // let focus =new this.ctx.model.Focus(Object.assign(files,parts.field));
-        // var result=await focus.save();
-        // await this.success('/admin/focus','增加轮播图成功');
+        // 建议以下增加信息放入一个事务中进行操作
+
+        // 增加商品信息
+        const goodsRes = new this.ctx.model.Goods(formFields);
+        const result = await goodsRes.save();
+
+        // console.log(result._id);
+        // 增加图库信息
+        const goods_image_list = formFields.goods_image_list;
+        if (result._id && goods_image_list) {
+
+            for (var i = 0; i < goods_image_list.length; i++) {
+                const goodsImageRes = new this.ctx.model.GoodsImage({
+                    goods_id: result._id,
+                    img_url: goods_image_list[i],
+                });
+
+                await goodsImageRes.save();
+            }
+
+        }
+        // 增加商品类型数据
+        const attr_id_list = formFields.attr_id_list;
+        const attr_value_list = formFields.attr_value_list;
+        if (result._id && attr_id_list && attr_value_list) {
+            // 批量保存商品类型 但是注意，查询数据的时候不能循环查询，会有很大性能问题
+            for (var i = 0; i < attr_value_list.length; i++) {
+                // 查询goods_type_attribute
+                if (attr_value_list[i]) {
+                    const goodsTypeAttributeResult = await this.ctx.model.GoodsTypeAttribute.find({ _id: attr_id_list[i] });
+                    const goodsAttrRes = new this.ctx.model.GoodsAttr({
+                        goods_id: result._id,
+                        cate_id: formFields.cate_id,
+                        attribute_id: attr_id_list[i],
+                        attribute_type: goodsTypeAttributeResult[0].attr_type,
+                        attribute_title: goodsTypeAttributeResult[0].title,
+                        attribute_value: attr_value_list[i],
+                    });
+
+                    await goodsAttrRes.save();
+                }
+            }
+        }
+        await this.success('/admin/goods', '增加商品数据成功');
+    }
+
+    async edit() {
+        // 获取修改数据的id
+        const id = this.ctx.request.query.id;
+        // 获取所有的颜色值
+        const colorResult = await this.ctx.model.GoodsColor.find({});
+        // 获取所有的商品类型
+        const goodsType = await this.ctx.model.GoodsType.find({});
+        // 获取商品分类
+        const goodsCate = await this.ctx.model.GoodsCate.aggregate([{
+                $lookup: {
+                    from: 'goods_cate',
+                    localField: '_id',
+                    foreignField: 'pid',
+                    as: 'items',
+                },
+            },
+            {
+                $match: {
+                    pid: '0',
+                },
+            },
+        ]);
+
+        // 获取修改的商品
+        const goodsResult = await this.ctx.model.Goods.find({ _id: id });
+        console.log(goodsResult);
+        // 获取规格信息  (待定)
+        const goodsAttsResult = await this.ctx.model.GoodsAttr.find({ goods_id: goodsResult[0]._id });
+        let goodsAttsStr = '';
+        goodsAttsResult.forEach(async val => {
+            if (val.attribute_type === 1) {
+                goodsAttsStr += `<li><span>${val.attribute_title}: 　</span><input type="hidden" name="attr_id_list" value="${val.attribute_id}" />  <input type="text" name="attr_value_list"  value="${val.attribute_value}" /></li>`;
+            } else if (val.attribute_type === 2) {
+                goodsAttsStr += `<li><span>${val.attribute_title}: 　</span><input type="hidden" name="attr_id_list" value="${val.attribute_id}" />  <textarea cols="50" rows="3" name="attr_value_list">${val.attribute_value}</textarea></li>`;
+            } else {
+                // 获取 attr_value  获取可选值列表
+                const oneGoodsTypeAttributeResult = await this.ctx.model.GoodsTypeAttribute.find({
+                    _id: val.attribute_id,
+                });
+                const arr = oneGoodsTypeAttributeResult[0].attr_value.split('\n');
+                goodsAttsStr += `<li><span>${val.attribute_title}: 　</span><input type="hidden" name="attr_id_list" value="${val.attribute_id}" />`;
+                goodsAttsStr += '<select name="attr_value_list">';
+                for (let j = 0; j < arr.length; j++) {
+                    if (arr[j] === val.attribute_value) {
+                        goodsAttsStr += `<option value="${arr[j]}" selected >${arr[j]}</option>`;
+                    } else {
+                        goodsAttsStr += `<option value="${arr[j]}" >${arr[j]}</option>`;
+                    }
+                }
+                goodsAttsStr += '</select>';
+                goodsAttsStr += '</li>';
+            }
+        });
+
+        // 商品的图库信息
+        const goodsImageResult = await this.ctx.model.GoodsImage.find({ goods_id: goodsResult[0]._id });
+        console.log(goodsImageResult);
+        await this.ctx.render('admin/goods/edit', {
+            colorResult,
+            goodsType,
+            goodsCate,
+            goods: goodsResult[0],
+            goodsAtts: goodsAttsStr,
+            goodsImage: goodsImageResult,
+        });
     }
 
     // 获取商品类型的属性 api接口
