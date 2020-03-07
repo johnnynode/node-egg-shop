@@ -20,27 +20,35 @@ module.exports = app => {
         },
         shop_price: {
             type: Number,
+            default: 0,
         },
         market_price: {
             type: Number,
+            default: 0,
         },
         relation_goods: {
             type: String,
+            default: '',
         },
         goods_attrs: {
             type: String,
+            default: '',
         },
         goods_version: { /* 版本*/
             type: String,
+            default: '',
         },
         goods_img: {
             type: String,
+            default: '',
         },
         goods_gift: {
             type: String,
+            default: '',
         },
         goods_fitting: {
             type: String,
+            default: '',
         },
         goods_color: {
             type: Schema.Types.Mixed, // 混合类型

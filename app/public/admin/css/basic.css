@@ -181,3 +181,18 @@ input[type=file] {
     width: 100%!important;
     height: 100%!important;
 }
+
+.goods_image_list {
+    border: 1px solid #eee;
+}
+
+.goods_image_list li {
+    width: 120px;
+    float: left;
+    margin-right: 10px;
+    border-bottom: none;
+}
+
+.goods_image_list li .color_list {
+    margin-top: 20px;
+}

@@ -86,4 +86,5 @@ module.exports = app => {
     router.post('/admin/goods/goodsUploadImage', controller.admin.goods.goodsUploadImage);
     router.post('/admin/goods/goodsUploadPhoto', controller.admin.goods.goodsUploadPhoto);
     router.get('/admin/goods/edit', controller.admin.goods.edit);
+    router.post('/admin/goods/doEdit', controller.admin.goods.doEdit);
 };
