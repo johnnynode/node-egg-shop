@@ -191,8 +191,19 @@ input[type=file] {
     float: left;
     margin-right: 10px;
     border-bottom: none;
+    position: relative;
 }
 
 .goods_image_list li .color_list {
     margin-top: 20px;
+}
+
+.goods_image_list li .goods_image_delete {
+    width: 20px;
+    height: 20px;
+    background: url('../webuploader/images/x_alt.png') no-repeat center center;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    cursor: pointer;
 }

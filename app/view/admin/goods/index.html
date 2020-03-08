@@ -68,6 +68,9 @@
                                 </td>
                                 <td class="text-center"><span onclick="app.editVal(this,'Goods','sort','<%=list[i]._id%>')"><%=list[i].sort%></span></td>
                                 <td class="text-center"><span onclick="app.editVal(this,'Goods','goods_number','<%=list[i]._id%>')"><%=list[i].goods_number%></span></td>
+                                <!-- 注意下面的删除商品可能会产生信息的冗余，理论上应该单独实现, 不能用通用的删除功能，因为是多表关联的，不仅仅要删除goods表,还要删除goods_attr和goods_image表 -->
+                                <!-- 删除顺序是：先通过id查找到goods表中对应的信息, 通过两个表关联分别删除goods_attr和goods_image表的关联信息，之后再删除goods表中的该条信息 -->
+                                <!-- 上面的描述是物理删除，理论上为了防止信息的丢失和误操作，应该利用起goods表中的is_delete，来进行逻辑删除 -->
                                 <td class="text-center"><a href="/admin/goods/edit?id=<%=list[i]._id%>">修改</a>　　<a class="delete" href="/admin/delete?id=<%=list[i]._id%>&model=Goods">删除</a></td>
                             </tr>
                             <%}%>

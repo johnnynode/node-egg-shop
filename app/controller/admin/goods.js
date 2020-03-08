@@ -145,6 +145,27 @@ class GoodsController extends BaseController {
         const goodsResult = await this.ctx.model.Goods.find({ _id: id });
         console.log(goodsResult);
 
+        // 获取当前商品的颜色
+        /*
+                                                    // 5bbb68dcfe498e2346af9e4a,5bbb68effe498e2346af9e4b,5bc067d92e5f889dc864aa96
+                                                    const colorArrTemp = goodsResult[0].goods_color.split(',');
+                                                    // console.log(colorArrTemp);
+                                                    const goodsColorArr = [];
+                                                    colorArrTemp.forEach(value => {
+                                                        goodsColorArr.push({ _id: value });
+                                                    });
+                                                    const goodsColorReulst = await this.ctx.model.GoodsColor.find({
+                                                        $or: goodsColorArr,
+                                                    });
+                                                    */
+        const goodsColorArr = [];
+        goodsResult[0].goods_color.forEach(value => {
+            goodsColorArr.push({ _id: value });
+        });
+        const goodsColorReulst = await this.ctx.model.GoodsColor.find({
+            $or: goodsColorArr,
+        });
+
         // 获取规格信息  (待定)
         const goodsAttsResult = await this.ctx.model.GoodsAttr.find({ goods_id: goodsResult[0]._id });
         let goodsAttsStr = '';
@@ -183,6 +204,7 @@ class GoodsController extends BaseController {
             goods: goodsResult[0],
             goodsAtts: goodsAttsStr,
             goodsImage: goodsImageResult,
+            goodsColor: goodsColorReulst,
         });
     }
 
@@ -330,6 +352,35 @@ class GoodsController extends BaseController {
         }
         // 图片的地址转化成 {link: 'path/to/image.jpg'}
         this.ctx.body = { link: files.file };
+    }
+
+    // 修改图片颜色
+    async changeGoodsImageColor() {
+        let color_id = this.ctx.request.body.color_id;
+        const goods_image_id = this.ctx.request.body.goods_image_id;
+        if (color_id) {
+            color_id = this.app.mongoose.Types.ObjectId(color_id);
+        }
+        const result = await this.ctx.model.GoodsImage.updateOne({ _id: goods_image_id }, {
+            color_id,
+        });
+        if (result) {
+            this.ctx.body = { success: true, message: '更新数据成功' };
+        } else {
+            this.ctx.body = { success: false, message: '更新数据失败' };
+        }
+    }
+
+    // 删除图片
+    async goodsImageRemove() {
+        const goods_image_id = this.ctx.request.body.goods_image_id;
+        // 注意  图片要不要删掉,这可能因人而异  fs模块删除unlink以前当前数据对应的图片
+        const result = await this.ctx.model.GoodsImage.deleteOne({ _id: goods_image_id }); // 注意写法
+        if (result) {
+            this.ctx.body = { success: true, message: '删除数据成功' };
+        } else {
+            this.ctx.body = { success: false, message: '删除数据失败' };
+        }
     }
 }
 
