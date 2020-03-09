@@ -1,4 +1,6 @@
 <%- include ../public/header.html %>
+    <!-- 引入分页插件 -->
+    <script src="/public/admin/js/jqPaginator.js"></script>
 
     <div class="panel panel-default">
         <div class="panel-heading">
@@ -76,6 +78,22 @@
                             <%}%>
                     </tbody>
                 </table>
+                <div id="page" class="pagination"></div>
             </div>
         </div>
     </div>
+
+    <script>
+        $('#page').jqPaginator({
+            totalPages: <%=totalPages%>,
+            visiblePages: 8,
+            currentPage: <%=page%>,
+            onPageChange: function(num, type) {
+                // type: init、 change
+                console.log('当前第' + num + '页', type);
+                if (type == 'change') {
+                    location.href = "/admin/goods?page=" + num;
+                }
+            }
+        });
+    </script>

@@ -6,10 +6,16 @@ const BaseController = require('./base.js');
 
 class GoodsController extends BaseController {
     async index() {
-        const goodsResult = await this.ctx.model.Goods.find({});
-        // console.log('goodsResult', goodsResult);
+        const page = this.ctx.request.query.page || 1;
+        const pageSize = 1;
+
+        // 获取当前数据表的总数量
+        const totalNum = await this.ctx.model.Goods.find({}).count();
+        const goodsResult = await this.ctx.model.Goods.find({}).skip((page - 1) * pageSize).limit(pageSize);
         await this.ctx.render('admin/goods/index', {
             list: goodsResult,
+            totalPages: Math.ceil(totalNum / pageSize),
+            page,
         });
     }
 
@@ -147,17 +153,17 @@ class GoodsController extends BaseController {
 
         // 获取当前商品的颜色
         /*
-                                                    // 5bbb68dcfe498e2346af9e4a,5bbb68effe498e2346af9e4b,5bc067d92e5f889dc864aa96
-                                                    const colorArrTemp = goodsResult[0].goods_color.split(',');
-                                                    // console.log(colorArrTemp);
-                                                    const goodsColorArr = [];
-                                                    colorArrTemp.forEach(value => {
-                                                        goodsColorArr.push({ _id: value });
-                                                    });
-                                                    const goodsColorReulst = await this.ctx.model.GoodsColor.find({
-                                                        $or: goodsColorArr,
-                                                    });
-                                                    */
+                                                            // 5bbb68dcfe498e2346af9e4a,5bbb68effe498e2346af9e4b,5bc067d92e5f889dc864aa96
+                                                            const colorArrTemp = goodsResult[0].goods_color.split(',');
+                                                            // console.log(colorArrTemp);
+                                                            const goodsColorArr = [];
+                                                            colorArrTemp.forEach(value => {
+                                                                goodsColorArr.push({ _id: value });
+                                                            });
+                                                            const goodsColorReulst = await this.ctx.model.GoodsColor.find({
+                                                                $or: goodsColorArr,
+                                                            });
+                                                            */
         const goodsColorArr = [];
         goodsResult[0].goods_color.forEach(value => {
             goodsColorArr.push({ _id: value });

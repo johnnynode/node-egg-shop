@@ -92,6 +92,55 @@
     <img with="800" src="./screenshot/2.jpg">
 </div>
 
+### 关于分页的问题
+
+**数据库分页查询数据的原理算法**
+
+规则：规定每页 20 条数据的查询方式
+查询第一页（page=1）:
+db.表名.find().skip(0).limit(20)
+查询第二页（page=2）:
+db.表名.find().skip(20).limit(20)
+查询第三页（page=3）:
+db.表名.find().skip(40).limit(20)
+
+规则：规定每页 8 条数据的查询方式
+查询第一页（page=1）:
+db.表名.find().skip(0).limit(8)
+
+查询第二页（page=2）:
+db.表名.find().skip(8).limit(8)
+查询第三页（page=3）:
+db.表名.find().skip(16).limit(8)
+查询第四页（page=4）:
+db.表名.find().skip(24).limit(8)
+
+总结：分页查询的 sql 语句
+db.表名.find().skip((page-1)*pageSize).limit(pageSize)
+
+**Mongoose 实现分页的方法**
+
+地址：https://mongoosejs.com/docs/queries.html
+
+```js
+Person. find({
+occupation: /host/,
+'name.last': 'Ghost',
+age: { $gt: 17, $lt: 66 },
+likes: { $in: ['vaporizing', 'talking'] }
+}).
+limit(10). sort({ occupation: -1 }). select({ name: 1, occupation: 1 }). exec(callback);
+
+// Using query builder
+Person. find({ occupation: /host/ }). where('name.last').equals('Ghost'). where('age').gt(17).lt(66). where('likes').in(['vaporizing', 'talking']).
+limit(10). sort('-occupation'). select('name occupation'). exec(callback);
+```
+
+**数据结合 jqPaginator 实现分页**
+
+插件文档：http://jqpaginator.keenwon.com/
+
+
 ## QuickStart
 
 <!-- add docs here for user -->
