@@ -89,4 +89,12 @@ module.exports = app => {
     router.post('/admin/goods/doEdit', controller.admin.goods.doEdit);
     router.post('/admin/goods/changeGoodsImageColor', controller.admin.goods.changeGoodsImageColor);
     router.post('/admin/goods/goodsImageRemove', controller.admin.goods.goodsImageRemove);
+
+
+    // 导航模块
+    router.get('/admin/nav', controller.admin.nav.index);
+    router.get('/admin/nav/add', controller.admin.nav.add);
+    router.get('/admin/nav/edit', controller.admin.nav.edit);
+    router.post('/admin/nav/doEdit', controller.admin.nav.doEdit);
+    router.post('/admin/nav/doAdd', controller.admin.nav.doAdd);
 };
