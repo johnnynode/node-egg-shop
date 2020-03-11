@@ -90,11 +90,17 @@ module.exports = app => {
     router.post('/admin/goods/changeGoodsImageColor', controller.admin.goods.changeGoodsImageColor);
     router.post('/admin/goods/goodsImageRemove', controller.admin.goods.goodsImageRemove);
 
-
     // 导航模块
     router.get('/admin/nav', controller.admin.nav.index);
     router.get('/admin/nav/add', controller.admin.nav.add);
     router.get('/admin/nav/edit', controller.admin.nav.edit);
     router.post('/admin/nav/doEdit', controller.admin.nav.doEdit);
     router.post('/admin/nav/doAdd', controller.admin.nav.doAdd);
+
+    // 文章分类模块
+    router.get('/admin/articleCate', controller.admin.articleCate.index);
+    router.get('/admin/articleCate/add', controller.admin.articleCate.add);
+    router.get('/admin/articleCate/edit', controller.admin.articleCate.edit);
+    router.post('/admin/articleCate/doEdit', controller.admin.articleCate.doEdit);
+    router.post('/admin/articleCate/doAdd', controller.admin.articleCate.doAdd);
 };
