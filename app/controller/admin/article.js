@@ -8,7 +8,7 @@ const BaseController = require('./base.js');
 class ArticleController extends BaseController {
     async index() {
         const page = this.ctx.request.query.page || 1;
-        const pageSize = 1;
+        const pageSize = 10;
         // 总数量
         const totalNum = await this.ctx.model.Article.find({}).count();
         // 之前的分页写法，对比下聚合管道的写法
@@ -124,17 +124,14 @@ class ArticleController extends BaseController {
                 break;
             }
             const fieldname = stream.fieldname; // file表单的名字
-
             // 上传图片的目录
             const dir = await this.service.tools.getUploadFile(stream.filename);
             const target = dir.uploadDir;
             const writeStream = fs.createWriteStream(target);
-
             await pump(stream, writeStream);
             files = Object.assign(files, {
                 [fieldname]: dir.saveDir,
             });
-
             // 生成缩略图
             this.service.tools.jimpImg(target);
         }
