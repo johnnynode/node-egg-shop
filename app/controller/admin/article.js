@@ -8,7 +8,7 @@ const BaseController = require('./base.js');
 class ArticleController extends BaseController {
     async index() {
         const page = this.ctx.request.query.page || 1;
-        const pageSize = 10;
+        const pageSize = 1;
         // 总数量
         const totalNum = await this.ctx.model.Article.find({}).count();
         // 之前的分页写法，对比下聚合管道的写法
@@ -112,6 +112,7 @@ class ArticleController extends BaseController {
         await this.ctx.render('admin/article/edit', {
             cateList: cateResult,
             list: result[0],
+            prevPage: this.ctx.state.prevPage,
         });
     }
 
@@ -139,7 +140,7 @@ class ArticleController extends BaseController {
         const id = parts.field.id;
         const updateResult = Object.assign(files, parts.field);
         await this.ctx.model.Article.updateOne({ _id: id }, updateResult);
-        await this.success('/admin/article', '修改数据成功');
+        await this.success(parts.field.prevPage, '修改数据成功');
     }
 }
 module.exports = ArticleController;
