@@ -6,9 +6,9 @@ module.exports = app => {
 
     const d = new Date();
     const GoodsSchema = new Schema({
-        title: { type: String },
-        sub_title: { type: String },
-        goods_sn: { type: String },
+        title: { type: String, default: '' },
+        sub_title: { type: String, default: '' },
+        goods_sn: { type: String, default: '' },
         cate_id: { type: Schema.Types.ObjectId },
         click_count: {
             type: Number,
@@ -51,16 +51,20 @@ module.exports = app => {
             default: '',
         },
         goods_color: {
-            type: Schema.Types.Mixed, // 混合类型
+            type: String,
+            default: '',
         },
         goods_keywords: {
             type: String,
+            default: '',
         },
         goods_desc: {
             type: String,
+            default: '',
         },
         goods_content: {
             type: String,
+            default: '',
         },
         sort: { type: Number, default: 100 },
         is_delete: {
@@ -86,6 +90,9 @@ module.exports = app => {
             type: Number,
             default: d.getTime(),
         },
+
     });
+
     return mongoose.model('Goods', GoodsSchema, 'goods');
+
 };

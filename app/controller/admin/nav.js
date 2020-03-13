@@ -5,7 +5,7 @@ const BaseController = require('./base.js');
 class NavController extends BaseController {
     async index() {
         const page = this.ctx.request.query.page || 1;
-        const pageSize = 15;
+        const pageSize = 10;
         // 获取当前数据表的总数量
         const totalNum = await this.ctx.model.Nav.find({}).count();
         // 分页查询
@@ -34,13 +34,15 @@ class NavController extends BaseController {
         const result = await this.ctx.model.Nav.find({ _id: id });
         await this.ctx.render('admin/nav/edit', {
             list: result[0],
+            prevPage: this.ctx.state.prevPage,
         });
     }
 
     async doEdit() {
         const _id = this.ctx.request.body._id;
+        const prevPage = this.ctx.request.body.prevPage;
         await this.ctx.model.Nav.updateOne({ _id }, this.ctx.request.body);
-        await this.success('/admin/nav', '编辑导航成功');
+        await this.success(prevPage, '编辑导航成功');
     }
 }
 

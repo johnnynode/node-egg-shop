@@ -35,19 +35,20 @@
                     <div class="tab-content">
                         <div role="tabpanel" class="tab-pane active" id="general">
                             <input type="hidden" name="id" value="<%=goods._id%>" />
+                            <input type="hidden" name="prevPage" value="<%=prevPage%>" />
                             <ul class="form_input">
                                 <li> <span> 商品标题:</span> <input type="text" name="title" class="input" value="<%=goods.title%>" /></li>
                                 <li> <span> 附属标题:</span> <input type="text" name="sub_title" class="input" value="<%=goods.sub_title%>" /></li>
                                 <li> <span>商品版本:</span> <input type="text" name="goods_version" class="input" value="<%=goods.goods_version%>" /></li>
                                 <li> <span>所属分类:</span>
                                     <select name="cate_id" id="cate_id">
-                                                <%for(var i=0;i<goodsCate.length;i++){%>
-                                                        <option value="<%=goodsCate[i]._id%>" <%if(goods.cate_id.toString()==goodsCate[i]._id.toString()){%>selected<%}%> ><%=goodsCate[i].title%></option>
-                                                        <%for(var j=0;j<goodsCate[i].items.length;j++){%>
-                                                                <option value="<%=goodsCate[i].items[j]._id%>" <%if(goods.cate_id.toString()==goodsCate[i].items[j]._id.toString()){%>selected<%}%>>----<%=goodsCate[i].items[j].title%></option>      
-                                                        <%}%>
+                                        <%for(var i=0;i<goodsCate.length;i++){%>
+                                                <option value="<%=goodsCate[i]._id%>" <%if(goods.cate_id.toString()==goodsCate[i]._id.toString()){%>selected<%}%> ><%=goodsCate[i].title%></option>
+                                                <%for(var j=0;j<goodsCate[i].items.length;j++){%>
+                                                        <option value="<%=goodsCate[i].items[j]._id%>" <%if(goods.cate_id.toString()==goodsCate[i].items[j]._id.toString()){%>selected<%}%>>----<%=goodsCate[i].items[j].title%></option>      
                                                 <%}%>
-                                            </select>
+                                        <%}%>
+                                    </select>
                                     <input type="hidden" name="cname" id="cname" />
                                 </li>
                                 <li> <span> 商品图片:</span> <input type="file" name="goods_img" />
@@ -77,7 +78,8 @@
                             <ul class="form_input">
                                 <li> <span>商品颜色:</span>
                                     <%for(var i=0;i<colorResult.length;i++){%>
-                                        <%if(goods.goods_color.indexOf(colorResult[i]._id.toString())!=-1){%>
+                                        <!-- 防止没选颜色的情况发生 -->
+                                        <%if(goods.goods_color && goods.goods_color.indexOf(colorResult[i]._id.toString())!=-1){%>
                                             <input type="checkbox" checked name="goods_color" value="<%=colorResult[i]._id%>" id="color_<%=colorResult[i]._id%>" /> <label for="color_<%=colorResult[i]._id%>"><%=colorResult[i].color_name%></label>
                                             <%}else{%>
                                                 <input type="checkbox" name="goods_color" value="<%=colorResult[i]._id%>" id="color_<%=colorResult[i]._id%>" /> <label for="color_<%=colorResult[i]._id%>"><%=colorResult[i].color_name%></label>
@@ -188,10 +190,8 @@
                     })
                 }
             })
-        })
-
-        //富文本编辑器
-        $(function() {
+            
+            //富文本编辑器
             $('#content').froalaEditor({
                 height: 300, //给编辑器设置默认的高度
                 language: 'zh_cn',
@@ -201,11 +201,8 @@
                 toolbarButtonsMD: ['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertImage', 'insertVideo', 'embedly', 'insertFile', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'spellChecker', 'help', 'html', '|', 'undo', 'redo'],
                 toolbarButtonsSM: ['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertImage', 'insertVideo', 'embedly', 'insertFile', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'spellChecker', 'help', 'html', '|', 'undo', 'redo']
             });
-        });
 
-        //批量上传图片
-        $(function() {
-            var photoStr = '';
+            // 批量上传图片
             $('#photoLib').diyUpload({
                 url: '/admin/goods/goodsUploadPhoto',
                 success: function(response) {
@@ -217,35 +214,35 @@
                     console.info(err);
                 }
             });
-        })
 
-        //改变颜色
-        $('.relation_goods_color').change(function() {
-            var color_id = $(this).val();
-            var goods_image_id = $(this).attr('goods_image_id');
-            console.log(color_id, goods_image_id);
-            $.post('/admin/goods/changeGoodsImageColor?_csrf=<%=csrf%>', {
-                color_id: color_id,
-                goods_image_id: goods_image_id
-            }, function(response) {
-                console.log(response);
-            })
-        })
-
-        //删除图片
-        $('.goods_image_delete').click(function() {
-            var _that = this;
-            var flag = confirm('您确定要删除吗?');
-            if (flag) {
+            // 改变颜色
+            $('.relation_goods_color').change(function() {
+                var color_id = $(this).val();
                 var goods_image_id = $(this).attr('goods_image_id');
-                $.post('/admin/goods/goodsImageRemove?_csrf=<%=csrf%>', {
+                console.log(color_id, goods_image_id);
+                $.post('/admin/goods/changeGoodsImageColor?_csrf=<%=csrf%>', {
+                    color_id: color_id,
                     goods_image_id: goods_image_id
                 }, function(response) {
                     console.log(response);
-                    if (response.success) {
-                        $(_that).parent().remove();
-                    }
                 })
-            }
+            });
+
+            //删除图片
+            $('.goods_image_delete').click(function() {
+                var _that = this;
+                var flag = confirm('您确定要删除吗?');
+                if (flag) {
+                    var goods_image_id = $(this).attr('goods_image_id');
+                    $.post('/admin/goods/goodsImageRemove?_csrf=<%=csrf%>', {
+                        goods_image_id: goods_image_id
+                    }, function(response) {
+                        console.log(response);
+                        if (response.success) {
+                            $(_that).parent().remove();
+                        }
+                    })
+                }
+            });
         })
     </script>
