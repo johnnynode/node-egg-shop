@@ -77,15 +77,8 @@ module.exports = appInfo => {
         // myAppName: 'egg',
     };
 
-    // 系统配置文件
-    const sysConfig = {
-        pageSize: 10,
-        // myAppName: 'egg',
-    };
-
     return {
         ...config,
-        ...userConfig,
-        ...sysConfig,
+        ...userConfig
     };
 };
