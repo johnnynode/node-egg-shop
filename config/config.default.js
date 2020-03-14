@@ -67,13 +67,25 @@ module.exports = appInfo => {
         },
     };
 
+    // 系统配置
+    config.sys = {
+        pageSize: 10,
+    }
+
     // add your user config here
     const userConfig = {
+        // myAppName: 'egg',
+    };
+
+    // 系统配置文件
+    const sysConfig = {
+        pageSize: 10,
         // myAppName: 'egg',
     };
 
     return {
         ...config,
         ...userConfig,
+        ...sysConfig,
     };
 };

@@ -8,7 +8,7 @@ const BaseController = require('./base.js');
 class ArticleController extends BaseController {
     async index() {
         const page = this.ctx.request.query.page || 1;
-        const pageSize = 10;
+        const pageSize = this.config.sys.pageSize;
         // 总数量
         const totalNum = await this.ctx.model.Article.find({}).count();
         // 之前的分页写法，对比下聚合管道的写法
