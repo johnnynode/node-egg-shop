@@ -1,17 +1,5 @@
 'use strict';
 
-/*
-
-id    name              pid
-1      手机               0
-2      电脑               0
-3      服装               0
-4      小米1              1
-5      小米2              2
-6      小米笔记本         2
-7      小米T恤            3
-*/
-
 const fs = require('fs');
 const pump = require('mz-modules/pump');
 
