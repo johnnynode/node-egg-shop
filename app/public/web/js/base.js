@@ -1,43 +1,44 @@
-(function($){
+(function($) {
 
-    var app={
-        init:function(){
-    
+    var app = {
+        init: function() {
+
             this.initSwiper();
 
             this.initNavSlide();
         },
-        initSwiper:function(){    
+        initSwiper: function() {
             new Swiper('.swiper-container', {
-                loop : true,
+                loop: true,
                 navigation: {
-                  nextEl: '.swiper-button-next',
-                  prevEl: '.swiper-button-prev'                 
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev'
                 },
                 pagination: {
                     el: '.swiper-pagination',
-                    clickable :true
-                }
-                
+                    clickable: true
+                },
+                autoplay: true
+
             });
         },
-        initNavSlide:function(){
-             $("#nav_list>li").hover(function(){
+        initNavSlide: function() {
+            $("#nav_list>li").hover(function() {
 
                 $(this).find('.children-list').show();
-             },function(){
-                $(this).find('.children-list').hide(); 
-             })          
+            }, function() {
+                $(this).find('.children-list').hide();
+            })
 
         }
-    }   
-    
-    $(function(){
-    
-    
+    }
+
+    $(function() {
+
+
         app.init();
     })
 
-    
+
 
 })($)
