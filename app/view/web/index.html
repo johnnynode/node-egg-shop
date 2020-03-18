@@ -9,85 +9,29 @@
             <div class="ad_top fl"></div>
         </a>
         <div class="nav fl">
-            <ul class="clearfix" id="nav_list">
-                <li>
-                    <a href="#" target="_blank">网仹手机</a>
-
-                    <ol class="children-list clearfix">
-
-                        <li>
-                            <a href="#">
-                                <img src="/public/web/image/pinpai2.png" />
-                                <p>100元</p>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <img src="/public/web/image/pinpai1.png" />
-                                <p>100元</p>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <img src="/public/web/image/pinpai3.png">
-                                <p>100元</p>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <img src="/public/web/image/pinpai4.png">
-                                <p>100元</p>
-                            </a>
-                        </li>
-
-                    </ol>
-
-                </li>
-                <li>
-
-                    <a href="">网仹</a>
-
-                    <ol class="children-list clearfix">
-
-                        <li>
-                            <a href="#">
-                                <img src="/public/web/image/pinpai2.png" />
-                                <p>网仹100元</p>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <img src="/public/web/image/pinpai1.png" />
-                                <p>网仹100元</p>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <img src="/public/web/image/pinpai3.png">
-                                <p>网仹100元</p>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <img src="/public/web/image/pinpai4.png">
-                                <p>网仹100元</p>
-                            </a>
-                        </li>
-
-                    </ol>
-
-
-
-                </li>
-                <li><a href="">平板·笔记本</a></li>
-                <li><a href="">电视</a></li>
-                <li><a href="">盒子·影音</a></li>
-                <li><a href="">路由器</a></li>
-                <li><a href="">智能硬件</a></li>
-                <li><a href="">服务</a></li>
-                <li><a href="">社区</a></li>
+            <ul class="clearfix fr" id="nav_list">
+                <%for(var i=0;i<middleNav.length;i++){ %>
+                    <li>
+                        <a href="<%=middleNav[i].link%>" <% if(middleNav[i].is_opennew==2){%>target="_blank" <%}%>>
+                            <%=middleNav[i].title%>
+                        </a>
+                        <%if(middleNav[i].subGoods.length>0) {%>
+                            <ol class="children-list clearfix">
+                                <%for(var j=0;j<middleNav[i].subGoods.length;j++){ %>
+                                    <li>
+                                        <a href="<%=middleNav[i].subGoods[j].link%>" <% if(middleNav[i].is_opennew==2){%>target="_blank" <%}%>>
+                                            <img src="<%=middleNav[i].subGoods[j].goods_img%>" />
+                                            <p><%=middleNav[i].subGoods[j].price%></p>
+                                        </a>
+                                    </li>
+                                    <%}%>
+                            </ol>
+                            <%}%>
+                    </li>
+                    <%} %>
             </ul>
         </div>
+
         <div class="search fr">
             <form action="" method="post">
                 <div class="text fl">
