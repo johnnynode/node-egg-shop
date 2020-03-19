@@ -25,6 +25,7 @@
                         <tr class="th">
                             <th>商品ID</th>
                             <th>商品名称</th>
+                            <th>分类ID</th>
                             <th>货号</th>
                             <th>价格</th>
                             <th>点击量</th>
@@ -45,6 +46,9 @@
                                 </td>
                                 <td>
                                     <%=list[i].title%>
+                                </td>
+                                <td>
+                                    <%=list[i].cate_id.toString()%>
                                 </td>
                                 <td>
                                     <%=list[i].goods_sn%>

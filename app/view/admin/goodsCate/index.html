@@ -11,6 +11,7 @@
                     <thead>
                         <tr class="th">
                             <th>分类名称</th>
+                            <th>分类ID</th>
                             <th>分类图片</th>
                             <th class="text-center">排序</th>
                             <th class="text-center">状态</th>
@@ -22,6 +23,9 @@
                             <tr>
                                 <td>
                                     <%=list[i].title%>
+                                </td>
+                                <td>
+                                    <%=list[i]._id%>
                                 </td>
                                 <td><img class="pic" src="<%=list[i].cate_img%>" /></td>
                                 <td class="text-center"><span onclick="app.editVal(this,'GoodsCate','sort','<%=list[i]._id%>')"><%=list[i].sort%></span></td>
@@ -38,6 +42,9 @@
                                 <tr>
                                     <td>-----
                                         <%=list[i].items[j].title%>
+                                    </td>
+                                    <td>
+                                        <%=list[i].items[j]._id%>
                                     </td>
                                     <td><img class="pic" src="<%=list[i].items[j].cate_img%>" /></td>
                                     <td class="text-center"><span onclick="app.editVal(this,'GoodsCate','sort','<%=list[i].items[j]._id%>')"><%=list[i].items[j].sort%></span></td>

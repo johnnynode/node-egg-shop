@@ -4,7 +4,6 @@ const Controller = require('egg').Controller;
 
 class IndexController extends Controller {
     async index() {
-
         //获取顶部导航的数据
         let topNav = await this.ctx.model.Nav.find({ "position": 1 });
         //轮播图
@@ -55,11 +54,19 @@ class IndexController extends Controller {
             }
         }
 
+        // 这里封装了首页推荐的楼层，但是_id是硬编码出来的，是从数据库或后台管理系统中拿来的，可以做成配置的
+        // 手机
+        var mobileResult = await this.service.goods.get_category_recommend_goods('5e55b4fbe9ab76893131640f', 'best', 8);
+        // 其他...
+
+        console.log('mobileResult', mobileResult);
+
         await this.ctx.render('web/index', {
             topNav: topNav,
             focus: focus,
             goodsCate: goodsCate,
-            middleNav: middleNav
+            middleNav: middleNav,
+            mobileResult: mobileResult
         });
     }
 }
