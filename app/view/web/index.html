@@ -185,7 +185,7 @@
                 <%for(var i=0;i<mobileResult.length;i++){ %>
                     <div class="hot fl">
                         <div class="xinpin"><span>新品</span></div>
-                        <div class="tu"><a href=""><img src="<%=mobileResult[i].goods_img%>"></a></div>
+                        <div class="tu"><a href=""><img src="<%=helper.formatImg(mobileResult[i].goods_img, 180)%>"></a></div>
                         <div class="miaoshu">
                             <a href="#">
                                 <%=mobileResult[i].title%>

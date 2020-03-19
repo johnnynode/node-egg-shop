@@ -70,7 +70,16 @@ module.exports = appInfo => {
     // 系统配置
     config.sys = {
         pageSize: 10,
-    }
+    };
+
+    // 配置缩略图尺寸
+    config.jimpSize = [{
+        width: 180,
+        height: 180
+    }, {
+        width: 400,
+        height: 400
+    }]
 
     // add your user config here
     const userConfig = {
