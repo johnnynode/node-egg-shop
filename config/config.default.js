@@ -79,7 +79,17 @@ module.exports = appInfo => {
     }, {
         width: 400,
         height: 400
-    }]
+    }];
+
+    // 配置redis数据库，使用的是egg-redis插件
+    config.redis = {
+        client: {
+            port: 6379, // Redis port
+            host: '127.0.0.1', // Redis host
+            password: '', // 本机没有设置密码, 如有密码填写自己的密码
+            db: 0
+        }
+    }
 
     // add your user config here
     const userConfig = {
