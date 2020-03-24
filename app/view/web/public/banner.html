@@ -11,19 +11,29 @@
                         <ul>
                             <%for(var i=0;i<goodsCate.length;i++){ %>
                                 <li>
-                                    <a href="#">
+                                    <a href="/plist?cid=<%=goodsCate[i]._id%>">
                                         <%=goodsCate[i].title%>
                                     </a>
                                     <div class="pop">
                                         <ol class="cate_list clear">
                                             <%for(var j=0;j<goodsCate[i].items.length;j++){ %>
                                                 <li>
-                                                    <div class="xuangou_left">
-                                                        <a href="#">
-                                                            <div class="img fl"><img src="<%=goodsCate[i].items[j].cate_img%>" alt="<%=goodsCate[i].items[j].title%>"></div>
-                                                            <span class="fl"><%=goodsCate[i].items[j].title%></span>
-                                                        </a>
-                                                    </div>
+                                                    <%if(goodsCate[i].items[j].link){%>
+                                                        <div class="xuangou_left">
+                                                            <a href="<%=goodsCate[i].items[j].link%>">
+                                                                <div class="img fl"><img src="<%=goodsCate[i].items[j].cate_img%>" alt="<%=goodsCate[i].items[j].title%>"></div>
+                                                                <span class="fl"><%=goodsCate[i].items[j].title%></span>
+                                                            </a>
+                                                        </div>
+                                                        <%}else{%>
+                                                            <div class="xuangou_left">
+                                                                <a href="/plist?cid=<%=goodsCate[i].items[j]._id%>">
+                                                                    <div class="img fl"><img src="<%=goodsCate[i].items[j].cate_img%>" alt="<%=goodsCate[i].items[j].title%>"></div>
+                                                                    <span class="fl"><%=goodsCate[i].items[j].title%></span>
+                                                                </a>
+                                                            </div>
+
+                                                            <%}%>
                                                 </li>
                                                 <%}%>
                                         </ol>
@@ -34,12 +44,12 @@
                     </div>
                 </div>
             </li>
-
             <%for(var i=0;i<middleNav.length;i++){ %>
                 <li>
                     <a href="#" target="_blank">
                         <%=middleNav[i].title%>
                     </a>
+
                     <%if(middleNav[i].subGoods.length>0) {%>
                         <ol class="children-list clearfix">
                             <%for(var j=0;j<middleNav[i].subGoods.length;j++){ %>
@@ -59,7 +69,7 @@
     <div class="search fr">
         <form action="" method="post">
             <div class="text fl">
-                <input type="text" class="shuru" placeholder="小米6&nbsp;小米MIX现货">
+                <input type="text" class="shuru" placeholder="网仹6&nbsp;网仹MIX现货">
             </div>
             <div class="submit fl">
                 <input type="submit" class="sousuo" value="搜索" />

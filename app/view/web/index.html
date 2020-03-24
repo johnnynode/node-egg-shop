@@ -1,4 +1,5 @@
 <% include  ./public/header.html%>
+    <!--end header -->
 
     <!-- start banner_x -->
     <div class="banner_x center">
@@ -9,20 +10,20 @@
             <div class="ad_top fl"></div>
         </a>
         <div class="nav fl">
-            <ul class="clearfix fr" id="nav_list">
+            <ul class="clearfix" id="nav_list">
                 <%for(var i=0;i<middleNav.length;i++){ %>
                     <li>
-                        <a href="<%=middleNav[i].link%>" <% if(middleNav[i].is_opennew==2){%>target="_blank" <%}%>>
+                        <a href="#" target="_blank">
                             <%=middleNav[i].title%>
                         </a>
                         <%if(middleNav[i].subGoods.length>0) {%>
                             <ol class="children-list clearfix">
                                 <%for(var j=0;j<middleNav[i].subGoods.length;j++){ %>
                                     <li>
-                                        <a href="<%=middleNav[i].subGoods[j].link%>" <% if(middleNav[i].is_opennew==2){%>target="_blank" <%}%>>
-                                            <img src="<%=middleNav[i].subGoods[j].goods_img%>" />
-                                            <p><%=middleNav[i].subGoods[j].price%></p>
-                                        </a>
+                                        <a href="#">
+													<img src="<%=helper.formatImg(middleNav[i].subGoods[j].goods_img,180)%>" />
+													<p><%=middleNav[i].subGoods[j].price%></p>
+												</a>
                                     </li>
                                     <%}%>
                             </ol>
@@ -31,7 +32,6 @@
                     <%} %>
             </ul>
         </div>
-
         <div class="search fr">
             <form action="" method="post">
                 <div class="text fl">
@@ -53,19 +53,29 @@
             <ul>
                 <%for(var i=0;i<goodsCate.length;i++){ %>
                     <li>
-                        <a href="#">
+                        <a href="/plist?cid=<%=goodsCate[i]._id%>">
                             <%=goodsCate[i].title%>
                         </a>
                         <div class="pop">
                             <ol class="cate_list clear">
                                 <%for(var j=0;j<goodsCate[i].items.length;j++){ %>
                                     <li>
-                                        <div class="xuangou_left">
-                                            <a href="#">
-                                                <div class="img fl"><img src="<%=goodsCate[i].items[j].cate_img%>" alt="<%=goodsCate[i].items[j].title%>"></div>
-                                                <span class="fl"><%=goodsCate[i].items[j].title%></span>
-                                            </a>
-                                        </div>
+                                        <!-- 对配置link的进行处理 -->
+                                        <%if(goodsCate[i].items[j].link){%>
+                                            <div class="xuangou_left">
+                                                <a href="<%=goodsCate[i].items[j].link%>">
+                                                    <div class="img fl"><img src="<%=goodsCate[i].items[j].cate_img%>" alt="<%=goodsCate[i].items[j].title%>"></div>
+                                                    <span class="fl"><%=goodsCate[i].items[j].title%></span>
+                                                </a>
+                                            </div>
+                                            <%}else{%>
+                                                <div class="xuangou_left">
+                                                    <a href="/plist?cid=<%=goodsCate[i].items[j]._id%>">
+                                                        <div class="img fl"><img src="<%=goodsCate[i].items[j].cate_img%>" alt="<%=goodsCate[i].items[j].title%>"></div>
+                                                        <span class="fl"><%=goodsCate[i].items[j].title%></span>
+                                                    </a>
+                                                </div>
+                                                <%}%>
                                     </li>
                                     <%}%>
                             </ol>
@@ -123,6 +133,7 @@
             <a href=""><img src="/public/web/image/pinghengche.jpg" alt=""></a>
         </div>
         <div class="clear"></div>
+
     </div>
     <!-- end banner -->
 
@@ -156,7 +167,7 @@
             </div>
             <div class="mingxing fl">
                 <div class="sub_mingxing">
-                    <a href=""><img src="/public/web/image/pinpai4.png" alt=""></a>
+                    <a href=""><img src="/public/web/image/pinpai3.png" alt=""></a>
                 </div>
                 <div class="pinpai"><a href="">网仹电视3s 55英寸</a></div>
                 <div class="youhui">5月9日，下单立减200元</div>
@@ -181,11 +192,12 @@
             <div class="category_item_left">
                 <img src="/public/web/image/shouji.jpg" alt="手机">
             </div>
+
             <div class="category_item_right">
                 <%for(var i=0;i<mobileResult.length;i++){ %>
                     <div class="hot fl">
                         <div class="xinpin"><span>新品</span></div>
-                        <div class="tu"><a href=""><img src="<%=helper.formatImg(mobileResult[i].goods_img, 180) %>"></a></div>
+                        <div class="tu"><a href=""><img src="<%=helper.formatImg(mobileResult[i].goods_img,180)%>"></a></div>
                         <div class="miaoshu">
                             <a href="#">
                                 <%=mobileResult[i].title%>
@@ -317,7 +329,7 @@
         </div>
     </div>
     <footer class="mt20 center">
-        <div class="mt20">网仹商城|系统|网聊|多看书城|网仹路由器|视频电话|网仹天猫店|网仹淘宝直营店|网仹网盟|网仹移动|隐私政策|Select Region</div>
+        <div class="mt20">网仹商城|MIUI|米聊|多看书城|网仹路由器|视频电话|网仹天猫店|网仹淘宝直营店|网仹网盟|网仹移动|隐私政策|Select Region</div>
         <div>©mi.com 京ICP证110507号 京ICP备10046444号 京公网安备11010802020134号 京网文[2014]0059-0009号</div>
         <div>违法和不良信息举报电话：185-0130-1238，本网站所列数据，除特殊说明，所有数据均出自我司实验室测试</div>
     </footer>
