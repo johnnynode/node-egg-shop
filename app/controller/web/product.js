@@ -43,7 +43,44 @@ class ProductController extends Controller {
     }
 
     async info() {
-        await this.ctx.render('web/product_info.html');
+        // 1、获取商品信息
+        let id = this.ctx.request.query.id;
+        let productInfo = await this.ctx.model.Goods.find({ "_id": id });
+        // console.log(productInfo);
+
+        //2、关联商品
+        let relationGoodsIds = this.ctx.service.goods.strToArray(productInfo[0].relation_goods);
+        let relationGoods = await this.ctx.model.Goods.find({
+            $or: relationGoodsIds
+        }, 'goods_version shop_price');
+
+        //3、获取关联颜色
+        let goodsColorIds = this.ctx.service.goods.strToArray(productInfo[0].goods_color);
+        let goodsColor = await this.ctx.model.GoodsColor.find({
+            $or: goodsColorIds
+        });
+
+        //4、关联赠品
+        let goodsGiftIds = this.ctx.service.goods.strToArray(productInfo[0].goods_gift);
+        let goodsGift = await this.ctx.model.Goods.find({
+            $or: goodsGiftIds
+        });
+
+        //5、关联配件
+        let goodsFittingIds = this.ctx.service.goods.strToArray(productInfo[0].goods_fitting);
+        let goodsFitting = await this.ctx.model.Goods.find({
+            $or: goodsFittingIds
+        });
+
+        //6、当前商品关联的图片
+        // console.log(goodsColor);
+        await this.ctx.render('web/product_info.html', {
+            productInfo: productInfo[0],
+            relationGoods: relationGoods,
+            goodsColor: goodsColor,
+            goodsGift: goodsGift,
+            goodsFitting: goodsFitting
+        });
     }
 }
 

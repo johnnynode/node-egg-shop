@@ -55,6 +55,31 @@ class GoodsService extends Service {
             return [];
         }
     }
+
+    /*
+      把商品id的字符串转化成数组
+      @param {String} str - ids的字符串    
+      5bc6a8c777dc3d1c849fba47，5be3f1d322f56e2fc8a694f2,5be940719567312f28240bff
+      [{_id:5bc6a8c777dc3d1c849fba47},{_id:5be3f1d322f56e2fc8a694f2}]
+    */
+    strToArray(str) {
+        try {
+            let tempIds = [];
+            if (str) {
+                let idsArr = str.replace(/，/g, ',').split(',');
+                for (let i = 0; i < idsArr.length; i++) {
+                    tempIds.push({
+                        "_id": this.app.mongoose.Types.ObjectId(idsArr[i])
+                    });
+                }
+            } else {
+                tempIds = [{ "1": -1 }]
+            }
+            return tempIds;
+        } catch (error) {
+            return [{ "1": -1 }]; //返回一个不成立的条件
+        }
+    }
 }
 
 module.exports = GoodsService;
