@@ -11,6 +11,7 @@ module.exports = app => {
     router.get('/', webMiddleware, controller.web.index.index);
     router.get('/plist', webMiddleware, controller.web.product.list);
     router.get('/pinfo', webMiddleware, controller.web.product.info);
+    router.get('/getImagelist', webMiddleware, controller.web.product.getImagelist);
     router.get('/cart', webMiddleware, controller.web.flow.cart);
 
     // 用户中心

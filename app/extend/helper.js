@@ -2,6 +2,7 @@
 
 const sd = require('silly-datetime');
 const path = require('path');
+const showdown = require('showdown');
 
 module.exports = {
     // parmas 时间戳 13位的时间戳
@@ -16,5 +17,11 @@ module.exports = {
         }
         height = height || width;
         return dir + '_' + width + 'x' + height + path.extname(dir);
+    },
+
+    // 商品详情中用于格式化商品 html
+    formatAttr(str) {
+        var converter = new showdown.Converter();
+        return converter.makeHtml(str);
     }
 };

@@ -192,18 +192,19 @@ class GoodsController extends BaseController {
 
             for (var i = 0; i < attr_value_list.length; i++) {
                 // 查询goods_type_attribute
-                if (attr_value_list[i]) {
-                    const goodsTypeAttributeResutl = await this.ctx.model.GoodsTypeAttribute.find({ _id: attr_id_list[i] });
-                    const goodsAttrRes = new this.ctx.model.GoodsAttr({
-                        goods_id: result._id,
-                        cate_id: formFields.cate_id,
-                        attribute_id: attr_id_list[i],
-                        attribute_type: goodsTypeAttributeResutl[0].attr_type,
-                        attribute_title: goodsTypeAttributeResutl[0].title,
-                        attribute_value: attr_value_list[i],
-                    });
-                    await goodsAttrRes.save();
-                }
+                // 下面这个if, 是比较严格的判断，可以不用，让用户随便写，填写什么，提交什么，不填也可以
+                // if (attr_value_list[i]) {
+                const goodsTypeAttributeResutl = await this.ctx.model.GoodsTypeAttribute.find({ _id: attr_id_list[i] });
+                const goodsAttrRes = new this.ctx.model.GoodsAttr({
+                    goods_id: result._id,
+                    cate_id: formFields.cate_id,
+                    attribute_id: attr_id_list[i],
+                    attribute_type: goodsTypeAttributeResutl[0].attr_type,
+                    attribute_title: goodsTypeAttributeResutl[0].title,
+                    attribute_value: attr_value_list[i],
+                });
+                await goodsAttrRes.save();
+                // }
             }
         }
 
@@ -232,7 +233,7 @@ class GoodsController extends BaseController {
         // 修改商品的id
         const goods_id = parts.field.id;
         // 特别处理商品颜色
-        if(!formFields.goods_color) {
+        if (!formFields.goods_color) {
             formFields.goods_color = '';
         } else {
             if (typeof(formFields.goods_color) !== 'string') {
@@ -258,7 +259,7 @@ class GoodsController extends BaseController {
 
         // 修改商品类型数据    1、删除以前的类型数据     2、重新增加新的商品类型数据
         // 1、删除以前的类型数据
-        await this.ctx.model.GoodsAttr.deleteOne({ goods_id });
+        await this.ctx.model.GoodsAttr.deleteMany({ goods_id });
         // 2、重新增加新的商品类型数据
         let attr_value_list = formFields.attr_value_list;
         let attr_id_list = formFields.attr_id_list;
