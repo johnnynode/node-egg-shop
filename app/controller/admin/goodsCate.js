@@ -55,7 +55,6 @@ class GoodsCateController extends BaseController {
 
             // 上传图片成功以后生成缩略图
             this.service.tools.jimpImg(target);
-
         }
         // console.log(parts.field.pid);
         if (parts.field.pid !== '0') {

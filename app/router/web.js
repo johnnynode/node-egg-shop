@@ -9,10 +9,14 @@ module.exports = app => {
     const webMiddleware = app.middleware.webauth({}, app);
 
     router.get('/', webMiddleware, controller.web.index.index);
-    router.get('/plist', webMiddleware, controller.web.product.list);
-    router.get('/pinfo', webMiddleware, controller.web.product.info);
-    router.get('/getImagelist', webMiddleware, controller.web.product.getImagelist);
+    router.get('/plist', webMiddleware, controller.web.product.list); // 商品列表
+    router.get('/pinfo', webMiddleware, controller.web.product.info); // 商品详情
+    router.get('/getImagelist', webMiddleware, controller.web.product.getImagelist); // 商品详情-图片列表
+
+    // 购物车
     router.get('/cart', webMiddleware, controller.web.flow.cart);
+    router.get('/addCart', controller.web.cart.addCart);
+    router.get('/cartList', controller.web.cart.cartList);
 
     // 用户中心
     router.get('/login', controller.web.user.login);

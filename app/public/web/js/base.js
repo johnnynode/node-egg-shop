@@ -22,12 +22,10 @@
         },
         initNavSlide: function() {
             $("#nav_list>li").hover(function() {
-
                 $(this).find('.children-list').show();
             }, function() {
                 $(this).find('.children-list').hide();
             })
-
         },
         // 商品详情图片颜色的选择
         initColorSelect() {

@@ -79,6 +79,7 @@ class GoodsController extends BaseController {
         ]);
         // 获取修改的商品
         const goodsResult = await this.ctx.model.Goods.find({ _id: id });
+        let goodsColorResult = []; // 生命颜色列表
         if (goodsResult[0].goods_color.length) {
             const colorArrTemp = goodsResult[0].goods_color.split(',');
             // console.log(colorArrTemp);
@@ -86,11 +87,9 @@ class GoodsController extends BaseController {
             colorArrTemp.forEach(value => {
                 goodsColorArr.push({ _id: value });
             });
-            var goodsColorReulst = await this.ctx.model.GoodsColor.find({
+            goodsColorResult = await this.ctx.model.GoodsColor.find({
                 $or: goodsColorArr,
             });
-        } else {
-            var goodsColorReulst = [];
         }
 
         // 获取规格信息
@@ -132,7 +131,7 @@ class GoodsController extends BaseController {
             goods: goodsResult[0],
             goodsAtts: goodsAttsStr,
             goodsImage: goodsImageResult,
-            goodsColor: goodsColorReulst,
+            goodsColor: goodsColorResult,
             prevPage: this.ctx.state.prevPage,
         });
     }
@@ -154,6 +153,8 @@ class GoodsController extends BaseController {
             files = Object.assign(files, {
                 [fieldname]: dir.saveDir,
             });
+            // 上传图片成功以后生成缩略图
+            this.service.tools.jimpImg(target);
         }
 
         const formFields = Object.assign(files, parts.field);
@@ -172,7 +173,7 @@ class GoodsController extends BaseController {
                 goods_image_list = new Array(goods_image_list);
             }
 
-            for (var i = 0; i < goods_image_list.length; i++) {
+            for (let i = 0; i < goods_image_list.length; i++) {
                 const goodsImageRes = new this.ctx.model.GoodsImage({
                     goods_id: result._id,
                     img_url: goods_image_list[i],
@@ -184,23 +185,23 @@ class GoodsController extends BaseController {
         let attr_value_list = formFields.attr_value_list;
         let attr_id_list = formFields.attr_id_list;
         if (result._id && attr_id_list && attr_value_list) {
-            // 解决只有一个属性的时候存在的bug
+            // 对只有一个属性进行数组转换
             if (typeof(attr_id_list) === 'string') {
                 attr_id_list = new Array(attr_id_list);
                 attr_value_list = new Array(attr_value_list);
             }
 
-            for (var i = 0; i < attr_value_list.length; i++) {
+            for (let i = 0; i < attr_value_list.length; i++) {
                 // 查询goods_type_attribute
                 // 下面这个if, 是比较严格的判断，可以不用，让用户随便写，填写什么，提交什么，不填也可以
                 // if (attr_value_list[i]) {
-                const goodsTypeAttributeResutl = await this.ctx.model.GoodsTypeAttribute.find({ _id: attr_id_list[i] });
+                const goodsTypeAttributeResult = await this.ctx.model.GoodsTypeAttribute.find({ _id: attr_id_list[i] });
                 const goodsAttrRes = new this.ctx.model.GoodsAttr({
                     goods_id: result._id,
                     cate_id: formFields.cate_id,
                     attribute_id: attr_id_list[i],
-                    attribute_type: goodsTypeAttributeResutl[0].attr_type,
-                    attribute_title: goodsTypeAttributeResutl[0].title,
+                    attribute_type: goodsTypeAttributeResult[0].attr_type,
+                    attribute_title: goodsTypeAttributeResult[0].title,
                     attribute_value: attr_value_list[i],
                 });
                 await goodsAttrRes.save();
@@ -228,6 +229,8 @@ class GoodsController extends BaseController {
             files = Object.assign(files, {
                 [fieldname]: dir.saveDir,
             });
+            // 上传图片成功以后生成缩略图
+            this.service.tools.jimpImg(target);
         }
         let formFields = Object.assign(files, parts.field);
         // 修改商品的id
@@ -248,7 +251,7 @@ class GoodsController extends BaseController {
             if (typeof(goods_image_list) === 'string') {
                 goods_image_list = new Array(goods_image_list);
             }
-            for (var i = 0; i < goods_image_list.length; i++) {
+            for (let i = 0; i < goods_image_list.length; i++) {
                 const goodsImageRes = new this.ctx.model.GoodsImage({
                     goods_id,
                     img_url: goods_image_list[i],
@@ -271,16 +274,16 @@ class GoodsController extends BaseController {
                 attr_value_list = new Array(attr_value_list);
             }
 
-            for (var i = 0; i < attr_value_list.length; i++) {
+            for (let i = 0; i < attr_value_list.length; i++) {
                 // 查询goods_type_attribute
                 if (attr_value_list[i]) {
-                    const goodsTypeAttributeResutl = await this.ctx.model.GoodsTypeAttribute.find({ _id: attr_id_list[i] });
+                    const goodsTypeAttributeResult = await this.ctx.model.GoodsTypeAttribute.find({ _id: attr_id_list[i] });
                     const goodsAttrRes = new this.ctx.model.GoodsAttr({
                         goods_id,
                         cate_id: formFields.cate_id,
                         attribute_id: attr_id_list[i],
-                        attribute_type: goodsTypeAttributeResutl[0].attr_type,
-                        attribute_title: goodsTypeAttributeResutl[0].title,
+                        attribute_type: goodsTypeAttributeResult[0].attr_type,
+                        attribute_title: goodsTypeAttributeResult[0].title,
                         attribute_value: attr_value_list[i],
                     });
                     await goodsAttrRes.save();
@@ -297,7 +300,7 @@ class GoodsController extends BaseController {
         const cate_id = this.ctx.request.query.cate_id;
         // 注意 await
         const goodsTypeAttribute = await this.ctx.model.GoodsTypeAttribute.find({ cate_id });
-        console.log(goodsTypeAttribute);
+        // console.log(goodsTypeAttribute);
         this.ctx.body = {
             result: goodsTypeAttribute,
         };
@@ -366,7 +369,7 @@ class GoodsController extends BaseController {
     async changeGoodsImageColor() {
         let color_id = this.ctx.request.body.color_id;
         const goods_image_id = this.ctx.request.body.goods_image_id;
-        console.log(this.ctx.request.body);
+        // console.log(this.ctx.request.body);
         if (color_id) {
             color_id = this.app.mongoose.Types.ObjectId(color_id);
         }

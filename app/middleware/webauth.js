@@ -26,7 +26,6 @@ module.exports = (options, app) => {
                         "pid": '0'
                     }
                 }
-
             ])
             await ctx.service.cache.set('index_goods_cate', goodsCate, 60 * 60);
         }
@@ -35,10 +34,10 @@ module.exports = (options, app) => {
         let middleNav = await ctx.service.cache.get('index_middle_nav');
         if (!middleNav) {
             middleNav = await ctx.model.Nav.find({ "position": 2 });
-            middleNav = JSON.parse(JSON.stringify(middleNav)); //1、不可扩展对象
+            middleNav = JSON.parse(JSON.stringify(middleNav)); // 处理不可扩展对象
             for (let i = 0; i < middleNav.length; i++) {
                 if (middleNav[i].relation) {
-                    //数据库查找relation对应的商品            
+                    //数据库查找relation对应的商品
                     try {
                         let tempArr = middleNav[i].relation.replace(/，/g, ',').split(',');
                         let tempRelationIds = [];
@@ -63,8 +62,10 @@ module.exports = (options, app) => {
         }
 
         ctx.state.topNav = topNav;
-        ctx.state.goodsCate = goodsCate;
         ctx.state.middleNav = middleNav;
+        ctx.state.goodsCate = goodsCate;
+        console.log('==========2=======');
+        console.log(JSON.stringify(middleNav));
 
         // 最后的next一定要加上
         await next();

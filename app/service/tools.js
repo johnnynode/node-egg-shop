@@ -34,20 +34,21 @@ class ToolsService extends Service {
         return d.getTime();
     }
 
+    // 上传文件
     async getUploadFile(filename) {
         // 1、获取当前日期  20200220
         const day = sd.format(new Date(), 'YYYYMMDD');
         // 2、创建图片保存的路径
         const dir = path.join(this.config.uploadDir, day);
         await mkdirp(dir); // 创建路径
-        const d = await this.getTime() + '_' + Math.random() + '_'; // 毫秒数 + 随机数
+        const d = await this.getTime() + '_' + (Math.random() + '').substr(2); // 毫秒数 + 随机数(截取0.之后的数字，0.9641773493321022 => 9641773493321022) 
         // 返回图片保存的路径
         // const uploadDir = path.join(dir, d + path.basename(filename)); // 保留文件名
         const uploadDir = path.join(dir, d + path.extname(filename)); // 只保留后缀
-        // app\public\admin\upload\20200220\1536895331444_xxxx_xxx.png
+        // app\public\admin\upload\20200220\1536895331444_xxxxxxxxxx.png
         return {
             uploadDir,
-            saveDir: uploadDir.slice(3).replace(/\\/g, '/'), // 保存的是  /public/admin/upload/20200220/1536895331444_xxxx_xxx.png 这种地址
+            saveDir: uploadDir.slice(3).replace(/\\/g, '/'), // 保存的是  /public/admin/upload/20200220/1536895331444_xxxxxxx.png 这种地址
         };
     }
 
@@ -56,12 +57,14 @@ class ToolsService extends Service {
         //上传图片成功以后生成缩略图
         Jimp.read(target, (err, lenna) => {
             if (err) throw err;
-            for (var i = 0; i < this.config.jimpSize.length; i++) {
-                var w = this.config.jimpSize[i].width;
-                var h = this.config.jimpSize[i].height;
+            for (let i = 0; i < this.config.jimpSize.length; i++) {
+                let w = this.config.jimpSize[i].width;
+                let h = this.config.jimpSize[i].height;
+                let extname = path.extname(target); // 获取后缀名
+                let picPath = target.substr(0, target.indexOf(extname)) + '_' + w + 'x' + h + extname; // 重新拼接
                 lenna.resize(w, h) // resize
-                    .quality(90) // set JPEG quality                  
-                    .write(target + '_' + w + 'x' + h + path.extname(target));
+                    .quality(90) // set JPEG quality
+                    .write(picPath);
             }
         });
     }

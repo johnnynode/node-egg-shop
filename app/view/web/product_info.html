@@ -48,7 +48,7 @@
                             <div class="ft20 ml20 mt20 clear">选择颜色</div>
                             <div class="xzbb ml20 mt10 clearfix" id="color_list">
                                 <%for(var i=0;i<goodsColor.length;i++){%>
-                                    <div class="banben fl">
+                                    <div class="banben fl <%if(i==0){%>active <%}%>" goods_id="<%=productInfo._id%>" color_id="<%=goodsColor[i]._id%>">
                                         <a>
 								<span class="yuandian" style="background:<%=goodsColor[i].color_value%>"></span>
 								<span class="yanse"><%=goodsColor[i].color_name%></span>
@@ -66,11 +66,22 @@
                                     <div class="bot mt20 ft20 ftbc">总计：2499元</div>
                                 </div>
                                 <div class="xiadan ml20 mt20">
-                                    <input class="jrgwc" type="button" name="jrgwc" value="加入购物车" />
+                                    <input class="jrgwc" type="button" name="jrgwc" value="加入购物车" id="addCart" />
                                 </div>
             </div>
             <div class="clear"></div>
         </div>
+
+        <script>
+            $(function() {
+                // 加入购物车逻辑
+                $('#addCart').click(function() {
+                    var goods_id = $('#color_list .active').attr('goods_id');
+                    var color_id = $('#color_list .active').attr('color_id');
+                    location.href = "/addCart?goods_id=" + goods_id + '&color_id=' + color_id;
+                });
+            })
+        </script>
 
         <div class="container clearfix">
             <div class="c_left">
