@@ -14,9 +14,14 @@ module.exports = app => {
     router.get('/getImagelist', webMiddleware, controller.web.product.getImagelist); // 商品详情-图片列表
 
     // 购物车
-    router.get('/cart', webMiddleware, controller.web.flow.cart);
     router.get('/addCart', controller.web.cart.addCart);
-    router.get('/cartList', controller.web.cart.cartList);
+    router.get('/addCartSuccess', controller.web.cart.addCartSuccess);
+    router.get('/cart', controller.web.cart.cartList);
+    router.get('/incCart', controller.web.cart.incCart);
+    router.get('/decCart', controller.web.cart.decCart);
+    router.get('/changeOneCart', controller.web.cart.changeOneCart);
+    router.get('/changeAllCart', controller.web.cart.changeAllCart);
+    router.get('/removeCart', controller.web.cart.removeCart);
 
     // 用户中心
     router.get('/login', controller.web.user.login);

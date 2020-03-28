@@ -4,6 +4,8 @@
         init: function() {
             this.initSwiper();
             this.initNavSlide();
+            this.initContentTabs();
+            this.initColorSelect();
         },
         initSwiper: function() {
             new Swiper('.swiper-container', {
@@ -50,7 +52,17 @@
                     }
                 })
             })
-        }
+        },
+        // 商品详情规格页签
+        initContentTabs: function() {
+            $('.detail_info .detail_info_item:first').addClass('active');
+            $('.detail_list li:first').addClass('active');
+            $('.detail_list li').click(function() {
+                var index = $(this).index();
+                $(this).addClass('active').siblings().removeClass('active');
+                $('.detail_info .detail_info_item').removeClass('active').eq(index).addClass('active');
+            })
+        },
     }
 
     $(function() {

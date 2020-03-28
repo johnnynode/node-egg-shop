@@ -1,0 +1,161 @@
+/* 加入购物车成功 */
+
+.buy-succ-box {
+    margin-bottom: 26px;
+    padding: 40px 0 40px 0;
+    height: 68px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.buy-succ-box .goods-content {
+    float: left;
+}
+
+.buy-succ-box .actions {
+    float: right;
+}
+
+.buy-succ-box .goods-img {
+    float: left;
+    width: 64px;
+    height: 64px;
+}
+
+.buy-succ-box .goods-info {
+    float: left;
+    margin-left: 20px;
+}
+
+.buy-succ-box .goods-info h3 {
+    margin: 0;
+    color: #424242;
+    font-size: 24px;
+    font-weight: normal;
+    margin-top: 3px;
+}
+
+.buy-succ-box .goods-info .name,
+.buy-succ-box .goods-info .price {
+    margin-right: 15px;
+    font-size: 14px;
+    color: #757575;
+}
+
+.buy-succ-box .actions .btn {
+    width: 180px;
+    margin-left: 12px;
+    margin-top: 5px;
+}
+
+.btn-line-gray {
+    border-color: #b0b0b0;
+    background: #fff;
+    color: #757575;
+}
+
+.btn {
+    display: inline-block;
+    *zoom: 1;
+    *display: inline;
+    width: 158px;
+    height: 38px;
+    padding: 0;
+    margin: 0;
+    border: 1px solid #b0b0b0;
+    font-size: 14px;
+    line-height: 38px;
+    text-align: center;
+    color: #b0b0b0;
+    cursor: pointer;
+    -webkit-transition: all .4s;
+    transition: all .4s;
+}
+
+.btn-primary {
+    background: #ff6700;
+    border-color: #ff6700;
+    color: #fff;
+}
+
+.xm-recommend-title {
+    text-align: center;
+    padding: 20px 0px;
+    background-color: #f5f5f5;
+    margin-bottom: 10px;
+}
+
+.xm-recommend-title span {
+    position: static;
+    margin-bottom: 20px;
+    width: 100%;
+    height: auto;
+    font-size: 28px;
+}
+
+
+/* 购物车页面样式*/
+
+.table {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 20px;
+    border-collapse: collapse;
+}
+
+.table th {
+    background: #EEEEEE;
+    height: 60px;
+    border: 1px solid #ddd;
+}
+
+.table td {
+    height: 100px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+.table td .col_pic {
+    width: 60px;
+    height: 80px;
+    line-height: 80px;
+    float: left;
+}
+
+.table td .col_pic img {
+    width: 60px;
+}
+
+.table td .col_title {
+    float: left;
+    margin-left: 60px;
+    height: 80px;
+    line-height: 80px;
+}
+
+.cart_number {
+    width: 120px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    margin: 0 auto;
+}
+
+.cart_number .input_left,
+.cart_number .input_right {
+    width: 80px;
+    height: 36px;
+    line-height: 36px;
+    text-align: center;
+    background: #f8f8f8;
+    border: 1px solid #f8f8f8;
+    cursor: pointer;
+}
+
+.cart_number .input_center input {
+    border: 1px solid #f8f8f8;
+    height: 36px;
+    line-height: 36px;
+    width: 100%;
+    text-align: center;
+}

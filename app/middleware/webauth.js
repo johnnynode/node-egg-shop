@@ -64,8 +64,6 @@ module.exports = (options, app) => {
         ctx.state.topNav = topNav;
         ctx.state.middleNav = middleNav;
         ctx.state.goodsCate = goodsCate;
-        console.log('==========2=======');
-        console.log(JSON.stringify(middleNav));
 
         // 最后的next一定要加上
         await next();
