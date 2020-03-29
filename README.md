@@ -140,6 +140,11 @@ limit(10). sort('-occupation'). select('name occupation'). exec(callback);
 
 插件文档：http://jqpaginator.keenwon.com/
 
+### 前台用户注册流程
+
+- 填入手机号，图形验证码，进行前置校验程序
+- 发送验证码，手机获取的验证码和服务器验证码做比较，成功则进入下一步，否则提示错误信息
+- 设置账户密码，服务器端生成一条用户数据
 
 ## QuickStart
 

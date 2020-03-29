@@ -11,16 +11,16 @@ const Service = require('egg').Service;
 class ToolsService extends Service {
 
     // 生成验证码
-    async captcha() {
+    async captcha(w, h) {
+        let width = w ? w : 100;
+        let height = h ? h : 32;
         const captcha = svgCaptcha.create({
             size: 4,
             fontSize: 50,
-            width: 100,
-            height: 40,
+            width: width,
+            height: height,
             background: '#cc9966',
         });
-
-        this.ctx.session.code = captcha.text; /* 验证码上面的信息*/
         return captcha;
     }
 
@@ -29,15 +29,23 @@ class ToolsService extends Service {
         return md5(md5(md5(str)));
     }
 
+    // 获取当前时间戳
     getTime() {
-        const d = new Date();
+        let d = new Date();
         return d.getTime();
+    }
+
+    // 获取当前日期
+    getDay() {
+        let day = sd.format(new Date(), 'YYYYMMDD');
+        return day;
     }
 
     // 上传文件
     async getUploadFile(filename) {
         // 1、获取当前日期  20200220
-        const day = sd.format(new Date(), 'YYYYMMDD');
+        // const day = sd.format(new Date(), 'YYYYMMDD');
+        const day = this.getDay();
         // 2、创建图片保存的路径
         const dir = path.join(this.config.uploadDir, day);
         await mkdirp(dir); // 创建路径
@@ -67,6 +75,18 @@ class ToolsService extends Service {
                     .write(picPath);
             }
         });
+    }
+
+    // 获取随机数字 建议传递4或6 用于短信验证码
+    async getRandomNum(num) {
+        if (typeof num !== 'number') {
+            return -1;
+        }
+        let random_str = '';
+        for (let i = 0; i < num; i++) {
+            random_str += Math.floor(Math.random() * 10);
+        }
+        return random_str;
     }
 }
 

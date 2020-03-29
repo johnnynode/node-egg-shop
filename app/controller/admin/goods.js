@@ -14,7 +14,7 @@ class GoodsController extends BaseController {
         if (keyword) {
             json = Object.assign({ title: { $regex: new RegExp(keyword) } });
         }
-        const pageSize = this.config.sys.pageSize;
+        const pageSize = this.config.pageSize;
         // 获取当前数据表的总数量
         const totalNum = await this.ctx.model.Goods.find(json).count();
         const goodsResult = await this.ctx.model.Goods.find(json).skip((page - 1) * pageSize).limit(pageSize);

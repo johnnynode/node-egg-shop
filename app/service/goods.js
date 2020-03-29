@@ -47,7 +47,7 @@ class GoodsService extends Service {
                     break;
             }
 
-            let limitSize = limit || this.config.sys.pageSize; // 设置分页
+            let limitSize = limit || this.config.pageSize; // 设置分页
             return await this.ctx.model.Goods.find(findJson, 'title shop_price goods_img sub_title').limit(limitSize);
 
         } catch (e) {

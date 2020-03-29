@@ -5,7 +5,7 @@ const BaseController = require('./base.js');
 class NavController extends BaseController {
     async index() {
         const page = this.ctx.request.query.page || 1;
-        const pageSize = this.config.sys.pageSize;
+        const pageSize = this.config.pageSize;
         // 获取当前数据表的总数量
         const totalNum = await this.ctx.model.Nav.find({}).count();
         // 分页查询

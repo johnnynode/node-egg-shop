@@ -67,10 +67,14 @@ module.exports = appInfo => {
         },
     };
 
-    // 系统配置
-    config.sys = {
-        pageSize: 10,
-    };
+    // 分页配置
+    config.pageSize = 10;
+
+    // 发送短信的 apiKey
+    config.sendMsg = {
+        yunApiKey: '', // 填入运营商提供的key (项目使用的是云片，当然后期可以切换多个)
+        enable: false, // 是否开启发送短信，默认否，调试模式，开启后将走发送短信的流程
+    }
 
     // 配置缩略图尺寸
     config.jimpSize = [{
