@@ -27,5 +27,14 @@ module.exports = {
     formatAttr(str) {
         const converter = new showdown.Converter();
         return converter.makeHtml(str);
+    },
+
+    // 隐藏手机号码
+    hidePhone(phone) {
+        // console.log('phone: ', phone);
+        if (!phone) {
+            return '***********';
+        }
+        return phone.substr(0, 3) + '******' + phone.substr(9);
     }
 };

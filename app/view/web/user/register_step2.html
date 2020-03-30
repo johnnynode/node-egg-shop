@@ -3,13 +3,14 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="author" content="order by dede58.com" />
     <title>用户注册</title>
     <link rel="stylesheet" href="/public/web/css/login.css" />
+
     <script src="/public/web/js/jquery-1.10.1.js"></script>
 </head>
 
 <body class="register_page">
+
     <div class="regist">
         <div class="regist_center">
             <div class="logo">
@@ -19,19 +20,27 @@
                 <h2>注册网仹账户</h2>
             </div>
             <div class="regist_main center">
-                <p>验证码已通过短信发送至<span id='phone'>111******11</span>，请输入完成验证。手机绑定是为保障用户的信息真实性和帐号安全性</p>
+                <p>验证码已通过短信发送至
+                    <%=helper.hidePhone(phone)%>，请输入完成验证。手机绑定是为保障用户的信息真实性和帐号安全性</p>
                 <br>
                 <br>
+
                 <div class="yzm">
-                    <input type="text" id="web_code" name="web_code" placeholder="请输入验证码" />
+                    <input type="hidden" id="web_code" name="web_code" value="<%=web_code%>" />
+                    <input type="hidden" id="phone" name="phone" value="<%=phone%>" />
+                    <input type="hidden" id="sign" name="sign" value="<%=sign%>" />
+                    <input type="text" id="phone_code" name="phone_code" placeholder="请输入验证码" />
+
                     <button id="sendCode">重新发送</button>
                 </div>
+
                 <div class="regist_submit">
                     <input class="submit" id="nextStep" type="button" name="submit" value="下一步">
                     <br>
                     <input class="return" id="returnButton" type="button" name="return" value="返回">
                 </div>
             </div>
+
             <script>
                 $(function() {
                     var timer = 10;
@@ -51,16 +60,45 @@
                     }
 
                     Countdown();
+
+                    //重新发送验证码
                     $("#sendCode").click(function() {
                         Countdown();
-                        alert('重新发送');
+                        var phone = $('#phone').val();
+                        var web_code = $('#web_code').val();
+                        $.get('/user/sendCode', {
+                            phone: phone,
+                            web_code: web_code
+                        }, function(response) {
+                            console.log(response);
+                            if (response.success) {
+                                alert('发送验证码成功');
+                            } else {
+                                alert(response.msg);
+                            }
+                        })
+                    })
+
+                    //验证验证码
+                    $("#nextStep").click(function(e) {
+                        var sign = $('#sign').val();
+                        var phone_code = $('#phone_code').val();
+                        $.get('/user/validatePhoneCode', {
+                            sign: sign,
+                            phone_code: phone_code
+                        }, function(response) {
+                            console.log(response);
+                            if (response.success) {
+                                location.href = "/user/registerStep3?sign=" + response.sign;
+                            } else {
+                                alert(response.msg);
+                            }
+                        })
                     })
                 })
             </script>
-
         </div>
     </div>
-
 </body>
 
 </html>

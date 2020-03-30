@@ -26,6 +26,7 @@ module.exports = app => {
     router.get('/user/registerStep1', controller.web.user.registerStep1);
     router.get('/user/sendCode', controller.web.user.sendCode);
     router.get('/user/registerStep2', controller.web.user.registerStep2);
+    router.get('/user/validatePhoneCode', controller.web.user.validatePhoneCode);
     /*
     router.get('/user/login', controller.web.user.login);
     

@@ -66,8 +66,8 @@
                 }, function(response) {
                     console.log(response);
                     if (response.success) {
-                        // 响应成功后，跳转第二步
-                        location.href = "/user/registerStep2?sign=" + response.sign + '&phone=' + phone;
+                        // 响应成功后，跳转第二步 下面的 phone用于 disable 状态下的发送短信的参数处理
+                        location.href = "/user/registerStep2?sign=" + response.sign + '&web_code=' + web_code + '&phone=' + phone;
                     } else {
                         alert(response.msg);
                     }
