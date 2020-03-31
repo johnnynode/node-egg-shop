@@ -3,6 +3,11 @@
 module.exports = (options, app) => {
     // 封装公共的请求
     return async function web(ctx, next) {
+        //全局变量
+        ctx.state.csrf = ctx.csrf;
+        //获取用户信息
+        ctx.state.userinfo = ctx.service.cookies.get('userinfo');
+
         //获取顶部导航的数据
         let topNav = await ctx.service.cache.get('index_top_nav');
         if (!topNav) {

@@ -176,14 +176,83 @@ class UserController extends Controller {
 
     //注册第三步  输入密码
     async registerStep3() {
-        await this.ctx.render('web/user/register_step3.html');
+        let isSendMsgEnable = this.config.sendMsg.enable;
+        let sign = this.ctx.request.query.sign;
+        let phone_code = this.ctx.request.query.phone_code;
+        let phone = this.ctx.request.query.phone; // 用于调试
+        let msg = this.ctx.request.query.msg || '';
+        // 调试状态下的处理
+        if (!isSendMsgEnable) {
+            return await this.ctx.render('web/user/register_step3.html', {
+                sign,
+                phone_code,
+                phone,
+                msg
+            });
+        }
+        // 正常流程
+        let add_day = await this.service.tools.getDay(); //年月日   
+        let userTempResult = await this.ctx.model.UserTemp.find({ "sign": sign, add_day: add_day });
+        if (!userTempResult.length) {
+            this.ctx.redirect('/user/registerStep1');
+        } else {
+            await this.ctx.render('web/user/register_step3.html', {
+                sign: sign,
+                phone_code: phone_code,
+                msg: msg
+            });
+        }
     }
 
-    //完成注册  post
+    //完成注册 post
     async doRegister() {
-        this.ctx.body = '完成注册';
-    }
+        let isSendMsgEnable = this.config.sendMsg.enable;
+        let sign = this.ctx.request.body.sign;
+        let phone_code = this.ctx.request.body.phone_code;
+        let phone = this.ctx.request.body.phone;
+        let add_day = await this.service.tools.getDay(); //年月日       
+        let password = this.ctx.request.body.password;
+        let rpassword = this.ctx.request.body.rpassword;
+        let ip = this.ctx.request.ip.replace(/::ffff:/, '');
 
+        if (this.ctx.session.phone_code != phone_code) {
+            //非法操作
+            return this.ctx.redirect('/user/registerStep1');
+        }
+
+        let userTempResult = await this.ctx.model.UserTemp.find({ "sign": sign, add_day: add_day });
+
+        if (isSendMsgEnable && !userTempResult.length) {
+            //非法操作
+            this.ctx.redirect('/user/registerStep1');
+        } else {
+            //传入参数正确 执行增加操作
+            if (password.length < 6 || password != rpassword) {
+                let msg = '密码不能小于6位并且密码和确认密码必须一致';
+                this.ctx.redirect('/user/registerStep3?sign=' + sign + '&phone_code=' + phone_code + '&msg=' + msg);
+            } else {
+                // 做的更安全的一些做法是将用户, 管理员登录的信息保存在一个用户表中, 登录用户名,时间,错误密码等存入新的user_log, admin_log表中 TODO
+                // 处理调试环境下的一些问题
+                phone = isSendMsgEnable ? userTempResult[0].phone : phone;
+                console.log('phone: ', phone);
+                let userModel = new this.ctx.model.User({
+                        phone,
+                        password: await this.service.tools.md5(password),
+                        last_ip: ip
+                    })
+                    //保存用户
+                let userReuslt = await userModel.save();
+                if (userReuslt) {
+                    //获取用户信息
+                    let userinfo = await this.ctx.model.User.find({ phone }, '_id phone last_ip add_time email status')
+                        //用户注册成功以后默认登录
+                        //cookies 安全 加密
+                    this.service.cookies.set('userinfo', userinfo[0]);
+                    this.ctx.redirect('/');
+                }
+            }
+        }
+    }
 }
 
 module.exports = UserController;

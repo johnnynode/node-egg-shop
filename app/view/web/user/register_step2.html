@@ -83,13 +83,14 @@
                     $("#nextStep").click(function(e) {
                         var sign = $('#sign').val();
                         var phone_code = $('#phone_code').val();
+                        var phone = $('#phone').val(); // 用于调试环境
                         $.get('/user/validatePhoneCode', {
                             sign: sign,
                             phone_code: phone_code
                         }, function(response) {
                             console.log(response);
                             if (response.success) {
-                                location.href = "/user/registerStep3?sign=" + response.sign;
+                                location.href = "/user/registerStep3?sign=" + response.sign + '&phone_code=' + phone_code + '&phone=' + phone;
                             } else {
                                 alert(response.msg);
                             }

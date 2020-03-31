@@ -22,16 +22,16 @@ module.exports = app => {
     router.get('/changeAllCart', controller.web.cart.changeAllCart);
     router.get('/removeCart', controller.web.cart.removeCart);
 
-    // 用户相关
-    router.get('/user/registerStep1', controller.web.user.registerStep1);
-    router.get('/user/sendCode', controller.web.user.sendCode);
-    router.get('/user/registerStep2', controller.web.user.registerStep2);
-    router.get('/user/validatePhoneCode', controller.web.user.validatePhoneCode);
+    // 用户相关 如果存在用户信息，一些接口和路由可以在中间件中进行一些处理屏蔽 todo
+    router.get('/user/registerStep1', webMiddleware, controller.web.user.registerStep1);
+    router.get('/user/sendCode', webMiddleware, controller.web.user.sendCode);
+    router.get('/user/registerStep2', webMiddleware, controller.web.user.registerStep2);
+    router.get('/user/validatePhoneCode', webMiddleware, controller.web.user.validatePhoneCode);
+    router.get('/user/registerStep3', webMiddleware, controller.web.user.registerStep3);
+    router.post('/user/doRegister', webMiddleware, controller.web.user.doRegister);
+
     /*
     router.get('/user/login', controller.web.user.login);
-    
-    router.get('/user/registerStep3', controller.web.user.registerStep3);
-    
     router.get('/user', controller.web.user.welcome); // 用户中心
     router.get('/user/order', controller.web.user.order);
     */

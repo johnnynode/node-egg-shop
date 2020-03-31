@@ -37,7 +37,7 @@
                 <div class="privacy_box">
                     <div class="msg">
                         <label class="n_checked now select-privacy">
-								<input type="checkbox" checked="true" /> 注册帐号即表示您同意并愿意遵守Egg网仹 <a href="#" class="inspect_link " title="用户协议" target="_blank">用户协议</a>和<a href="#" class="inspect_link privacy_link" title=" 隐私政策 " target="_blank"> 隐私政策 </a>
+								注册帐号即表示您同意并愿意遵守Egg网仹 <a href="#" class="inspect_link " title="用户协议" target="_blank">用户协议</a>和<a href="#" class="inspect_link privacy_link" title=" 隐私政策 " target="_blank"> 隐私政策 </a>
 							</label>
                     </div>
                 </div>
@@ -46,6 +46,7 @@
     </div>
     <script>
         $(function() {
+            // 验证的第一步是否应该查询一下手机是否之前存在过, TODO
             $("#registerButton").click(function(e) {
                 var phone = $('#phone').val();
                 var web_code = $('#web_code').val();
