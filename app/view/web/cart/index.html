@@ -25,21 +25,19 @@
     <div class="gwcxqbj">
         <div class="gwcxd center">
             <table class="table cart-list-tb">
-                <tr class="th">
-                    <th>
-                        <%if(cartList && cartList.length){%>
-                            <input type="checkbox" id="checkAll" /> 全选
-                            <%}%>
-                    </th>
-                    <th>
-                        商品名称
-                    </th>
-                    <th>单价</th>
-                    <th>数量</th>
-                    <th>小计</th>
-                    <th>操作</th>
-                </tr>
                 <%if(cartList && cartList.length){%>
+                    <tr class="th">
+                        <th>
+                            <input type="checkbox" id="checkAll" /> 全选
+                        </th>
+                        <th>
+                            商品名称
+                        </th>
+                        <th>单价</th>
+                        <th>数量</th>
+                        <th>小计</th>
+                        <th>操作</th>
+                    </tr>
                     <%for(var i=0;i<cartList.length;i++){%>
                         <tr class="cart_list">
                             <td>
@@ -74,6 +72,7 @@
                             </td>
                         </tr>
                         <%}%>
+
                             <%}else{%>
                                 <p style="color:red;text-align:center; padding:100px;">购物车空空的</p>
                                 <%}%>
