@@ -29,9 +29,12 @@ module.exports = app => {
     router.get('/user/validatePhoneCode', webMiddleware, controller.web.user.validatePhoneCode);
     router.get('/user/registerStep3', webMiddleware, controller.web.user.registerStep3);
     router.post('/user/doRegister', webMiddleware, controller.web.user.doRegister);
+    router.get('/user/loginOut', webMiddleware, controller.web.user.loginOut);
+    router.get('/user/login', webMiddleware, controller.web.user.login);
+    router.post('/user/doLogin', webMiddleware, controller.web.user.doLogin);
 
     /*
-    router.get('/user/login', controller.web.user.login);
+    
     router.get('/user', controller.web.user.welcome); // 用户中心
     router.get('/user/order', controller.web.user.order);
     */

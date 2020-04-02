@@ -253,6 +253,47 @@ class UserController extends Controller {
             }
         }
     }
+
+    //退出登录
+    async loginOut() {
+        this.service.cookies.set('userinfo', '');
+        this.ctx.redirect('/');
+    }
+
+    async doLogin() {
+        let username = this.ctx.request.body.username;
+        let password = this.ctx.request.body.password;
+        let web_code = this.ctx.request.body.web_code;
+
+        if (web_code != this.ctx.session.web_code) {
+            //重新生成验证码 为了安全 多一道防线，防止用户从非浏览器通过接口请求过来突破验证码
+            let captcha = await this.service.tools.captcha(120, 50);
+            this.ctx.session.web_code = captcha.text;
+            this.ctx.body = {
+                success: false,
+                msg: '输入的图形验证码不正确'
+            }
+        } else {
+            password = await this.service.tools.md5(password);
+            let userResult = await this.ctx.model.User.find({ "phone": username, password: password }, '_id phone last_ip add_time email status');
+            if (userResult.length) {
+                //cookies 安全 加密
+                this.service.cookies.set('userinfo', userResult[0]);
+                this.ctx.body = {
+                    success: true,
+                    msg: '登录成功'
+                }
+            } else {
+                //重新生成验证码
+                let captcha = await this.service.tools.captcha(120, 50);
+                this.ctx.session.web_code = captcha.text;
+                this.ctx.body = {
+                    success: false,
+                    msg: '用户名或者密码错误'
+                }
+            }
+        }
+    }
 }
 
 module.exports = UserController;

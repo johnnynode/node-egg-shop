@@ -29,12 +29,25 @@ h6 {
     font: 12px 微软雅黑, Times New Roman;
 }
 
-body.login_page {
-    background: rgb(20, 33, 42)
+.login_page {
+    background: rgb(20, 33, 42);
 }
 
-body.register_page {
+.register_page {
     background: #eee
+}
+
+.login_page .login_body {
+    margin: 0 auto;
+}
+
+.login_page~footer {
+    text-align: center;
+}
+
+.login_page .logo img {
+    width: 60px;
+    margin: 20px 0 0 50px;
 }
 
 
@@ -230,6 +243,10 @@ input:focus {
 
 .login .login_center .submit:hover {
     border: 1px solid #fff;
+}
+
+.login_page footer {
+    margin: 0 auto;
 }
 
 
