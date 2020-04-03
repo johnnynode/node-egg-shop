@@ -16,9 +16,12 @@ class CookiesService extends Service {
         let data = this.ctx.cookies.get(key, { //获取的时候注意  加密cookies的获取
             encrypt: true
         });
-
         if (data) {
-            return JSON.parse(data);
+            try {
+                return JSON.parse(data);
+            } catch (error) {
+                return data;
+            }
         }
         return null;
     }

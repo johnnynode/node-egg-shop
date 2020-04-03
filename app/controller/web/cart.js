@@ -255,6 +255,37 @@ class CartController extends Controller {
             this.ctx.redirect('/cart');
         }
     }
+
+    // 去结算
+    async checkout() {
+        // 获取购物车选中的商品
+        let orderList = [];
+        let allPrice = 0;
+        let cartList = this.service.cookies.get('cartList'); // 读取cookie
+
+        // 处理数据
+        if (cartList && cartList.length) {
+            for (let i = 0; i < cartList.length; i++) {
+                if (cartList[i].checked) {
+                    orderList.push(cartList[i]);
+                    allPrice += cartList[i].price * cartList[i].num;
+                }
+            }
+
+            await this.ctx.render('web/cart/checkout.html', {
+                orderList: orderList,
+                allPrice: allPrice
+            });
+        } else {
+            //恶意操作
+            this.ctx.redirect('/cart')
+        }
+    }
+
+    //确认订单  支付
+    async confirm() {
+        this.ctx.body = 'confirm';
+    }
 }
 
 module.exports = CartController;

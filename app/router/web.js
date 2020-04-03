@@ -6,6 +6,7 @@
 module.exports = app => {
     const { router, controller } = app;
     const webMiddleware = app.middleware.webauth({}, app); // 获取配置的前台路由中间件
+    const userAuthMiddleware = app.middleware.userauth({}, app); // 获取配置的前台路由中间件
 
     router.get('/', webMiddleware, controller.web.index.index);
     router.get('/plist', webMiddleware, controller.web.product.list); // 商品列表
@@ -21,6 +22,8 @@ module.exports = app => {
     router.get('/changeOneCart', controller.web.cart.changeOneCart);
     router.get('/changeAllCart', controller.web.cart.changeAllCart);
     router.get('/removeCart', controller.web.cart.removeCart);
+    router.get('/cart/checkout', webMiddleware, userAuthMiddleware, controller.web.cart.checkout); // 去结算
+
 
     // 用户相关 如果存在用户信息，一些接口和路由可以在中间件中进行一些处理屏蔽 todo
     router.get('/user/registerStep1', webMiddleware, controller.web.user.registerStep1);
