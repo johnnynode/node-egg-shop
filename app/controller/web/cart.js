@@ -271,10 +271,14 @@ class CartController extends Controller {
                     allPrice += cartList[i].price * cartList[i].num;
                 }
             }
+            // 获取当前用户的所有收货地址
+            const uid = this.ctx.service.cookies.get('userinfo')._id;
+            const addressList = await this.ctx.model.Address.find({ uid }).sort({ default_address: -1 });
 
             await this.ctx.render('web/cart/checkout.html', {
-                orderList: orderList,
-                allPrice: allPrice
+                orderList,
+                allPrice,
+                addressList
             });
         } else {
             //恶意操作

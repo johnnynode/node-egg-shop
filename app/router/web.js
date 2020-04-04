@@ -24,7 +24,6 @@ module.exports = app => {
     router.get('/removeCart', controller.web.cart.removeCart);
     router.get('/cart/checkout', webMiddleware, userAuthMiddleware, controller.web.cart.checkout); // 去结算
 
-
     // 用户相关 如果存在用户信息，一些接口和路由可以在中间件中进行一些处理屏蔽 todo
     router.get('/user/registerStep1', webMiddleware, controller.web.user.registerStep1);
     router.get('/user/sendCode', webMiddleware, controller.web.user.sendCode);
@@ -36,11 +35,12 @@ module.exports = app => {
     router.get('/user/login', webMiddleware, controller.web.user.login);
     router.post('/user/doLogin', webMiddleware, controller.web.user.doLogin);
 
-    /*
-    
-    router.get('/user', controller.web.user.welcome); // 用户中心
-    router.get('/user/order', controller.web.user.order);
-    */
+    // 用户 address 收货地址（api接口）
+    router.post('/user/addAddress', webMiddleware, userAuthMiddleware, controller.web.address.addAddress);
+    router.get('/user/getAddressList', webMiddleware, userAuthMiddleware, controller.web.address.getAddressList);
+    router.get('/user/getOneAddress', webMiddleware, userAuthMiddleware, controller.web.address.getOneAddress);
+    router.get('/user/changeDefaultAddress', webMiddleware, userAuthMiddleware, controller.web.address.changeDefaultAddress);
+    router.post('/user/editAddress', webMiddleware, userAuthMiddleware, controller.web.address.editAddress);
 
     // 通用功能
     router.get('/web/verify', controller.web.base.verify); // 验证码

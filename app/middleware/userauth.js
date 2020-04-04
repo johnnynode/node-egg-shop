@@ -11,10 +11,10 @@ module.exports = (options, app) => {
                 //注意
                 await next();
             } else {
-                ctx.redirect('/login');
+                ctx.redirect('/user/login');
             }
         } else {
-            ctx.redirect('/login');
+            ctx.redirect('/user/login');
         }
     };
 };

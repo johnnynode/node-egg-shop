@@ -59,10 +59,24 @@ module.exports = appInfo => {
         csrf: {
             // 判断是否需要 ignore 的方法，请求上下文 context 作为第一个参数
             ignore: ctx => {
-                if (ctx.request.url === '/admin/goods/goodsUploadImage' || ctx.request.url == '/admin/goods/goodsUploadPhoto' || ctx.request.url == '/user/doLogin') {
-                    return true;
-                }
-                return false;
+                // 屏蔽csrf验证的接口或路由
+                let arr = [
+                    '/admin/goods/goodsUploadImage',
+                    '/admin/goods/goodsUploadPhoto',
+                    '/user/doLogin',
+                    '/user/addAddress',
+                    '/user/editAddress',
+                ];
+                let flag = false;
+                // 进行匹配
+                arr.some((item) => {
+                    if (ctx.request.url === item) {
+                        console.log(item);
+                        flag = true;
+                        return true;
+                    }
+                });
+                return flag;
             },
         },
     };
