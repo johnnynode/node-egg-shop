@@ -24,6 +24,10 @@ module.exports = app => {
     router.get('/removeCart', controller.web.cart.removeCart);
     router.get('/cart/checkout', webMiddleware, userAuthMiddleware, controller.web.cart.checkout); // 去结算
 
+    // 订单相关
+    router.post('/order/submit', webMiddleware, userAuthMiddleware, controller.web.order.submit); // 购物车提交订单
+    router.get('/order/confirm', webMiddleware, userAuthMiddleware, controller.web.order.confirm); // 确认订单
+
     // 用户相关 如果存在用户信息，一些接口和路由可以在中间件中进行一些处理屏蔽 todo
     router.get('/user/registerStep1', webMiddleware, controller.web.user.registerStep1);
     router.get('/user/sendCode', webMiddleware, controller.web.user.sendCode);
@@ -44,5 +48,7 @@ module.exports = app => {
 
     // 通用功能
     router.get('/web/verify', controller.web.base.verify); // 验证码
+
+
 
 }

@@ -285,11 +285,6 @@ class CartController extends Controller {
             this.ctx.redirect('/cart')
         }
     }
-
-    //确认订单  支付
-    async confirm() {
-        this.ctx.body = 'confirm';
-    }
 }
 
 module.exports = CartController;

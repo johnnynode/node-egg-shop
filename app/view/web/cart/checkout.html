@@ -15,7 +15,7 @@
         <div class="wdgwc fl ml40">确认订单 </div>
     </div>
 
-    <div class="checkout-box">
+    <form class="checkout-box" action="/order/submit?_csrf=<%=csrf%>" method="POST">
         <div class="section section-address">
             <div class="section-header clearfix">
                 <h3 class="title">收货地址</h3>
@@ -187,10 +187,10 @@
                 <div class="big-pro-tip hide J_confirmBigProTip"></div>
             </div>
             <div class="fr">
-                <a href="#" class="btn btn-primary">去结算</a>
+                <button type="submit" href="#" class="btn btn-primary">立即下单</button>
             </div>
         </div>
-    </div>
+    </form>
 
     <!-- 收货地址增加 -->
     <div class="modal fade" id="addAddress" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">

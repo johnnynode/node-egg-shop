@@ -88,6 +88,14 @@ class ToolsService extends Service {
         }
         return random_str;
     }
+
+    // 生成订单id 时间戳加上一个9位的随机数字
+    async getOrderId() {
+        //订单如何生成
+        var nowTime = await this.getTime();
+        var randomNum = await this.getRandomNum(9);
+        return nowTime.toString() + randomNum.toString();
+    }
 }
 
 module.exports = ToolsService;
