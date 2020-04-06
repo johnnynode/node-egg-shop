@@ -15,7 +15,8 @@
         <div class="wdgwc fl ml40">确认订单 </div>
     </div>
 
-    <form class="checkout-box" action="/order/submit?_csrf=<%=csrf%>" method="POST">
+    <form class="checkout-box" action="/order/submit?_csrf=<%=csrf%>" method="POST" id="checkoutForm">
+        <input type="hidden" name="orderSign" value="<%=orderSign%>">
         <div class="section section-address">
             <div class="section-header clearfix">
                 <h3 class="title">收货地址</h3>
@@ -407,6 +408,22 @@
                         }
                         $('#editAddress').modal('hide');
                     })
+                })
+
+                //提交数据监测是否有默认收货地址 表单提交事件的处理
+                var flag = true; // 前台防止重复提交订单
+                $("#checkoutForm").submit(function() {
+                    if (flag) {
+                        flag = false;
+                        var addressCount = $('#addressList .selected').length;
+                        if (!addressCount) {
+                            alert('请填写默认收货地址');
+                            return false;
+                        }
+                        return true;
+                    } else {
+                        return false;
+                    }
                 })
             })
         </script>

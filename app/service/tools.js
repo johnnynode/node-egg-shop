@@ -25,7 +25,7 @@ class ToolsService extends Service {
     }
 
     // md5 加密 三次
-    async md5(str) {
+    md5(str) {
         return md5(md5(md5(str)));
     }
 
@@ -78,7 +78,7 @@ class ToolsService extends Service {
     }
 
     // 获取随机数字 建议传递4或6 用于短信验证码
-    async getRandomNum(num) {
+    getRandomNum(num) {
         if (typeof num !== 'number') {
             return -1;
         }
@@ -90,11 +90,11 @@ class ToolsService extends Service {
     }
 
     // 生成订单id 时间戳加上一个9位的随机数字
-    async getOrderId() {
+    getOrderId() {
         //订单如何生成
-        var nowTime = await this.getTime();
-        var randomNum = await this.getRandomNum(9);
-        return nowTime.toString() + randomNum.toString();
+        let nowTime = this.getTime();
+        let randomNum = this.getRandomNum(5);
+        return nowTime.toString().substr(2) + randomNum.toString();
     }
 }
 

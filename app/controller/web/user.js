@@ -32,7 +32,7 @@ class UserController extends Controller {
                 }
             } else {
                 let add_day = this.service.tools.getDay(); //年月日    
-                let sign = await this.service.tools.md5(phone + '_' + add_day); //签名
+                let sign = this.service.tools.md5(phone + '_' + add_day); //签名
                 // 根据调试功能是否开启来具体是否发送短信验证
                 let isSendMsgEnable = this.config.sendMsg.enable;
                 if (!isSendMsgEnable) {
@@ -45,7 +45,7 @@ class UserController extends Controller {
                 }
 
                 let ip = this.ctx.request.ip.replace(/::ffff:/, ''); //获取客户端ip         
-                let phone_code = await this.service.tools.getRandomNum(4); // 发送短信的随机码    
+                let phone_code = this.service.tools.getRandomNum(4); // 发送短信的随机码    
                 let userTempResult = await this.ctx.model.UserTemp.find({ "sign": sign, add_day: add_day });
                 //1个ip 一天只能发10个手机号
                 let ipCount = await this.ctx.model.UserTemp.find({ "ip": ip, add_day: add_day }).count();
@@ -237,7 +237,7 @@ class UserController extends Controller {
                 console.log('phone: ', phone);
                 let userModel = new this.ctx.model.User({
                         phone,
-                        password: await this.service.tools.md5(password),
+                        password: this.service.tools.md5(password),
                         last_ip: ip
                     })
                     //保存用户
@@ -274,7 +274,7 @@ class UserController extends Controller {
                 msg: '输入的图形验证码不正确'
             }
         } else {
-            password = await this.service.tools.md5(password);
+            password = this.service.tools.md5(password);
             let userResult = await this.ctx.model.User.find({ "phone": username, password: password }, '_id phone last_ip add_time email status');
             if (userResult.length) {
                 //cookies 安全 加密

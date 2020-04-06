@@ -40,7 +40,7 @@ class LoginController extends BaseController {
         if (code.toUpperCase() === ctx.session.code.toUpperCase()) {
             // 获取提交的数据
             const username = ctx.request.body.username;
-            const password = await this.service.tools.md5(ctx.request.body.password); // 前端也要三次加密
+            const password = this.service.tools.md5(ctx.request.body.password); // 前端也要三次加密
 
             // 通过model查询数据库
             const result = await ctx.model.Admin.find({ username, password });

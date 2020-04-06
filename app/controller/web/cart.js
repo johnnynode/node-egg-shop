@@ -263,6 +263,10 @@ class CartController extends Controller {
         let allPrice = 0;
         let cartList = this.service.cookies.get('cartList'); // 读取cookie
 
+        // 签名防止重复提交订单
+        let orderSign = this.service.tools.md5(this.service.tools.getRandomNum(8));
+        this.ctx.session.orderSign = orderSign;
+
         // 处理数据
         if (cartList && cartList.length) {
             for (let i = 0; i < cartList.length; i++) {
@@ -278,7 +282,8 @@ class CartController extends Controller {
             await this.ctx.render('web/cart/checkout.html', {
                 orderList,
                 allPrice,
-                addressList
+                addressList,
+                orderSign
             });
         } else {
             //恶意操作
