@@ -66,6 +66,7 @@ module.exports = appInfo => {
                     '/user/doLogin',
                     '/user/addAddress',
                     '/user/editAddress',
+                    '/pay/alipay/alipayNotify'
                 ];
                 let flag = false;
                 // 进行匹配
@@ -106,6 +107,22 @@ module.exports = appInfo => {
             host: '127.0.0.1', // Redis host
             password: '', // 本机没有设置密码, 如有密码填写自己的密码
             db: 0
+        }
+    }
+
+    // 支付相关配置：微信，支付宝
+    config.pay = {
+        wechat: {},
+        alipay: {
+            options: {
+                app_id: '', // 支付宝应用id
+                appPrivKeyFile: "", // 应用私钥 字符串即可，文件需要读取同样是字符串
+                alipayPubKeyFile: "" // 支付宝公钥
+            },
+            basicParams: {
+                return_url: 'http://127.0.0.1:7001/pay/alipay/alipayReturn', // 支付成功返回地址 此处仅作为举例 匹配路由 后期可配置调试环境、测试环境和线上环境 区分ip
+                notify_url: 'http://127.0.0.1:7001/pay/alipay/alipayNotify' //支付成功异步通知地址 此处仅作为举例
+            }
         }
     }
 

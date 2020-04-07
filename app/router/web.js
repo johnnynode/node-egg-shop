@@ -7,6 +7,7 @@ module.exports = app => {
     const { router, controller } = app;
     const webMiddleware = app.middleware.webauth({}, app); // 获取配置的前台路由中间件
     const userAuthMiddleware = app.middleware.userauth({}, app); // 获取配置的前台路由中间件
+    const xmlParseMiddleware = app.middleware.xmlparse(); // 处理xml数据的中间件
 
     router.get('/', webMiddleware, controller.web.index.index);
     router.get('/plist', webMiddleware, controller.web.product.list); // 商品列表
@@ -49,6 +50,9 @@ module.exports = app => {
     // 通用功能
     router.get('/web/verify', controller.web.base.verify); // 验证码
 
-
+    // 支付相关
+    router.get('/pay/alipay', webMiddleware, userAuthMiddleware, controller.web.pay.alipay); // 支付宝支付
+    router.get('/pay/alipay/alipayReturn', webMiddleware, userAuthMiddleware, controller.web.pay.alipayReturn); // 支付宝支付成功回调
+    router.post('/pay/alipay/alipayNotify', webMiddleware, userAuthMiddleware, xmlParseMiddleware, controller.web.pay.alipayNotify); // 支付成功异步通知 注意关闭csrf验证
 
 }

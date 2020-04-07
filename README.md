@@ -146,6 +146,47 @@ limit(10). sort('-occupation'). select('name occupation'). exec(callback);
 - 发送验证码，手机获取的验证码和服务器验证码做比较，成功则进入下一步，否则提示错误信息
 - 设置账户密码，服务器端生成一条用户数据
 
+### 支付相关
+
+**微信**
+
+
+
+**支付宝**
+
+- 接入支付宝
+    * 必须注册企业支付宝账户
+    * 支付宝开发接入页面：https://open.alipay.com/developmentAccess/developmentAccess.html
+    * 点击支付应用
+    * 填写对应应用名称, 点击创建
+    * 创建以后进入概览页面, 上传应用图标
+    * 设置应用公钥，提交审核
+- 接口加密签名
+    * 下载签名工具：https://opendocs.alipay.com/open/291/106097/
+    * 选择非Java(java语言还是选择java适用)，点击生成密钥，会生成两个：商户应用私钥，商户应用公钥
+    * 复制应用公钥，在支付宝后台开发设置中 设置应用公钥 粘贴进去，保存后会生成一个支付宝公钥
+    * 签名。并保存好私钥、公钥
+- 配置签名 提交审核
+    * 审核周期为1天
+- 官方支付流程
+    * 官方支付流程文档：https://docs.open.alipay.com/203/107084/
+- 支付宝支付官方文档
+    * https://docs.open.alipay.com/270/105899/
+- Nodejs 支付宝支付实现步骤
+    * 1、登录支付宝开放平台 获取应用 APPID、获取支付宝公钥、以及 RSA 签名的应用私钥
+        * 注意：RSA 签名验签工具可以生成应用私钥和应用公钥，我们在支付宝开放平台填写应用公钥生成支付宝公钥
+    * 2、调用 nodejs 支付宝支付 sdk 实现支付
+        * Nodejs Aliapy Sdk 文档：https://github.com/Luncher/alipay
+    * 3、 Aliapy Sdk 的使用：
+        * 安装模块 npm i alipay-mobile -S
+        * 引入模块 const Alipay = require('alipay-mobile')
+        * 配置开放平台 appid、 你的应用私钥、蚂蚁金服支付宝公钥 
+            * const options = {app_id: '', appPrivKeyFile: "应用私钥", alipayPubKeyFile: "支付宝公钥"}
+        * 实例化 Alipay const service = new Alipay(options);
+        * 配置支付订单的信息、以及配置支付参数
+        * 生成支付宝支付跳转地址
+        * 处理异步通知
+
 ## QuickStart
 
 <!-- add docs here for user -->
