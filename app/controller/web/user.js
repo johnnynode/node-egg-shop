@@ -5,7 +5,9 @@ const Controller = require('egg').Controller;
 class UserController extends Controller {
     //登录
     async login() {
-        await this.ctx.render('web/user/login.html');
+        let returnUrl = this.ctx.request.query.returnUrl;
+        returnUrl = returnUrl ? decodeURIComponent(returnUrl) : '/';
+        await this.ctx.render('web/user/login.html', { returnUrl });
     }
 
     // 注册第一步

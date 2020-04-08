@@ -6,6 +6,7 @@
             this.initNavSlide();
             this.initContentTabs();
             this.initColorSelect();
+            this.initLogin();
         },
         initSwiper: function() {
             new Swiper('.swiper-container', {
@@ -63,6 +64,11 @@
                 $('.detail_info .detail_info_item').removeClass('active').eq(index).addClass('active');
             })
         },
+        initLogin: function() {
+            $('#loginBtn').click(function() {
+                location.href = '/user/login?returnUrl=' + encodeURIComponent(location.href); // 将当前url放入returnUrl中
+            })
+        }
     }
 
     $(function() {
