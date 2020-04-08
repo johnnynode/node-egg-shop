@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "alipay-mobile": "^3.0.9",
+    "crypto": "^1.0.1",
     "egg": "^2.15.1",
     "egg-mongoose": "^3.2.0",
     "egg-redis": "^2.4.0",
@@ -19,9 +20,12 @@
     "md5": "^2.2.1",
     "mz-modules": "^2.1.0",
     "pump": "^3.0.0",
+    "qr-image": "^3.2.0",
+    "request": "^2.88.2",
     "showdown": "^1.9.1",
     "silly-datetime": "^0.1.2",
-    "svg-captcha": "^1.4.0"
+    "svg-captcha": "^1.4.0",
+    "xml2js": "^0.4.23"
   },
   "devDependencies": {
     "autod": "^3.0.1",

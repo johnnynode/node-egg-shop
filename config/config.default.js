@@ -66,7 +66,8 @@ module.exports = appInfo => {
                     '/user/doLogin',
                     '/user/addAddress',
                     '/user/editAddress',
-                    '/pay/alipay/alipayNotify'
+                    '/pay/ali/notify',
+                    '/pay/wechat/notify',
                 ];
                 let flag = false;
                 // 进行匹配
@@ -112,16 +113,25 @@ module.exports = appInfo => {
 
     // 支付相关配置：微信，支付宝
     config.pay = {
-        wechat: {},
-        alipay: {
-            options: {
-                app_id: '', // 支付宝应用id
-                appPrivKeyFile: "", // 应用私钥 字符串即可，文件需要读取同样是字符串
-                alipayPubKeyFile: "" // 支付宝公钥
+        wechat: {
+            config: {
+                mch_id: '', // 商户id
+                wxappid: '', // 微信appid
+                wxpaykey: '' // 微信paykey
             },
             basicParams: {
-                return_url: 'http://127.0.0.1:7001/pay/alipay/alipayReturn', // 支付成功返回地址 此处仅作为举例 匹配路由 后期可配置调试环境、测试环境和线上环境 区分ip
-                notify_url: 'http://127.0.0.1:7001/pay/alipay/alipayNotify' //支付成功异步通知地址 此处仅作为举例
+                notify_url: 'http://127.0.0.1:7001/pay/wechat/notify' //注意回调地址必须在 微信商户平台配置 不能用127，用配置的域名
+            }
+        },
+        ali: {
+            options: {
+                app_id: '', // 支付宝应用id
+                appPrivKeyFile: '', // 应用私钥 字符串即可，文件需要读取同样是字符串
+                alipayPubKeyFile: '' // 支付宝公钥
+            },
+            basicParams: {
+                return_url: 'http://127.0.0.1:7001/pay/ali/return', // 支付成功返回地址 此处仅作为举例 匹配路由 后期可配置调试环境、测试环境和线上环境 区分不同域名
+                notify_url: 'http://127.0.0.1:7001/pay/ali/notify' //支付成功异步通知地址 此处仅作为举例
             }
         }
     }

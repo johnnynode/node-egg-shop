@@ -2,7 +2,21 @@
     <!--end header -->
 
     <link rel="stylesheet" href="/public/web/css/pay.css" />
+    <link rel="stylesheet" href="/public/common/bootstrap/css/bootstrap.css" />
     <script src="/public/common/bootstrap/js/bootstrap.js"></script>
+
+    <style>
+        .lcode {
+            padding-right: 80px;
+            display: inline-block;
+            width: 200px;
+            height: 200px;
+        }
+        
+        .rphone {
+            width: 240px;
+        }
+    </style>
 
     <!-- start banner_x -->
     <div class="banner_x center clearfix">
@@ -25,7 +39,7 @@
                         <p class="total">
                             应付总额：<span class="money"><em><%=orderResult.all_price%></em>元</span>
                         </p>
-                        <a href="javascript:void(0);" class="show-detail" id="J_showDetail" data-stat-id="db85b2885a2fdc53" onclick="_msq.push(['trackEvent', 'f1542ececd0b6bc5-db85b2885a2fdc53', 'javascript:void0', 'pcpid', '']);">订单详情<i class="iconfont"></i></a>
+                        <a href="javascript:void(0);" class="show-detail" id="J_showDetail" data-stat-id="db85b2885a2fdc53">订单详情<i class="iconfont"></i></a>
                     </div>
                 </div>
                 <i class="iconfont icon-right">√</i>
@@ -67,16 +81,49 @@
                 </div>
 
                 <div class="payment-box ">
-
                     <div class="payment-body">
                         <ul class="clearfix payment-list J_paymentList J_linksign-customize">
-                            <li id="J_weixin" data-stat-id="4971b7cf6ccf0faf" onclick="_msq.push(['trackEvent', 'f1542ececd0b6bc5-4971b7cf6ccf0faf', '', 'pcpid', '']);"><img src="//c1.mifile.cn/f/i/16/pay/weixinpay0701.png" alt="微信支付" style="margin-left: 0;"></li>
-                            <li class="J_bank" data-stat-id="4971b7cf6ccf0faf" onclick="_msq.push(['trackEvent', 'f1542ececd0b6bc5-4971b7cf6ccf0faf', '', 'pcpid', '']);"><input type="radio" name="payOnlineBank" id="alipay" value="alipay"> <img src="//s01.mifile.cn/i/banklogo/payOnline_zfb.png?ver2015" alt="支付宝" style="margin-left: 0;"></li>
-
+                            <li id="weixinPay"><img src="/public/web/image/weixinpay0701.png" alt="微信支付" style="margin-left: 0;"></li>
+                            <li class="J_bank" id="alipay">
+                                <a target="_blank" href="/pay/ali?id=<%=id%>"> <img src="/public/web/image/payOnline_zfb.png" alt="支付宝" style="margin-left: 0;"></a>
+                            </li>
                         </ul>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
 
+    <div class="modal fade" id="alipayModel" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">正在支付...</h4>
+                </div>
+                <div class="modal-body">
+                    <a href="#">已经支付成功</a>
+                    <br>
+                    <br>
+                    <br>
+                    <a href="#">未支付成功</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="weixinPayModel" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">微信支付</h4>
+                </div>
+                <div class="modal-body">
+                    <!-- 这里的id 传递的是订单号 -->
+                    <img class="lcode" src="/pay/wechat?id=<%=id%>" />
+                    <img class="rphone" src="/public/web/image/phone.png" />
+                </div>
             </div>
         </div>
     </div>
@@ -85,7 +132,27 @@
         $(function() {
             $(".show-detail").click(function() {
                 $(".order-detail").slideToggle();
-            })
+            });
+
+            $("#alipay").click(function() {
+                $('#alipayModel').modal('show');
+            });
+
+            $("#weixinPay").click(function() {
+                $('#weixinPayModel').modal('show');
+            });
+
+            // 轮询订单状态，支付成功后，跳转到用户订单页面
+            var timer = setInterval(function() {
+                $.get('/order/getOrderPayStatus?id=<%=id%>', function(response) {
+                    // console.log(response);
+                    if (response.success) {
+                        clearInterval(timer);
+                        location.href = '/user/order'
+                    }
+                })
+
+            }, 5000);
         })
     </script>
 

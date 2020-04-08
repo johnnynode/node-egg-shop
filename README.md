@@ -150,7 +150,44 @@ limit(10). sort('-occupation'). select('name occupation'). exec(callback);
 
 **微信**
 
+- 准备
+    * 个体工商户、企业、政府及事业单位
+    * https://pay.weixin.qq.com/static/applyment_guide/applyment_detail_website.shtml
+    * 需要获取内容：
+        * appid：应用 APPID（必须配置，开户邮件中可查看）
+        * MCHID：微信支付商户号（必须配置，开户邮件中可查看）
+        * KEY：API 密钥，参考开户邮件设置（必须配置，登录商户平台自行设置）32位的密钥
 
+- 注册商户平台，申请微信支付 1~5个工作日
+    * 注册微信商户平台
+    * 信息必须如实填写，以及销售商品的分类选择要和自己公司的匹配，不然容易审核失败。审核失败后，看看失败原因、修改重新提交申请。
+    * 开户成功，登录商户平台进行验证 
+    * 资料审核通过后，商户信息会发到您的账户邮箱里面，请登录联系人邮箱查收商户号和密码，并登录商户平台填写财付通备付金打的小额资金数额，完成账户验证
+    * https://kf.qq.com/faq/161220mQjmYj161220n6jYN7.html
+    * 登录商户平台点击产品中心开通 Native 支付
+    * 用微信给你发的商户号登陆对应的微信商户平台，获取API 密钥
+        * 步骤：微信商户平台(pay.weixin.qq.com)-->账户设置-->API 安全-->密钥设置。
+        * 设置地址：https://pay.weixin.qq.com/index.php/account/api_cert
+        * 设置的时候可能会提示你安装证书
+    * PC端用到的方式是Native支付，申请后，要进入商户平台-产品中心 查看Native是否开通，没有开通需要开通
+    * APIkey设置在：商户平台-账户中心-API安全-设置密钥
+
+- 微信 pc 端网站支付流程
+    * https://pay.weixin.qq.com/wiki/doc/api/native.php?chapter=6_5
+    * 调用统一下单接口生成预支付交易信息，获取 code_url(二维码链接地址)
+    * 用 code_url 生成二维码
+    * 支付成功后监听服务器的异步通知，然后处理订单
+
+- 调用写好的模块生成 code_url
+    * 安装模块 cnpm install request crypto xml2js --save
+    * 引入写好的 wechatPay.js var wechatPay = require('./module/wechatPay');
+    * 调用统一下单接口获取 code_url
+    * 把 code_url 转化成二维码
+    * 处理异步通知
+
+- 注意
+    * 域名必须备案，不能是ip
+    * 产品中心->Native->产品设置->扫码支付 扫码回调链接必须配置, 这个链接就是我们config中的wechat相关的notify_url,微信给我们post数据的链接
 
 **支付宝**
 

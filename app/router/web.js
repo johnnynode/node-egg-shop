@@ -28,6 +28,7 @@ module.exports = app => {
     // 订单相关
     router.post('/order/submit', webMiddleware, userAuthMiddleware, controller.web.order.submit); // 购物车提交订单
     router.get('/order/confirm', webMiddleware, userAuthMiddleware, controller.web.order.confirm); // 确认订单
+    router.get('/order/getOrderPayStatus', webMiddleware, userAuthMiddleware, controller.web.order.getOrderPayStatus); // 检测订单是否支付
 
     // 用户相关 如果存在用户信息，一些接口和路由可以在中间件中进行一些处理屏蔽 todo
     router.get('/user/registerStep1', webMiddleware, controller.web.user.registerStep1);
@@ -51,8 +52,10 @@ module.exports = app => {
     router.get('/web/verify', controller.web.base.verify); // 验证码
 
     // 支付相关
-    router.get('/pay/alipay', webMiddleware, userAuthMiddleware, controller.web.pay.alipay); // 支付宝支付
-    router.get('/pay/alipay/alipayReturn', webMiddleware, userAuthMiddleware, controller.web.pay.alipayReturn); // 支付宝支付成功回调
-    router.post('/pay/alipay/alipayNotify', webMiddleware, userAuthMiddleware, xmlParseMiddleware, controller.web.pay.alipayNotify); // 支付成功异步通知 注意关闭csrf验证
+    router.get('/pay/ali', webMiddleware, controller.web.pay.ali); // 支付宝支付
+    router.get('/pay/ali/return', webMiddleware, controller.web.pay.aliReturn); // 支付宝支付成功回调
+    router.post('/pay/ali/notify', webMiddleware, xmlParseMiddleware, controller.web.pay.aliNotify); // 支付成功异步通知 注意关闭csrf验证
+    router.get('/pay/wechat', webMiddleware, controller.web.pay.wechat); // 微信支付
+    router.post('/pay/wechat/notify', webMiddleware, xmlParseMiddleware, controller.web.pay.wechatNotify); // 异步通知  注意关闭csrf验证
 
 }

@@ -6,6 +6,7 @@ const sd = require('silly-datetime');
 const path = require('path');
 const mkdirp = require('mz-modules/mkdirp');
 const Jimp = require('jimp');
+const qr = require('qr-image');
 const Service = require('egg').Service;
 
 class ToolsService extends Service {
@@ -95,6 +96,12 @@ class ToolsService extends Service {
         let nowTime = this.getTime();
         let randomNum = this.getRandomNum(5);
         return nowTime.toString().substr(2) + randomNum.toString();
+    }
+
+    // 生成二维码
+    qrImage(url) {
+        let qrimg = qr.image(url, { type: 'png' });
+        return qrimg;
     }
 }
 
