@@ -1,0 +1,104 @@
+<% include  ../public/header.html%>
+    <!--end header -->
+
+    <!-- start banner_x -->
+    <% include  ../public/banner.html%>
+        <!-- end banner_x -->
+
+        <script src="/public/web/js/jqPaginator.js"></script>
+        <link rel="stylesheet" href="/public/web/css/order.css" />
+
+        <!-- self_info -->
+        <div class="grzxbj">
+            <div class="selfinfo center">
+                <div class="lfnav fl">
+                    <% include  ./user_left.html%>
+                </div>
+                <div class="rtcont fr">
+                    <h1>我的订单</h1>
+                    <div class="uc-content-box">
+                        <div class="box-hd">
+                            <div class="more clearfix">
+                                <ul class="filter-list J_orderType">
+                                    <li class="first active"><a href="#">全部有效订单</a></li>
+                                    <li><a href="#">待支付</a></li>
+                                    <li><a href="#">待收货</a></li>
+                                    <li><a href="#">已关闭</a></li>
+                                </ul>
+                                <form id="J_orderSearchForm" class="search-form clearfix" action="#" method="get">
+                                    <input class="search-text" type="search" id="J_orderSearchKeywords" name="keywords" autocomplete="off" placeholder="输入商品名称、商品编号、订单号">
+                                    <input type="submit" class="search-btn iconfont" value="搜索">
+                                </form>
+                            </div>
+                        </div>
+                        <div class="box-bd">
+                            <table class="table">
+                                <%for(var i=0;i<list.length;i++){%>
+                                    <tr>
+                                        <td colspan="2">
+                                            <div class="order-summary">
+                                                <%=helper.formatTime(list[i].add_time) %>|
+                                                    <%=list[i].name%> | 订单号：
+                                                        <%=list[i].order_id%> | 在线支付 实付金额：
+                                                            <%=list[i].all_price%>元
+                                            </div>
+
+                                            <%for(var j=0;j<list[i].orderItems.length;j++){%>
+                                                <div class="order-info clearfix">
+                                                    <div class="col_pic">
+                                                        <img src="<%=list[i].orderItems[j].product_img%>" />
+                                                    </div>
+                                                    <div class="col_title">
+                                                        <p>
+                                                            <%=list[i].orderItems[j].product_title%>
+                                                        </p>
+                                                        <p>
+                                                            <%=list[i].orderItems[j].product_price%>元 ×
+                                                                <%=list[i].orderItems[j].product_num%>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <%}%>
+                                        </td>
+
+                                        <td>
+                                            <span>
+													<a class="delete" href="/user/orderinfo?id=<%=list[i]._id%>">订单详情</a>
+													<br>
+													<br>
+													<a class="delete" href="#">申请售后</a>
+												</span>
+                                        </td>
+                                    </tr>
+                                    <%}%>
+                            </table>
+
+                            <div id="page" class="pagination fr"></div>
+                        </div>
+                    </div>
+
+                    <script>
+                        // 如果不想通过隐藏表单域获取，直接可以渲染
+                        $('#page').jqPaginator({
+                            totalPages: <%=totalPages%>,
+                            visiblePages: 8,
+                            currentPage: <%=page%>,
+                            onPageChange: function(num, type) {
+                                // console.log('当前第' + num + '页', type);
+                                if (type == 'change') {
+                                    location.href = "/user/order?page=" + num;
+                                }
+                            }
+                        });
+                    </script>
+
+                </div>
+                <div class="clear"></div>
+            </div>
+        </div>
+        <!-- self_info -->
+        <% include  ../public/footer.html%>
+
+            </body>
+
+            </html>

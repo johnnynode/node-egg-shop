@@ -10,6 +10,41 @@ class UserController extends Controller {
         await this.ctx.render('web/user/login.html', { returnUrl });
     }
 
+    async doLogin() {
+        let username = this.ctx.request.body.username;
+        let password = this.ctx.request.body.password;
+        let web_code = this.ctx.request.body.web_code;
+
+        if (web_code != this.ctx.session.web_code) {
+            //重新生成验证码 为了安全 多一道防线，防止用户从非浏览器通过接口请求过来突破验证码
+            let captcha = await this.service.tools.captcha(120, 50);
+            this.ctx.session.web_code = captcha.text;
+            this.ctx.body = {
+                success: false,
+                msg: '输入的图形验证码不正确'
+            }
+        } else {
+            password = this.service.tools.md5(password);
+            let userResult = await this.ctx.model.User.find({ "phone": username, password: password }, '_id phone last_ip add_time email status');
+            if (userResult.length) {
+                //cookies 安全 加密
+                this.service.cookies.set('userinfo', userResult[0]);
+                this.ctx.body = {
+                    success: true,
+                    msg: '登录成功'
+                }
+            } else {
+                //重新生成验证码
+                let captcha = await this.service.tools.captcha(120, 50);
+                this.ctx.session.web_code = captcha.text;
+                this.ctx.body = {
+                    success: false,
+                    msg: '用户名或者密码错误'
+                }
+            }
+        }
+    }
+
     // 注册第一步
     async registerStep1() {
         await this.ctx.render('web/user/register_step1.html');
@@ -262,39 +297,56 @@ class UserController extends Controller {
         this.ctx.redirect('/');
     }
 
-    async doLogin() {
-        let username = this.ctx.request.body.username;
-        let password = this.ctx.request.body.password;
-        let web_code = this.ctx.request.body.web_code;
+    // 用户中心 欢迎
+    async welcome() {
+        await this.ctx.render('web/user/welcome.html');
+    }
 
-        if (web_code != this.ctx.session.web_code) {
-            //重新生成验证码 为了安全 多一道防线，防止用户从非浏览器通过接口请求过来突破验证码
-            let captcha = await this.service.tools.captcha(120, 50);
-            this.ctx.session.web_code = captcha.text;
-            this.ctx.body = {
-                success: false,
-                msg: '输入的图形验证码不正确'
+    // 用户订单
+    async order() {
+        const uid = this.ctx.service.cookies.get('userinfo')._id;
+        const page = this.ctx.request.query.page || 1;
+        var json = { "uid": uid }; //查询当前用户下面的所有订单
+        const pageSize = 2;
+        // 总数量
+        const totalNum = await this.ctx.model.Order.find(json).countDocuments();
+        //聚合管道要注意顺序, 先排序再查询，排序作为一个查询的条件，不能放到最后
+        const result = await this.ctx.model.Order.aggregate([{
+                $lookup: {
+                    from: 'order_item',
+                    localField: '_id',
+                    foreignField: 'order_id',
+                    as: 'orderItems',
+                },
+            },
+            {
+                $sort: { "add_time": -1 }
+            },
+            {
+                $match: { "uid": this.app.mongoose.Types.ObjectId(uid) } //条件
+            },
+            {
+                $skip: (page - 1) * pageSize,
+            },
+            {
+                $limit: pageSize,
             }
-        } else {
-            password = this.service.tools.md5(password);
-            let userResult = await this.ctx.model.User.find({ "phone": username, password: password }, '_id phone last_ip add_time email status');
-            if (userResult.length) {
-                //cookies 安全 加密
-                this.service.cookies.set('userinfo', userResult[0]);
-                this.ctx.body = {
-                    success: true,
-                    msg: '登录成功'
-                }
-            } else {
-                //重新生成验证码
-                let captcha = await this.service.tools.captcha(120, 50);
-                this.ctx.session.web_code = captcha.text;
-                this.ctx.body = {
-                    success: false,
-                    msg: '用户名或者密码错误'
-                }
-            }
-        }
+        ]);
+
+        await this.ctx.render('web/user/order.html', {
+            list: result,
+            totalPages: Math.ceil(totalNum / pageSize),
+            page,
+        });
+    }
+
+    async orderinfo() {
+        // this.ctx.body = '用户订单';
+        await this.ctx.render('web/user/order_info.html');
+    }
+
+    async address() {
+        this.ctx.body = '收货地址';
     }
 }
 

@@ -40,6 +40,8 @@ module.exports = app => {
     router.get('/user/loginOut', webMiddleware, controller.web.user.loginOut);
     router.get('/user/login', webMiddleware, controller.web.user.login);
     router.post('/user/doLogin', webMiddleware, controller.web.user.doLogin);
+    router.get('/user/welcome', webMiddleware, userAuthMiddleware, controller.web.user.welcome); // 用户中心欢迎
+    router.get('/user/order', webMiddleware, userAuthMiddleware, controller.web.user.order); // 用户订单
 
     // 用户 address 收货地址（api接口）
     router.post('/user/addAddress', webMiddleware, userAuthMiddleware, controller.web.address.addAddress);
@@ -56,6 +58,6 @@ module.exports = app => {
     router.get('/pay/ali/return', webMiddleware, controller.web.pay.aliReturn); // 支付宝支付成功回调
     router.post('/pay/ali/notify', webMiddleware, xmlParseMiddleware, controller.web.pay.aliNotify); // 支付成功异步通知 注意关闭csrf验证
     router.get('/pay/wechat', webMiddleware, controller.web.pay.wechat); // 微信支付
-    router.post('/pay/wechat/notify', webMiddleware, xmlParseMiddleware, controller.web.pay.wechatNotify); // 异步通知  注意关闭csrf验证
+    router.post('/pay/wechat/notify', webMiddleware, controller.web.pay.wechatNotify); // 异步通知  注意关闭csrf验证
 
 }

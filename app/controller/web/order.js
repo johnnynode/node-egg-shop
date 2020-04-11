@@ -52,7 +52,7 @@ class OrderController extends Controller {
         let pay_type = '';
         let order_status = 0;
         // 首先生成 order 订单表
-        let orderModel = new this.ctx.model.Order({ order_id, name, phone, address, zipcode, pay_status, pay_type, order_status, all_price });
+        let orderModel = new this.ctx.model.Order({ order_id, uid, name, phone, address, zipcode, pay_status, pay_type, order_status, all_price });
         let orderResult = await orderModel.save();
         // 生成 order_item 商品信息表，order与order_item 是一对多的关系
         if (orderResult && orderResult._id) {
