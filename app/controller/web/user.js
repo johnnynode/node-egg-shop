@@ -306,11 +306,41 @@ class UserController extends Controller {
     async order() {
         const uid = this.ctx.service.cookies.get('userinfo')._id;
         const page = this.ctx.request.query.page || 1;
-        var json = { "uid": uid }; //查询当前用户下面的所有订单
-        const pageSize = 2;
+        let order_status = this.ctx.request.query.order_status || -1;
+        let keywords = this.ctx.request.query.keywords;
+        let json = { "uid": this.app.mongoose.Types.ObjectId(uid) }; //查询当前用户下面的所有订单
+
+        //筛选
+        if (order_status != -1) {
+            json = Object.assign(json, { "order_status": parseInt(order_status) });
+        }
+
+        //搜索
+        if (keywords) {
+            // 商品名 模糊查询
+            let orderItemJson = Object.assign({ "uid": this.app.mongoose.Types.ObjectId(uid) }, { "product_title": { $regex: new RegExp(keywords) } });
+            let orderItemResult = await this.ctx.model.OrderItem.find(orderItemJson);
+            if (orderItemResult.length) {
+                let tempArr = [];
+                orderItemResult.forEach(value => {
+                    tempArr.push({
+                        _id: value.order_id
+                    });
+                });
+
+                json = Object.assign(json, {
+                    $or: tempArr // 这里拼接查询的条件
+                })
+            } else {
+                json = Object.assign(json, {
+                    $or: [{ 1: -1 }] // 这里是一个不成立的条件
+                })
+            }
+        }
+        const pageSize = this.config.pageSize;
         // 总数量
         const totalNum = await this.ctx.model.Order.find(json).countDocuments();
-        //聚合管道要注意顺序, 先排序再查询，排序作为一个查询的条件，不能放到最后
+        //聚合管道要注意顺序
         const result = await this.ctx.model.Order.aggregate([{
                 $lookup: {
                     from: 'order_item',
@@ -323,7 +353,7 @@ class UserController extends Controller {
                 $sort: { "add_time": -1 }
             },
             {
-                $match: { "uid": this.app.mongoose.Types.ObjectId(uid) } //条件
+                $match: json //条件
             },
             {
                 $skip: (page - 1) * pageSize,
@@ -332,11 +362,11 @@ class UserController extends Controller {
                 $limit: pageSize,
             }
         ]);
-
         await this.ctx.render('web/user/order.html', {
             list: result,
             totalPages: Math.ceil(totalNum / pageSize),
             page,
+            order_status: order_status
         });
     }
 

@@ -6,6 +6,7 @@ module.exports = app => {
 
     const d = new Date();
     const OrderItem = new Schema({
+        uid: { type: Schema.Types.ObjectId },
         order_id: { type: Schema.Types.ObjectId },
         product_title: { type: String },
         product_id: { type: Schema.Types.ObjectId },

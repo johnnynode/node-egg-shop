@@ -60,6 +60,7 @@ class OrderController extends Controller {
             for (let i = 0; i < orderList.length; i++) {
                 let orderItem = orderList[i];
                 let json = {
+                    "uid": uid,
                     "order_id": orderResult._id, //订单id
                     "product_title": orderItem.title,
                     "product_id": orderItem._id,

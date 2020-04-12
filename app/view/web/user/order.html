@@ -20,10 +20,11 @@
                         <div class="box-hd">
                             <div class="more clearfix">
                                 <ul class="filter-list J_orderType">
-                                    <li class="first active"><a href="#">全部有效订单</a></li>
-                                    <li><a href="#">待支付</a></li>
-                                    <li><a href="#">待收货</a></li>
-                                    <li><a href="#">已关闭</a></li>
+                                    <li class="first active"><a href="/user/order">全部有效订单</a></li>
+                                    <li><a href="/user/order?page=<%=page%>&order_status=0">待支付</a></li>
+                                    <li><a href="/user/order?page=<%=page%>&order_status=1">已支付</a></li>
+                                    <li><a href="/user/order?page=<%=page%>&order_status=3">待收货</a></li>
+                                    <li><a href="/user/order?page=<%=page%>&order_status=6">已关闭</a></li>
                                 </ul>
                                 <form id="J_orderSearchForm" class="search-form clearfix" action="#" method="get">
                                     <input class="search-text" type="search" id="J_orderSearchKeywords" name="keywords" autocomplete="off" placeholder="输入商品名称、商品编号、订单号">
@@ -32,53 +33,79 @@
                             </div>
                         </div>
                         <div class="box-bd">
-                            <table class="table">
-                                <%for(var i=0;i<list.length;i++){%>
-                                    <tr>
-                                        <td colspan="2">
-                                            <div class="order-summary">
-                                                <%=helper.formatTime(list[i].add_time) %>|
-                                                    <%=list[i].name%> | 订单号：
-                                                        <%=list[i].order_id%> | 在线支付 实付金额：
-                                                            <%=list[i].all_price%>元
-                                            </div>
-
-                                            <%for(var j=0;j<list[i].orderItems.length;j++){%>
-                                                <div class="order-info clearfix">
-                                                    <div class="col_pic">
-                                                        <img src="<%=list[i].orderItems[j].product_img%>" />
-                                                    </div>
-                                                    <div class="col_title">
+                            <%if(list.length){%>
+                                <table class="table">
+                                    <%for(var i=0;i<list.length;i++){%>
+                                        <tr <%if(list[i].pay_status==0){%>class="order_pay"
+                                            <%}%>>
+                                                <td colspan="2">
+                                                    <div class="order-summary">
+                                                        <h2>
+                                                            <%if(list[i].order_status==0){%>
+                                                                已下单 未支付
+                                                                <%}else if(list[i].order_status==1){%>
+                                                                    已付款
+                                                                    <%}else if(list[i].order_status==2){%>
+                                                                        已配货
+                                                                        <%}else if(list[i].order_status==3){%>
+                                                                            已发货
+                                                                            <%}else if(list[i].order_status==4){%>
+                                                                                交易成功
+                                                                                <%}else if(list[i].order_status==5){%>
+                                                                                    已退货
+                                                                                    <%}else if(list[i].order_status==6){%>
+                                                                                        无效 已取消
+                                                                                        <%}%>
+                                                        </h2>
                                                         <p>
-                                                            <%=list[i].orderItems[j].product_title%>
-                                                        </p>
-                                                        <p>
-                                                            <%=list[i].orderItems[j].product_price%>元 ×
-                                                                <%=list[i].orderItems[j].product_num%>
-                                                        </p>
+                                                            <%=helper.formatTime(list[i].add_time) %> |
+                                                                <%=list[i].name%> | 订单号：
+                                                                    <%=list[i].order_id%> | 在线支付 实付金额：
+                                                                        <%=list[i].all_price%>元</p>
                                                     </div>
-                                                </div>
-                                                <%}%>
-                                        </td>
-
-                                        <td>
-                                            <span>
-													<a class="delete" href="/user/orderinfo?id=<%=list[i]._id%>">订单详情</a>
-													<br>
-													<br>
-													<a class="delete" href="#">申请售后</a>
+                                                    <%for(var j=0;j<list[i].orderItems.length;j++){%>
+                                                        <div class="order-info clearfix">
+                                                            <div class="col_pic">
+                                                                <img src="<%=list[i].orderItems[j].product_img%>" />
+                                                            </div>
+                                                            <div class="col_title">
+                                                                <p>
+                                                                    <%=list[i].orderItems[j].product_title%>
+                                                                </p>
+                                                                <p>
+                                                                    <%=list[i].orderItems[j].product_price%>元 ×
+                                                                        <%=list[i].orderItems[j].product_num%>
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                        <%}%>
+                                                </td>
+                                                <td>
+                                                    <span>
+													<%if(list[i].pay_status==1){%>
+														<a class="delete btn" href="/user/orderinfo?id=<%=list[i]._id%>">订单详情</a>
+														<br>
+														<br>
+														<a class="delete btn" href="#">申请售后</a>
+													<%}else{%>
+														<a class="delete btn btn-primary" href="/order/confirm?id=<%=list[i]._id%>">去支付</a>
+														<br>
+														<br>
+														<a class="delete btn" href="/user/orderinfo?id=<%=list[i]._id%>">订单详情</a>
+													<%}%>
 												</span>
-                                        </td>
-                                    </tr>
+                                                </td>
+                                        </tr>
+                                        <%}%>
+                                </table>
+                                <div id="page" class="pagination fr"></div>
+                                <%}else{%>
+                                    <p style="text-align:center; padding-top:100px;">没有查找到任何订到</p>
                                     <%}%>
-                            </table>
-
-                            <div id="page" class="pagination fr"></div>
                         </div>
                     </div>
 
                     <script>
-                        // 如果不想通过隐藏表单域获取，直接可以渲染
                         $('#page').jqPaginator({
                             totalPages: <%=totalPages%>,
                             visiblePages: 8,
@@ -86,19 +113,17 @@
                             onPageChange: function(num, type) {
                                 // console.log('当前第' + num + '页', type);
                                 if (type == 'change') {
-                                    location.href = "/user/order?page=" + num;
+                                    location.href = "/user/order?page=" + num + '&order_status=' + <%=order_status%>;
                                 }
                             }
                         });
                     </script>
-
                 </div>
                 <div class="clear"></div>
             </div>
         </div>
-        <!-- self_info -->
-        <% include  ../public/footer.html%>
 
+        <% include  ../public/footer.html%>
             </body>
 
             </html>

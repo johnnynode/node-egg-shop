@@ -1274,7 +1274,8 @@ header .top .right .gouwuche:hover {
 
 .grzxbj .selfinfo .rtcont {
     width: 978px;
-    height: 500px;
+    height: auto;
+    overflow: hidden;
     background: #fff;
 }
 
