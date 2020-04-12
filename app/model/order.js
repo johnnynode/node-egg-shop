@@ -1,5 +1,6 @@
 'use strict';
 
+/* 后期可添加 物流公司和物流单号相关的字段 */
 module.exports = app => {
     const mongoose = app.mongoose;
     const Schema = mongoose.Schema;

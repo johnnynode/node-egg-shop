@@ -42,6 +42,7 @@ module.exports = app => {
     router.post('/user/doLogin', webMiddleware, controller.web.user.doLogin);
     router.get('/user/welcome', webMiddleware, userAuthMiddleware, controller.web.user.welcome); // 用户中心欢迎
     router.get('/user/order', webMiddleware, userAuthMiddleware, controller.web.user.order); // 用户订单
+    router.get('/user/orderinfo', webMiddleware, userAuthMiddleware, controller.web.user.orderinfo); // 用户订单详情
 
     // 用户 address 收货地址（api接口）
     router.post('/user/addAddress', webMiddleware, userAuthMiddleware, controller.web.address.addAddress);

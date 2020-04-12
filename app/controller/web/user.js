@@ -371,9 +371,17 @@ class UserController extends Controller {
     }
 
     async orderinfo() {
-        // this.ctx.body = '用户订单';
-        await this.ctx.render('web/user/order_info.html');
+        const uid = this.ctx.service.cookies.get('userinfo')._id;
+        const id = this.ctx.request.query.id;
+        let orderResult = await this.ctx.model.Order.find({ "uid": uid, "_id": id });
+        //不可扩展对象的解决方法
+        orderResult = JSON.parse(JSON.stringify(orderResult));
+        orderResult[0].orderItems = await this.ctx.model.OrderItem.find({ "order_id": id });
+        await this.ctx.render('web/user/order_info.html', {
+            orderInfo: orderResult[0]
+        });
     }
+
 
     async address() {
         this.ctx.body = '收货地址';
