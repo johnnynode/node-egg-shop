@@ -26,5 +26,10 @@ module.exports = {
     redis: {
         enable: false,
         package: 'egg-redis',
+    },
+    // 配置 es
+    elasticsearch: {
+        enable: true,
+        package: 'egg-es'
     }
 };

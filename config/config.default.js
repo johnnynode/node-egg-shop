@@ -136,6 +136,12 @@ module.exports = appInfo => {
         }
     }
 
+    // 配置es
+    config.elasticsearch = {
+        host: 'localhost:9200',
+        apiVersion: '7.x'
+    };
+
     // add your user config here
     const userConfig = {
         // myAppName: 'egg',

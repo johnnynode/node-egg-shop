@@ -61,4 +61,6 @@ module.exports = app => {
     router.get('/pay/wechat', webMiddleware, controller.web.pay.wechat); // 微信支付
     router.post('/pay/wechat/notify', webMiddleware, controller.web.pay.wechatNotify); // 异步通知  注意关闭csrf验证
 
+    // es搜索
+    router.get('/search', controller.web.search.index);
 }
