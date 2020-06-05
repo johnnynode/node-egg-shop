@@ -70,10 +70,12 @@ module.exports = appInfo => {
                     '/pay/wechat/notify',
                 ];
                 let flag = false;
+                let url = ctx.request.url;
                 // 进行匹配
                 arr.some((item) => {
-                    if (ctx.request.url === item) {
-                        console.log(item);
+                    // 通用的路由相关 和 API相关
+                    if (url === item || url.indexOf('/api') !== -1) {
+                        // console.log(item);
                         flag = true;
                         return true;
                     }
@@ -81,6 +83,7 @@ module.exports = appInfo => {
                 return flag;
             },
         },
+        domainWhiteList: ['http://localhost:7100'] // 配置跨域
     };
 
     // 分页配置
@@ -140,6 +143,12 @@ module.exports = appInfo => {
     config.elasticsearch = {
         host: 'localhost:9200',
         apiVersion: '7.x'
+    };
+
+    // 配置 跨域
+    config.cors = {
+        origin: '*',
+        allowMethods: 'GET,PUT,POST,DELETE' // 一般默认的配置都是这几个，其他有 OPTIONS,HEAD,PATCH 按需加入
     };
 
     // add your user config here

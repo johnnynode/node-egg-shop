@@ -31,5 +31,10 @@ module.exports = {
     elasticsearch: {
         enable: true,
         package: 'egg-es'
+    },
+    // 配置跨域
+    cors: {
+        enable: true,
+        package: 'egg-cors',
     }
 };
