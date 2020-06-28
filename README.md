@@ -1,14 +1,79 @@
-# node-egg-shop
+node-egg-shop
+---
+
+基于eggjs的电商平台项目
+
+## 项目启动
+
+- 开启本地mongodb数据库：
+    * eg: 新建终端(或cmd)窗口，执行 $mongod -f /usr/local/mongodb/etc/mongod.conf$
+    * 默认占用端口：27017
+- 开启本地redis数据库：
+    * eg: 新建终端(或cmd)窗口，执行 $redis-cli$
+    * 默认占用端口：6379
+- 开启本地elasticsearch相关服务
+    * eg: 在终端(或cmd)窗口，执行 $elasticsearch$ (注意：配置好相关环境变量，不再赘述)
+    * 默认占用端口：9200
+- 运行本项目
+    * $npm run dev$
+    * 打开浏览器，访问：http://127.0.0.1:7001 (如果端口有冲突会增加端口号的方式来打开)
 
 ## 项目结构
 
+1 ） **服务分层**
+
 - 后台管理系统
-
 - 前端页面展示
-
 - API提供
-
 - 其他服务
+
+2 ) **文件结构**
+
+
+```tree
+egg-shop
+├── package.json
+├── app.js (可选)
+├── agent.js (可选)
+├── app
+│   ├── router.js
+│   ├── controller.js
+│   │   └── home.js
+│   ├── service.js
+│   │   └── my_task.js
+│   ├── public(可选)
+│   │   └── reset.css
+│   └── view(可选)
+│   │   └── home.tpl
+│   └── extend(可选)
+│       ├── helper.js (可选)
+│       ├── request.js (可选)
+│       ├── response.js (可选)
+│       ├── context.js (可选)
+│       ├── application.js (可选)
+│       └── agent.js
+├── config
+│   ├── plugin.js
+│   ├── config.default.js
+│   ├── config.prod.js
+│   ├── config.test.js (可选)
+│   ├── config.local.js (可选)
+│   └── config.unittest.js (可选)
+├── test
+│   ├── middleware
+```
+
+## 账户
+
+- 前台登录: 15311121111/123456
+- 后台登录：admin/123456
+
+## 开发相关
+
+- 涉及开发细节，注意事项，持续集成和部署
+
+- 详情见[gitbook]()
+
 
 ## 用户RBAC权限管理
 

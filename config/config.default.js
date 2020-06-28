@@ -147,8 +147,9 @@ module.exports = appInfo => {
 
     // 配置 跨域
     config.cors = {
-        origin: '*',
-        allowMethods: 'GET,PUT,POST,DELETE' // 一般默认的配置都是这几个，其他有 OPTIONS,HEAD,PATCH 按需加入
+        origin: '*', // 这里如果是cookie跨域请求，可能需要做具体的地址配置
+        allowMethods: 'GET,PUT,POST,DELETE', // 一般默认的配置都是这几个，其他有 OPTIONS,HEAD,PATCH 按需加入
+        credentials: true // 支持cookie跨域
     };
 
     // add your user config here
