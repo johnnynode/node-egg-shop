@@ -70,7 +70,7 @@ egg-shop
 
 ## 开发相关
 
-- 涉及开发细节，注意事项，持续集成和部署
+- 涉及开发细节，注意事项，todolist(相关改进), 持续集成和部署
 
 - 详情见[gitbook]()
 
@@ -289,32 +289,47 @@ limit(10). sort('-occupation'). select('name occupation'). exec(callback);
         * 生成支付宝支付跳转地址
         * 处理异步通知
 
-## QuickStart
+### 开发相关
 
-<!-- add docs here for user -->
+**开发顺序**
 
-see [egg docs][egg] for more detail.
+- 
 
-### Development
+**微服务**
 
-```bash
-$ npm i
-$ npm run dev
-$ open http://localhost:7001/
-```
+- 主要采用Nodejs, Seneca, PM2 实践
+- 测试框架采用基于nodejs的Mocha和Chai
+- 使用Sinon来mock服务以及Swagger文档化微服务
 
-### Deploy
+**项目周期**
 
-```bash
-$ npm start
-$ npm stop
-```
+- 敏捷流程
+- 版本管理
+- 文档管理
+- 自动化
+- 缺陷控制
 
-### npm scripts
+**DevOps**
 
-- Use `npm run lint` to check code style.
-- Use `npm test` to run unit test.
-- Use `npm run autod` to auto detect dependencies upgrade, see [autod](https://www.npmjs.com/package/autod) for more detail.
+- 规划
+- 编码
+- 构建
+- 测试
+- 部署
+- 发布
+- 监控
+- 运维
 
+- 持续优化
+- CI CD
+- Harbor Docker 技术
+- 前后端分离
 
-[egg]: https://eggjs.org
+### 技术栈相关系统
+
+- 基于Nodejs框架eggjs开发的电商系统 (maintaining)
+- 基于Nodejs框架koa2开发的CMS系统 (doing)
+- 基于Nodejs框架nestjs开发的电商系统 (todo)
+- 基于Golang+Beego+Grom开发的电商系统 (todo)
+- 基于Nodejs的流媒体直播系统 (todo)
+- 基于Golang的流媒体直播系统 (todo)

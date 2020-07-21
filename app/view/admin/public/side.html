@@ -1,7 +1,7 @@
 <ul class="aside">
     <%for(var i=0;i<sideList.length;i++){%>
         <li>
-            <%if((sideList[i].checked && sideList[i].type==1) || (userinfo.is_super==1&& sideList[i].type==1)){%>
+            <%if((sideList[i].checked && sideList[i].type==1) || (userinfo.is_super==1 && sideList[i].type==1)){%>
                 <h4>
                     <%=sideList[i].module_name %> <span class="nav_open"></span></h4>
                 <ul>
