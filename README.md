@@ -6,12 +6,15 @@ node-egg-shop
 ## 项目启动
 
 - 开启本地mongodb数据库：
-    * eg: 新建终端(或cmd)窗口，执行 $mongod -f /usr/local/mongodb/etc/mongod.conf$
+    * eg: 新建终端(或cmd)窗口，执行 $ `mongod -f /usr/local/mongodb/etc/mongod.conf`
     * 默认占用端口：27017
+    * 本地终端连接数据库：$ `mongo eggshop -u eggadmin -p 123456`
 - 开启本地redis数据库：
+    * 如若使用，先在config/plugin.js中开启配置，默认是关闭的
     * eg: 新建终端(或cmd)窗口，执行 $redis-cli$
     * 默认占用端口：6379
 - 开启本地elasticsearch相关服务
+    * 如若使用，先在config/plugin.js中开启配置，默认是关闭的
     * eg: 在终端(或cmd)窗口，执行 $elasticsearch$ (注意：配置好相关环境变量，不再赘述)
     * 默认占用端口：9200
 - 运行本项目

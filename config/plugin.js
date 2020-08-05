@@ -29,7 +29,7 @@ module.exports = {
     },
     // 配置 es
     elasticsearch: {
-        enable: true,
+        enable: false,
         package: 'egg-es'
     },
     // 配置跨域
