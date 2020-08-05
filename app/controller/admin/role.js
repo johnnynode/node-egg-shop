@@ -4,10 +4,19 @@ const BaseController = require('./base.js');
 
 class RoleController extends BaseController {
     async index() {
-        const result = await this.ctx.model.Role.find({});
-        await this.ctx.render('admin/role/index', {
-            list: result,
-        });
+        // 查询所有列表，有必要分页
+        let result;
+        try {
+            result = await this.ctx.model.Role.find({});
+        } catch (err) {
+            // 打印日志 log4j 【增加鲁棒性 TODO】
+            console.log(err);
+            result = [];
+        } finally {
+            await this.ctx.render('admin/role/index', {
+                list: result,
+            });
+        }
     }
 
     async add() {
@@ -15,21 +24,39 @@ class RoleController extends BaseController {
     }
 
     async doAdd() {
-        const role = new this.ctx.model.Role({
-            title: this.ctx.request.body.title,
-            description: this.ctx.request.body.description,
-        });
-
-        await role.save(); // 注意
-        await this.success('/admin/role', '增加角色成功');
+        let msg = '增加角色成功';
+        let flag = true;
+        try {
+            const role = new this.ctx.model.Role({
+                title: this.ctx.request.body.title,
+                description: this.ctx.request.body.description,
+            });
+            await role.save(); // 注意
+        } catch (err) {
+            msg = '增加角色失败';
+            flag = false;
+        } finally {
+            await this[flag ? 'success' : 'error']('/admin/role', msg);
+        }
     }
 
     async edit() {
+        // 获取参数
         const id = this.ctx.query.id;
-        const result = await this.ctx.model.Role.find({ _id: id });
-        await this.ctx.render('admin/role/edit', {
-            list: result[0],
-        });
+
+        // 数据库查询操作
+        let result;
+        try {
+            result = await this.ctx.model.Role.find({ _id: id });
+        } catch (err) {
+            // 打印日志 log4j 【增加鲁棒性 TODO】
+            console.log(err);
+            result = [{}];
+        } finally {
+            await this.ctx.render('admin/role/edit', {
+                list: result[0],
+            });
+        }
     }
 
     async doEdit() {
@@ -38,7 +65,7 @@ class RoleController extends BaseController {
         const title = this.ctx.request.body.title;
         const description = this.ctx.request.body.description;
 
-        // 有必要验证上述参数的合法性, 此处省略 TODO 【增加鲁棒性】
+        // 有必要验证上述参数的合法性, 此处省略【增加鲁棒性 TODO】
 
         // 数据库更新操作
         let result;
@@ -55,7 +82,7 @@ class RoleController extends BaseController {
         } finally {
             let flag = result && result.ok;
             let msg = flag ? '编辑角色成功' : '编辑角色失败：' + result.msg;
-            await this.success('/admin/role', msg);
+            await this[flag ? 'success' : 'error']('/admin/role', msg);
         }
     }
 
