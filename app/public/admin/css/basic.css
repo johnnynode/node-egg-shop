@@ -43,9 +43,9 @@ ul {
     padding: 10px 15px;
     margin-bottom: -1px;
     color: #fff;
-    background-color: #428bca;
-    border-color: #428bca;
-    border-bottom: 2px solid #3a82bf;
+    background-color: #333;
+    border-color: #333;
+    border-bottom: 2px solid #333;
 }
 
 .aside h4 .nav_open {
@@ -214,4 +214,17 @@ input[type=file] {
     top: 0px;
     right: 0px;
     cursor: pointer;
+}
+
+#admin-navbar-collapse,
+.navbar-inverse {
+    background-color: #eb3339;
+    border: none;
+}
+
+.navbar-inverse h3 {
+    font-size: 20px;
+    color: #fff;
+    line-height: 52px;
+    margin: 0;
 }
