@@ -59,7 +59,7 @@ body {
 #login dl dd input.submit {
     border: none;
     display: block;
-    margin: 30px auto 0;
+    margin: 15px auto 0;
     cursor: pointer;
     width: 130px;
     height: 40px;
