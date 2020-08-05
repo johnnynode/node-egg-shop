@@ -9,33 +9,18 @@ class LoginController extends BaseController {
     }
 
     /*
-        注意事项：
-
-        1）主要步骤
+        主要步骤
         1、需要在前端页面用js验证用户输入的信息是否正确
-        2、后台获取数据以后判断数据格式是否正确
-        3、后台获取表单提交的数据
-        4、后台判断验证码是否正确
-
-        2）数据库相关
-        1、配置mongoose
-        2、创建操作数据库的model
-        3、在用户表（集合）中查询当前用户是否存在
-        （mongoose操作mongodb数据库）https://www.npmjs.com/package/egg-mongoose
-        4、如果数据库有此用户（登录成功） ：保存用户信息 跳转到后台管理系统
-        5、如果数据库有此用户（登录失败）： 跳转到登录页面
-        6、验证码错误： 跳转到登录页面, 提示验证码不正确
+        2、后台获取表单提交的数据并判断数据格式是否正确 【暂未处理】
+        3、后台判断验证码是否正确
+        4、后台判断用户是否合法
       */
 
     async doLogin() {
-        // await this.success('/admin/login');
         const { ctx } = this;
-        // console.log(ctx.request.body);
 
         // 获取提交的数据
         const code = ctx.request.body.code;
-        // console.log('code: ', code);
-        // console.log('.........');
         // 相关校验工作 先校验验证码
         if (code.toUpperCase() === ctx.session.code.toUpperCase()) {
             // 获取提交的数据
