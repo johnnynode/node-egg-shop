@@ -25,7 +25,7 @@ class ToolsService extends Service {
         return captcha;
     }
 
-    // md5 加密 三次
+    // md5加密三次，和前端约定都加密三次，前后端加密并无关系
     md5(str) {
         return md5(md5(md5(str)));
     }

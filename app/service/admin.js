@@ -13,13 +13,13 @@ class AdminService extends Service {
         */
 
         // 1、获取当前用户的角色
-        const userinfo = this.ctx.session.userinfo;
-        const role_id = userinfo.role_id;
+        const adminInfo = this.ctx.session.adminInfo;
+        const role_id = adminInfo.role_id;
         const pathname = url.parse(this.ctx.request.url).pathname; // 获取当前用户访问的地址
         // console.log(pathname);
         // 忽略权限判断的地址    is_super表示是管理员
         const ignoreUrl = ['/admin/login', '/admin/doLogin', '/admin/verify', '/admin/loginOut'];
-        if (ignoreUrl.indexOf(pathname) !== -1 || userinfo.is_super === 1) {
+        if (ignoreUrl.indexOf(pathname) !== -1 || adminInfo.is_super === 1) {
             return true; // 允许访问
         }
 

@@ -40,14 +40,14 @@ class LoginController extends BaseController {
         if (code.toUpperCase() === ctx.session.code.toUpperCase()) {
             // 获取提交的数据
             const username = ctx.request.body.username;
-            const password = this.service.tools.md5(ctx.request.body.password); // 前端也要三次加密
+            const password = this.service.tools.md5(ctx.request.body.password);
 
             // 通过model查询数据库
             const result = await ctx.model.Admin.find({ username, password });
             if (result.length) {
                 // 登录成功
                 // 1、保存用户信息到session
-                this.ctx.session.userinfo = result[0];
+                this.ctx.session.adminInfo = result[0];
                 // 2、跳转到用户中心
                 ctx.redirect('/admin');
             } else {
@@ -62,7 +62,7 @@ class LoginController extends BaseController {
     // 退出登录
     async loginOut() {
         const { ctx } = this;
-        ctx.session.userinfo = null;
+        ctx.session.adminInfo = null;
         ctx.redirect('/admin/login');
     }
 }

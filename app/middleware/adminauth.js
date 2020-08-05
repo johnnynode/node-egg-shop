@@ -12,16 +12,15 @@ module.exports = (options, app) => {
         ctx.state.prevPage = ctx.request.headers.referer; // 全局变量
         const pathname = url.parse(ctx.request.url).pathname;
 
-        if (ctx.session.userinfo) {
-            ctx.state.userinfo = ctx.session.userinfo; // 挂载全局变量
+        if (ctx.session.adminInfo) {
+            ctx.state.adminInfo = ctx.session.adminInfo; // 挂载全局变量
             const hasAuth = await ctx.service.admin.checkAuth();
             // console.log('hasAuth', hasAuth);
-            // console.log('ctx.state.userinfo', ctx.state.userinfo);
             if (hasAuth) {
                 // 获取权限列表
-                ctx.state.sideList = await ctx.service.admin.getAuthList(ctx.session.userinfo.role_id);
-                // console.log('ctx.session.userinfo.role_id', ctx.session.userinfo.role_id);
-                console.log('ctx.state.sideList', ctx.state.sideList);
+                ctx.state.sideList = await ctx.service.admin.getAuthList(ctx.session.adminInfo.role_id);
+                // console.log('ctx.session.useadminInforinfo.role_id', ctx.session.adminInfo.role_id);
+                // console.log('ctx.state.sideList', ctx.state.sideList);
                 await next();
             } else {
                 ctx.body = '您没有权限访问当前地址';
