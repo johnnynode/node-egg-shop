@@ -9,7 +9,7 @@ class RoleController extends BaseController {
         try {
             result = await this.ctx.model.Role.find({});
         } catch (err) {
-            // 打印日志 log4j 【增加鲁棒性 TODO】
+            // 输出日志  egg-logger 【增加鲁棒性 TODO】
             console.log(err);
             result = [];
         } finally {
@@ -49,7 +49,7 @@ class RoleController extends BaseController {
         try {
             result = await this.ctx.model.Role.find({ _id: id });
         } catch (err) {
-            // 打印日志 log4j 【增加鲁棒性 TODO】
+            // 打印日志  egg-logger 【增加鲁棒性 TODO】
             console.log(err);
             result = [{}];
         } finally {
