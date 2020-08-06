@@ -25,11 +25,11 @@ class BaseController extends Controller {
         this.ctx.body = captcha.data; /* 给页面返回一张图片*/
     }
 
-    // 封装一个删除方法
+    // 封装一个删除方法：通过一句话来操作不同的数据库表, 支持get操作
     async delete() {
         /*
-        1、获取要删除的数据库表   model
-        2、获取要删除数据的id   _id
+        1、获取要删除的数据库表  model
+        2、获取要删除数据的id  _id
         3、执行删除
         4、返回到以前的页面 ctx.request.headers['referer'] (上一页的地址)
         */
@@ -37,9 +37,14 @@ class BaseController extends Controller {
         // 获取参数
         const model = this.ctx.request.query.model; // Role
         const id = this.ctx.request.query.id;
-        await this.ctx.model[model].deleteOne({ _id: id }); // 注意写法
-        // this.ctx.redirect(this.ctx.request.headers['referer']); // 这种写法可以，但是需要在中间件中配置成全局变量，通用化
-        this.ctx.redirect(this.ctx.state.prevPage);
+        try {
+            await this.ctx.model[model].deleteOne({ _id: id }); // 注意写法
+        } catch (err) {
+            // 如有必要 egg-logger 【记录日志】TODO
+        } finally {
+            // this.ctx.redirect(this.ctx.request.headers['referer']); // 这种写法可以，但是需要在中间件中配置成全局变量，通用化
+            this.ctx.redirect(this.ctx.state.prevPage);
+        }
     }
 
     // 改变状态的方法  Api接口

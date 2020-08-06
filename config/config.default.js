@@ -83,7 +83,8 @@ module.exports = appInfo => {
                 return flag;
             },
         },
-        domainWhiteList: ['http://localhost:7100'] // 配置跨域
+        // domainWhiteList: ['.localhost:7100', '.127.0.0.1:7001'] // 配置跨域 这里存在问题
+        domainWhiteList: []
     };
 
     // 分页配置
