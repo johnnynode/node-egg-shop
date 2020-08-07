@@ -23,7 +23,7 @@
     <div class="table-responsive">
         <table class="table table-bordered">
             <thead>
-                <tr>
+                <tr style="font-size: 16px;">
                     <th>模块名称</th>
                     <th>节点类型</th>
                     <th>操作名称</th>
@@ -37,7 +37,7 @@
             <tbody>
                 <%for(var i=0;i<list.length;i++){%>
                     <tr>
-                        <td>
+                        <td style="font-weight: 500;">
                             <%=list[i].module_name%>
                         </td>
                         <td>
@@ -70,8 +70,11 @@
                     </tr>
                     <%for(var j=0;j<list[i].items.length;j++){%>
                         <tr>
-                            <td>----
-                                <%=list[i].items[j].module_name%>
+                            <td>
+                                <!--
+                                    ----
+                                    <%=list[i].items[j].module_name%>
+                                -->
                             </td>
                             <td>
                                 <%if(list[i].items[j].type==1){%>

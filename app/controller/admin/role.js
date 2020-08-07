@@ -5,17 +5,14 @@ const BaseController = require('./base.js');
 class RoleController extends BaseController {
     async index() {
         // 查询所有列表，有必要分页
-        let result;
         try {
-            result = await this.ctx.model.Role.find({});
-        } catch (err) {
-            // 输出日志  egg-logger 【增加鲁棒性 TODO】
-            console.log(err);
-            result = [];
-        } finally {
+            let result = await this.ctx.model.Role.find({});
             await this.ctx.render('admin/role/index', {
                 list: result,
             });
+        } catch (err) {
+            // 输出日志  egg-logger 【增加鲁棒性 TODO】
+
         }
     }
 
@@ -45,17 +42,14 @@ class RoleController extends BaseController {
         const id = this.ctx.query.id;
 
         // 数据库查询操作
-        let result;
         try {
-            result = await this.ctx.model.Role.find({ _id: id });
-        } catch (err) {
-            // 打印日志  egg-logger 【增加鲁棒性 TODO】
-            console.log(err);
-            result = [{}];
-        } finally {
+            let result = await this.ctx.model.Role.find({ _id: id });
             await this.ctx.render('admin/role/edit', {
                 list: result[0],
             });
+        } catch (err) {
+            // 打印日志  egg-logger 【增加鲁棒性 TODO】
+            console.log(err);
         }
     }
 

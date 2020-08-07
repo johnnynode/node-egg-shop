@@ -5,9 +5,8 @@ const BaseController = require('./base.js');
 class ManagerController extends BaseController {
     async index() {
         // 查询管理员表并管理角色表 多表联查
-        let list;
         try {
-            list = await this.ctx.model.Admin.aggregate([{
+            let list = await this.ctx.model.Admin.aggregate([{
                 $lookup: {
                     from: 'role',
                     localField: 'role_id',
@@ -15,11 +14,9 @@ class ManagerController extends BaseController {
                     as: 'role',
                 },
             }]);
+            await this.ctx.render('admin/manager/index', { list });
         } catch (err) {
             // 如有必要 egg-logger 【记录日志】TODO
-            list = [];
-        } finally {
-            await this.ctx.render('admin/manager/index', { list });
         }
     }
 
@@ -53,7 +50,6 @@ class ManagerController extends BaseController {
     async edit() {
         // 获取编辑的数据
         const id = this.ctx.request.query.id;
-
         try {
             const adminResult = await this.ctx.model.Admin.find({ _id: id });
             // 获取角色
