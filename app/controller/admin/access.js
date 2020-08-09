@@ -70,12 +70,17 @@ class AccessController extends BaseController {
     async edit() {
         const id = this.ctx.request.query.id;
         // 获取编辑的数据
-        const accessResult = await this.ctx.model.Access.find({ _id: id });
-        const result = await this.ctx.model.Access.find({ module_id: '0' });
-        await this.ctx.render('admin/access/edit', {
-            list: accessResult[0],
-            moduleList: result,
-        });
+        try {
+            const accessResult = await this.ctx.model.Access.find({ _id: id });
+            const result = await this.ctx.model.Access.find({ module_id: '0' });
+            await this.ctx.render('admin/access/edit', {
+                list: accessResult[0],
+                moduleList: result,
+            });
+        } catch (err) {
+            // 如有必要 egg-logger 【记录日志】TODO
+            console.log(err);
+        }
     }
 
     async doEdit() {
@@ -83,12 +88,20 @@ class AccessController extends BaseController {
         const updateResult = this.ctx.request.body;
         const id = updateResult.id;
         const module_id = updateResult.module_id;
-        // 菜单  或者操作
-        if (module_id !== '0') {
-            updateResult.module_id = this.app.mongoose.Types.ObjectId(module_id); // 调用mongoose里面的方法把字符串转换成ObjectId
+
+        // 若有必要，检查传输字段的合法性 TODO
+        try {
+            // 菜单或者操作 注意：模块的'0'是无法转换ObjectId的
+            if (module_id !== '0') {
+                // 调用mongoose里面的方法把字符串转换成ObjectId
+                updateResult.module_id = this.app.mongoose.Types.ObjectId(module_id);
+            }
+            await this.ctx.model.Access.updateOne({ _id: id }, updateResult);
+            await this.success('/admin/access', '修改权限成功');
+        } catch (err) {
+            // 如有必要 egg-logger 【记录日志】TODO
+            console.log(err);
         }
-        await this.ctx.model.Access.updateOne({ _id: id }, updateResult);
-        await this.success('/admin/access', '修改权限成功');
     }
 }
 module.exports = AccessController;
