@@ -10,7 +10,6 @@ module.exports = (options, app) => {
         */
         ctx.state.csrf = ctx.csrf; // 全局变量
         ctx.state.prevPage = ctx.request.headers.referer; // 全局变量
-        const pathname = url.parse(ctx.request.url).pathname;
 
         if (ctx.session.adminInfo) {
             ctx.state.adminInfo = ctx.session.adminInfo; // 挂载全局变量
@@ -26,8 +25,10 @@ module.exports = (options, app) => {
                 ctx.body = '您没有权限访问当前地址';
             }
         } else {
-            // 排除不需要做权限判断的页面  /admin/verify?mt=0.7466881301614958
-            if (pathname === '/admin/login' || pathname === '/admin/doLogin' || pathname === '/admin/verify') {
+            // 排除不需要做权限判断的页面
+            const pathname = url.parse(ctx.request.url).pathname; // 当前url
+            const ignoreUrl = app.config.adminIgnoreUrl; // 忽略url列表
+            if (ignoreUrl.indexOf(pathname) !== -1) {
                 await next();
             } else {
                 ctx.redirect('/admin/login');

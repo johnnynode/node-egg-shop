@@ -51,24 +51,27 @@ class BaseController extends Controller {
         const model = this.ctx.request.query.model; /* 数据库表 Model*/
         const attr = this.ctx.request.query.attr; /* 更新的属性 如:status is_best */
         const id = this.ctx.request.query.id; /* 更新的 id*/
-        const result = await this.ctx.model[model].find({ _id: id });
-        let json = {};
-        if (result.length) {
-            json = result[0][attr] === 1 ? {
-                [attr]: 0
-            } : {
-                [attr]: 1
-            };
-            // 执行更新操作
-            const updateResult = await this.ctx.model[model].updateOne({ _id: id }, json);
-            if (updateResult) {
-                this.ctx.body = { message: '更新成功', success: true, status: json[attr] };
+
+        try {
+            const result = await this.ctx.model[model].find({ _id: id });
+            if (result.length) {
+                let json = {
+                    [attr]: result[0][attr] === 1 ? 0 : 1
+                };
+                // 执行更新操作
+                const updateResult = await this.ctx.model[model].updateOne({ _id: id }, json);
+                if (updateResult) {
+                    this.ctx.body = { message: '更新成功', success: true, status: json[attr] };
+                } else {
+                    this.ctx.body = { message: '更新失败', success: false };
+                }
             } else {
-                this.ctx.body = { message: '更新失败', success: false };
+                // 接口
+                this.ctx.body = { message: '更新失败,参数错误', success: false };
             }
-        } else {
-            // 接口
-            this.ctx.body = { message: '更新失败,参数错误', success: false };
+        } catch (err) {
+            // 打印日志  egg-logger 【增加鲁棒性 TODO】
+            console.log(err);
         }
     }
 

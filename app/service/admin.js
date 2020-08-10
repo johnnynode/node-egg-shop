@@ -18,7 +18,7 @@ class AdminService extends Service {
         const pathname = url.parse(this.ctx.request.url).pathname; // 获取当前用户访问的地址
         // console.log(pathname);
         // 忽略权限判断的地址    is_super表示是管理员
-        const ignoreUrl = ['/admin/login', '/admin/doLogin', '/admin/verify', '/admin/loginOut'];
+        const ignoreUrl = this.config.adminIgnoreUrl;
         if (ignoreUrl.indexOf(pathname) !== -1 || adminInfo.is_super === 1) {
             return true; // 允许访问
         }

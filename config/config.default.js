@@ -87,6 +87,9 @@ module.exports = appInfo => {
         domainWhiteList: []
     };
 
+    // 后台管理系统忽略url
+    config.adminIgnoreUrl = ['/admin/login', '/admin/doLogin', '/admin/verify', '/admin/loginOut'];
+
     // 分页配置
     config.pageSize = 10;
 
