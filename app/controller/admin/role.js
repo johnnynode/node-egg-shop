@@ -82,12 +82,17 @@ class RoleController extends BaseController {
 
     async auth() {
         const role_id = this.ctx.request.query.id;
-        const result = await this.service.admin.getAuthList(role_id);
 
-        await this.ctx.render('admin/role/auth', {
-            list: result,
-            role_id,
-        });
+        try {
+            const result = await this.service.admin.getAuthList(role_id);
+            await this.ctx.render('admin/role/auth', {
+                list: result,
+                role_id,
+            });
+        } catch (err) {
+            // 打印日志  egg-logger 【增加鲁棒性 TODO】
+            console.log(err);
+        }
     }
 
     async doAuth() {
@@ -95,26 +100,29 @@ class RoleController extends BaseController {
         1、删除当前角色下面的所有权限
         2、把获取的权限和角色增加到数据库
         */
-        console.log(this.ctx.request.body);
+
+        // console.log(this.ctx.request.body);
         const role_id = this.ctx.request.body.role_id;
         const access_node = this.ctx.request.body.access_node;
 
-        // 1、删除当前角色下面的所有权限
-        await this.ctx.model.RoleAccess.deleteMany({ role_id });
+        try {
+            // 1、删除当前角色下面的所有权限
+            await this.ctx.model.RoleAccess.deleteMany({ role_id });
 
-        // 2、给role_access增加数据 把获取的权限和角色增加到数据库
-        for (let i = 0; i < access_node.length; i++) {
-            const roleAccessData = new this.ctx.model.RoleAccess({
-                role_id,
-                access_id: access_node[i],
-            });
-
-            roleAccessData.save();
+            // 2、给role_access增加数据 把获取的权限和角色增加到数据库
+            for (let i = 0; i < access_node.length; i++) {
+                const roleAccessData = new this.ctx.model.RoleAccess({
+                    role_id,
+                    access_id: access_node[i],
+                });
+                roleAccessData.save();
+            }
+            await this.success('/admin/role/auth?id=' + role_id, '授权成功');
+        } catch (err) {
+            // 打印日志  egg-logger 【增加鲁棒性 TODO】
+            console.log(err);
         }
-
-        await this.success('/admin/role/auth?id=' + role_id, '授权成功');
     }
-
 }
 
 module.exports = RoleController;
