@@ -52,7 +52,7 @@ class GoodsTypeController extends BaseController {
         const title = this.ctx.request.body.title;
         const description = this.ctx.request.body.description;
 
-        // 合法性校验
+        // 合法性校验 TODO
 
         try {
             await this.ctx.model.GoodsType.updateOne({ _id }, {
