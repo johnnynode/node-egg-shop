@@ -89,6 +89,7 @@ class ManagerController extends BaseController {
             await this.success('/admin/manager', '修改用户信息成功');
         } catch (err) {
             // 如有必要 egg-logger 【记录日志】TODO
+            console.log(err);
         }
     }
 }
