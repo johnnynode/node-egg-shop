@@ -60,8 +60,8 @@ var app = {
     },
 
     resizeIframe() {
-        const h = $('html').height() - 100;
-        const rightMain = $('#rightMain');
+        var h = $('html').height() - 100;
+        var rightMain = $('#rightMain');
         rightMain && rightMain.height(h);
     },
 };
