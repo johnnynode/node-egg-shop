@@ -110,9 +110,14 @@ class FocusController extends BaseController {
                 [fieldname]: dir.saveDir,
             });
         }
-        const focus = new this.ctx.model.Focus(Object.assign(files, parts.field));
-        await focus.save();
-        await this.success('/admin/focus', '增加轮播图成功');
+        try {
+            const focus = new this.ctx.model.Focus(Object.assign(files, parts.field));
+            await focus.save();
+            await this.success('/admin/focus', '增加轮播图成功');
+        } catch (err) {
+            // 打印日志  egg-logger 【增加鲁棒性 TODO】
+            console.log(err);
+        }
     }
 
     async edit() {
@@ -148,8 +153,13 @@ class FocusController extends BaseController {
         // 修改操作
         const id = parts.field.id;
         const updateResult = Object.assign(files, parts.field);
-        await this.ctx.model.Focus.updateOne({ _id: id }, updateResult);
-        await this.success('/admin/focus', '修改轮播图成功');
+        try {
+            await this.ctx.model.Focus.updateOne({ _id: id }, updateResult);
+            await this.success('/admin/focus', '修改轮播图成功');
+        } catch (err) {
+            // 打印日志  egg-logger 【增加鲁棒性 TODO】
+            console.log(err);
+        }
     }
 }
 
