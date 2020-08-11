@@ -81,18 +81,24 @@ class BaseController extends Controller {
         const attr = this.ctx.request.query.attr; /* 更新的属性 如:sort */
         const id = this.ctx.request.query.id; /* 更新的 id*/
         const val = this.ctx.request.query.val; /* 数量*/
-        const result = await this.ctx.model[model].find({ _id: id });
 
-        if (result.length) {
-            const json = {
-                [attr]: val,
-            };
-            // 执行更新操作
-            const updateResult = await this.ctx.model[model].updateOne({ _id: id }, json);
-            this.ctx.body = updateResult ? { message: '更新成功', success: true } : { message: '更新失败', success: false };
-        } else {
-            // 接口
-            this.ctx.body = { message: '更新失败,参数错误', success: false };
+        try {
+            const result = await this.ctx.model[model].find({ _id: id });
+            if (result.length) {
+                const json = {
+                    [attr]: val,
+                };
+                // 执行更新操作
+                const updateResult = await this.ctx.model[model].updateOne({ _id: id }, json);
+                let flag = !!updateResult;
+                this.ctx.body = { message: '更新' + flag ? '成功' : '失败', success: flag };
+            } else {
+                // 接口
+                this.ctx.body = { message: '更新失败,参数错误', success: false };
+            }
+        } catch (err) {
+            // 打印日志  egg-logger 【增加鲁棒性 TODO】
+            console.log(err);
         }
     }
 }
