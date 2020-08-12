@@ -6,6 +6,7 @@ const fs = require('fs');
 const pump = require('mz-modules/pump');
 
 class GoodsController extends BaseController {
+    // 商品列表
     async index() {
         const page = this.ctx.request.query.page || 1;
         const keyword = this.ctx.request.query.keyword;
@@ -15,44 +16,242 @@ class GoodsController extends BaseController {
             json = Object.assign({ title: { $regex: new RegExp(keyword) } });
         }
         const pageSize = this.config.pageSize;
-        // 获取当前数据表的总数量
-        const totalNum = await this.ctx.model.Goods.find(json).count();
-        const goodsResult = await this.ctx.model.Goods.find(json).skip((page - 1) * pageSize).limit(pageSize);
 
-        await this.ctx.render('admin/goods/index', {
-            list: goodsResult,
-            totalPages: Math.ceil(totalNum / pageSize),
-            page,
-            keyword,
-        });
+        try {
+            // 获取当前数据表的总数量
+            const totalNum = await this.ctx.model.Goods.find(json).count();
+            const goodsResult = await this.ctx.model.Goods.find(json).skip((page - 1) * pageSize).limit(pageSize);
+
+            await this.ctx.render('admin/goods/index', {
+                list: goodsResult,
+                totalPages: Math.ceil(totalNum / pageSize),
+                page,
+                keyword,
+            });
+        } catch (err) {
+            // 如有必要 egg-logger 【记录日志】TODO
+            console.log(err);
+        }
     }
 
-    async add() {
-        // 获取所有的颜色值
-        const colorResult = await this.ctx.model.GoodsColor.find({});
-        // 获取所有的商品类型
-        const goodsType = await this.ctx.model.GoodsType.find({});
-        // 获取商品分类
-        const goodsCate = await this.ctx.model.GoodsCate.aggregate([{
-                $lookup: {
-                    from: 'goods_cate',
-                    localField: '_id',
-                    foreignField: 'pid',
-                    as: 'items',
-                },
-            },
-            {
-                $match: {
-                    pid: '0',
-                },
-            },
-        ]);
+    // 获取商品类型的属性 api接口
+    async goodsTypeAttribute() {
+        const cate_id = this.ctx.request.query.cate_id;
 
-        await this.ctx.render('admin/goods/add', {
-            colorResult,
-            goodsType,
-            goodsCate,
-        });
+        try {
+            // 注意 await
+            const goodsTypeAttribute = await this.ctx.model.GoodsTypeAttribute.find({ cate_id });
+            // console.log(goodsTypeAttribute);
+            this.ctx.body = {
+                result: goodsTypeAttribute,
+            };
+        } catch (err) {
+            // 如有必要 egg-logger 【记录日志】TODO
+            console.log(err);
+        }
+    }
+
+    // 上传商品详情的图片
+    async goodsUploadImage() {
+        const parts = this.ctx.multipart({ autoFields: true });
+        let files = {};
+        let stream;
+        while ((stream = await parts())) {
+            if (!stream.filename) {
+                break;
+            }
+            const fieldname = stream.fieldname; // file表单的名字
+
+            // 上传图片的目录
+            const dir = await this.service.tools.getUploadFile(stream.filename);
+            const target = dir.uploadDir;
+            const writeStream = fs.createWriteStream(target);
+
+            await pump(stream, writeStream);
+
+            files = Object.assign(files, {
+                [fieldname]: dir.saveDir,
+            });
+
+        }
+        // console.log(files);
+        // 图片的地址转化成 {link: 'path/to/image.jpg'}
+        this.ctx.body = { link: files.file };
+    }
+
+    // 上传相册的图片
+    async goodsUploadPhoto() {
+        // 实现图片上传
+        const parts = this.ctx.multipart({ autoFields: true });
+        let files = {};
+        let stream;
+        while ((stream = await parts())) {
+            if (!stream.filename) {
+                break;
+            }
+            const fieldname = stream.fieldname; // file表单的名字
+
+            // 上传图片的目录
+            const dir = await this.service.tools.getUploadFile(stream.filename);
+            const target = dir.uploadDir;
+            const writeStream = fs.createWriteStream(target);
+
+            await pump(stream, writeStream);
+
+            files = Object.assign(files, {
+                [fieldname]: dir.saveDir,
+            });
+
+            // 生成缩略图
+            this.service.tools.jimpImg(target);
+        }
+
+        // 图片的地址转化成 {link: 'path/to/image.jpg'}
+        this.ctx.body = { link: files.file };
+    }
+
+    // 修改图片颜色
+    async changeGoodsImageColor() {
+        let color_id = this.ctx.request.body.color_id;
+        const goods_image_id = this.ctx.request.body.goods_image_id;
+        // console.log(this.ctx.request.body);
+        if (color_id) {
+            color_id = this.app.mongoose.Types.ObjectId(color_id);
+        }
+
+        try {
+            const result = await this.ctx.model.GoodsImage.updateOne({ _id: goods_image_id }, {
+                color_id,
+            });
+            let flag = !!result;
+            this.ctx.body = { success: flag, message: '更新数据' + (flag ? '成功' : '失败') };
+        } catch (err) {
+            // 如有必要 egg-logger 【记录日志】TODO
+            console.log(err);
+        }
+    }
+
+    // 删除图片
+    async goodsImageRemove() {
+        const goods_image_id = this.ctx.request.body.goods_image_id;
+        // 注意  图片要不要删掉 fs模块删除以前当前数据对应的图片
+
+        try {
+            const result = await this.ctx.model.GoodsImage.deleteOne({ _id: goods_image_id }); // 注意写法
+            let flag = !!result;
+            this.ctx.body = { success: flag, message: '删除数据' + (flag ? '成功' : '失败') };
+        } catch (err) {
+            // 如有必要 egg-logger 【记录日志】TODO
+            console.log(err);
+        }
+    }
+
+    // 添加商品
+    async add() {
+        try {
+            // 获取所有的颜色值
+            const colorResult = await this.ctx.model.GoodsColor.find({});
+            // 获取所有的商品类型
+            const goodsType = await this.ctx.model.GoodsType.find({});
+            // 获取商品分类
+            const goodsCate = await this.ctx.model.GoodsCate.aggregate([{
+                    $lookup: {
+                        from: 'goods_cate',
+                        localField: '_id',
+                        foreignField: 'pid',
+                        as: 'items',
+                    },
+                },
+                {
+                    $match: {
+                        pid: '0',
+                    },
+                },
+            ]);
+            await this.ctx.render('admin/goods/add', {
+                colorResult,
+                goodsType,
+                goodsCate,
+            });
+        } catch (err) {
+            // 如有必要 egg-logger 【记录日志】TODO
+            console.log(err);
+        }
+    }
+
+    async doAdd() {
+        const parts = this.ctx.multipart({ autoFields: true });
+        let files = {};
+        let stream;
+        while ((stream = await parts())) {
+            if (!stream.filename) {
+                break;
+            }
+            const fieldname = stream.fieldname; // file表单的名字
+            // 上传图片的目录
+            const dir = await this.service.tools.getUploadFile(stream.filename);
+            const target = dir.uploadDir;
+            const writeStream = fs.createWriteStream(target);
+            await pump(stream, writeStream);
+            files = Object.assign(files, {
+                [fieldname]: dir.saveDir,
+            });
+            // 上传图片成功以后生成缩略图
+            this.service.tools.jimpImg(target);
+        }
+
+        const formFields = Object.assign(files, parts.field);
+        // console.log(formFields);
+
+        // 增加商品信息
+        const goodsRes = new this.ctx.model.Goods(formFields);
+        const result = await goodsRes.save();
+
+        // console.log(result._id);
+        // 增加图库信息
+        let goods_image_list = formFields.goods_image_list;
+        if (result._id && goods_image_list) {
+            // 解决上传一个图库不是数组的问题
+            if (typeof(goods_image_list) === 'string') {
+                goods_image_list = new Array(goods_image_list);
+            }
+
+            for (let i = 0; i < goods_image_list.length; i++) {
+                const goodsImageRes = new this.ctx.model.GoodsImage({
+                    goods_id: result._id,
+                    img_url: goods_image_list[i],
+                });
+                await goodsImageRes.save();
+            }
+        }
+        // 增加商品类型数据
+        let attr_value_list = formFields.attr_value_list;
+        let attr_id_list = formFields.attr_id_list;
+        if (result._id && attr_id_list && attr_value_list) {
+            // 对只有一个属性进行数组转换
+            if (typeof(attr_id_list) === 'string') {
+                attr_id_list = new Array(attr_id_list);
+                attr_value_list = new Array(attr_value_list);
+            }
+
+            for (let i = 0; i < attr_value_list.length; i++) {
+                // 查询goods_type_attribute
+                // 下面这个if, 是比较严格的判断，可以不用，让用户随便写，填写什么，提交什么，不填也可以
+                // if (attr_value_list[i]) {
+                const goodsTypeAttributeResult = await this.ctx.model.GoodsTypeAttribute.find({ _id: attr_id_list[i] });
+                const goodsAttrRes = new this.ctx.model.GoodsAttr({
+                    goods_id: result._id,
+                    cate_id: formFields.cate_id,
+                    attribute_id: attr_id_list[i],
+                    attribute_type: goodsTypeAttributeResult[0].attr_type,
+                    attribute_title: goodsTypeAttributeResult[0].title,
+                    attribute_value: attr_value_list[i],
+                });
+                await goodsAttrRes.save();
+                // }
+            }
+        }
+        await this.success('/admin/goods', '增加商品数据成功');
     }
 
     async edit() {
@@ -136,82 +335,6 @@ class GoodsController extends BaseController {
         });
     }
 
-    async doAdd() {
-        const parts = this.ctx.multipart({ autoFields: true });
-        let files = {};
-        let stream;
-        while ((stream = await parts())) {
-            if (!stream.filename) {
-                break;
-            }
-            const fieldname = stream.fieldname; // file表单的名字
-            // 上传图片的目录
-            const dir = await this.service.tools.getUploadFile(stream.filename);
-            const target = dir.uploadDir;
-            const writeStream = fs.createWriteStream(target);
-            await pump(stream, writeStream);
-            files = Object.assign(files, {
-                [fieldname]: dir.saveDir,
-            });
-            // 上传图片成功以后生成缩略图
-            this.service.tools.jimpImg(target);
-        }
-
-        const formFields = Object.assign(files, parts.field);
-        // console.log(formFields);
-
-        // 增加商品信息
-        const goodsRes = new this.ctx.model.Goods(formFields);
-        const result = await goodsRes.save();
-
-        // console.log(result._id);
-        // 增加图库信息
-        let goods_image_list = formFields.goods_image_list;
-        if (result._id && goods_image_list) {
-            // 解决上传一个图库不是数组的问题
-            if (typeof(goods_image_list) === 'string') {
-                goods_image_list = new Array(goods_image_list);
-            }
-
-            for (let i = 0; i < goods_image_list.length; i++) {
-                const goodsImageRes = new this.ctx.model.GoodsImage({
-                    goods_id: result._id,
-                    img_url: goods_image_list[i],
-                });
-                await goodsImageRes.save();
-            }
-        }
-        // 增加商品类型数据
-        let attr_value_list = formFields.attr_value_list;
-        let attr_id_list = formFields.attr_id_list;
-        if (result._id && attr_id_list && attr_value_list) {
-            // 对只有一个属性进行数组转换
-            if (typeof(attr_id_list) === 'string') {
-                attr_id_list = new Array(attr_id_list);
-                attr_value_list = new Array(attr_value_list);
-            }
-
-            for (let i = 0; i < attr_value_list.length; i++) {
-                // 查询goods_type_attribute
-                // 下面这个if, 是比较严格的判断，可以不用，让用户随便写，填写什么，提交什么，不填也可以
-                // if (attr_value_list[i]) {
-                const goodsTypeAttributeResult = await this.ctx.model.GoodsTypeAttribute.find({ _id: attr_id_list[i] });
-                const goodsAttrRes = new this.ctx.model.GoodsAttr({
-                    goods_id: result._id,
-                    cate_id: formFields.cate_id,
-                    attribute_id: attr_id_list[i],
-                    attribute_type: goodsTypeAttributeResult[0].attr_type,
-                    attribute_title: goodsTypeAttributeResult[0].title,
-                    attribute_value: attr_value_list[i],
-                });
-                await goodsAttrRes.save();
-                // }
-            }
-        }
-
-        await this.success('/admin/goods', '增加商品数据成功');
-    }
-
     async doEdit() {
         const parts = this.ctx.multipart({ autoFields: true });
         let files = {};
@@ -293,106 +416,6 @@ class GoodsController extends BaseController {
 
         const prevPage = parts.field.prevPage;
         await this.success(prevPage, '修改商品数据成功');
-    }
-
-    // 获取商品类型的属性 api接口
-    async goodsTypeAttribute() {
-        const cate_id = this.ctx.request.query.cate_id;
-        // 注意 await
-        const goodsTypeAttribute = await this.ctx.model.GoodsTypeAttribute.find({ cate_id });
-        // console.log(goodsTypeAttribute);
-        this.ctx.body = {
-            result: goodsTypeAttribute,
-        };
-    }
-
-    // 上传商品详情的图片
-    async goodsUploadImage() {
-        const parts = this.ctx.multipart({ autoFields: true });
-        let files = {};
-        let stream;
-        while ((stream = await parts())) {
-            if (!stream.filename) {
-                break;
-            }
-            const fieldname = stream.fieldname; // file表单的名字
-
-            // 上传图片的目录
-            const dir = await this.service.tools.getUploadFile(stream.filename);
-            const target = dir.uploadDir;
-            const writeStream = fs.createWriteStream(target);
-
-            await pump(stream, writeStream);
-
-            files = Object.assign(files, {
-                [fieldname]: dir.saveDir,
-            });
-
-        }
-        // console.log(files);
-        // 图片的地址转化成 {link: 'path/to/image.jpg'}
-        this.ctx.body = { link: files.file };
-    }
-
-    // 上传相册的图片
-    async goodsUploadPhoto() {
-        // 实现图片上传
-        const parts = this.ctx.multipart({ autoFields: true });
-        let files = {};
-        let stream;
-        while ((stream = await parts())) {
-            if (!stream.filename) {
-                break;
-            }
-            const fieldname = stream.fieldname; // file表单的名字
-
-            // 上传图片的目录
-            const dir = await this.service.tools.getUploadFile(stream.filename);
-            const target = dir.uploadDir;
-            const writeStream = fs.createWriteStream(target);
-
-            await pump(stream, writeStream);
-
-            files = Object.assign(files, {
-                [fieldname]: dir.saveDir,
-            });
-
-            // 生成缩略图
-            this.service.tools.jimpImg(target);
-        }
-
-        // 图片的地址转化成 {link: 'path/to/image.jpg'}
-        this.ctx.body = { link: files.file };
-    }
-
-    // 修改图片颜色
-    async changeGoodsImageColor() {
-        let color_id = this.ctx.request.body.color_id;
-        const goods_image_id = this.ctx.request.body.goods_image_id;
-        // console.log(this.ctx.request.body);
-        if (color_id) {
-            color_id = this.app.mongoose.Types.ObjectId(color_id);
-        }
-        const result = await this.ctx.model.GoodsImage.updateOne({ _id: goods_image_id }, {
-            color_id,
-        });
-        if (result) {
-            this.ctx.body = { success: true, message: '更新数据成功' };
-        } else {
-            this.ctx.body = { success: false, message: '更新数据失败' };
-        }
-    }
-
-    // 删除图片
-    async goodsImageRemove() {
-        const goods_image_id = this.ctx.request.body.goods_image_id;
-        // 注意  图片要不要删掉   fs模块删除以前当前数据对应的图片
-        const result = await this.ctx.model.GoodsImage.deleteOne({ _id: goods_image_id }); // 注意写法
-        if (result) {
-            this.ctx.body = { success: true, message: '删除数据成功' };
-        } else {
-            this.ctx.body = { success: false, message: '删除数据失败' };
-        }
     }
 }
 
