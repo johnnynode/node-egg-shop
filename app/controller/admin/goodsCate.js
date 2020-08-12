@@ -135,7 +135,6 @@ class GoodsCateController extends BaseController {
             // 如有必要 egg-logger 【记录日志】TODO
             console.log(err);
         }
-
     }
 }
 module.exports = GoodsCateController;
