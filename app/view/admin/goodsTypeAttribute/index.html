@@ -15,6 +15,7 @@
                             <th>商品类型</th>
                             <th>属性值的录入方式</th>
                             <th>可选值列表</th>
+                            <th>排序</th>
                             <th>增加时间</th>
                             <th class="text-center">状态</th>
 
@@ -42,6 +43,9 @@
                                 </td>
                                 <td>
                                     <%=list[i].attr_value%>
+                                </td>
+                                <td>
+                                    <%=list[i].sort%>
                                 </td>
                                 <td>
                                     <%=helper.formatTime(list[i].add_time)%>
