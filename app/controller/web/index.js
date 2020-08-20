@@ -12,7 +12,7 @@ class IndexController extends Controller {
                 await this.ctx.service.cache.set('index_focus', focus, 60 * 60);
             }
 
-            // 这里封装了首页推荐的楼层，但是_id是硬编码出来的，是从数据库或后台管理系统中拿来的，可以做成配置的
+            // 这里封装了首页推荐的楼层，但是_id是硬编码出来的，是从数据库或后台管理系统中拿来的，可以做成配置的(应该做成一个配置的)
             // 手机 (应用缓存技术)
             let mobileResult = await this.ctx.service.cache.get('index_mobile_result');
             if (!mobileResult) {
