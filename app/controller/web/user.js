@@ -104,7 +104,7 @@ class UserController extends Controller {
                             sign: sign
                         }
                     } else {
-                        this.ctx.body = { "success": false, msg: '当前手机号码发送次数达到上限，明天重试' };
+                        this.ctx.body = { "success": false, msg: '当前手机号码或ip发送次数达到上限，明天重试' };
                     }
                 } else {
                     let userTmep = new this.ctx.model.UserTemp({
