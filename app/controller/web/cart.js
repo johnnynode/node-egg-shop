@@ -7,78 +7,83 @@ class CartController extends Controller {
     //增加购物车
     async addCart() {
         /*
-               1、购物车数据保存在本地    （cookies）
-               2、购物车数据保存到服务器   （必须登录）
-               3、购物车数据保存到本地      登录成功后同步到服务器  （用的最多）
+            购物车保存方式:
+            1、购物车数据保存在本地    cookies）
+            2、购物车数据保存到服务器  （必须登录）
+            3、购物车数据保存到本地     登录成功后同步到服务器  （用的最多, 本项目使用）
 
             增加购物车的实现逻辑：
-
             1、获取增加购物车的数据  （把哪一个商品加入到购物车）
             2、判断购物车有没有数据   （cookies）
-            3、如果购物车没有任何数据  直接把当前数据写入cookies
+            3、如果购物车没有任何数据，直接把当前数据写入cookies
             4、如果购物车有数据 
-                4、1、判断购物车有没有当前数据  
-                        有当前数据让当前数据的数量加1
-                        如果没有当前数据重新写入cookies
+                4.1、判断购物车有没有当前数据  
+                4.2 有当前数据让当前数据的数量加1
+                4.3 如果没有当前数据重新写入cookies
         */
 
         let goods_id = this.ctx.request.query.goods_id;
         let color_id = this.ctx.request.query.color_id;
 
-        //1、获取商品信息
-        let goodsResult = await this.ctx.model.Goods.find({ "_id": goods_id });
-        let colorResult = await this.ctx.model.GoodsColor.find({ "_id": color_id });
-        // console.log(goodsResult);
+        try {
+            //1、获取商品信息
+            let goodsResult = await this.ctx.model.Goods.find({ "_id": goods_id });
+            let colorResult = await this.ctx.model.GoodsColor.find({ "_id": color_id });
+            // console.log(goodsResult);
 
-        if (!goodsResult.length || !colorResult.length) {
-            this.ctx.status = 404;
-            this.ctx.body = '错误404'; //404
-        } else {
-            // 赠品
-            let goodsGiftIds = this.ctx.service.goods.strToArray(goodsResult[0].goods_gift);
-            let goodsGift = await this.ctx.model.Goods.find({
-                $or: goodsGiftIds
-            });
+            if (!goodsResult.length || !colorResult.length) {
+                this.ctx.status = 404;
+                this.ctx.body = '错误404'; //404
+            } else {
+                // 赠品
+                let goodsGiftIds = this.ctx.service.goods.strToArray(goodsResult[0].goods_gift);
+                let goodsGift = await this.ctx.model.Goods.find({
+                    $or: goodsGiftIds
+                });
 
-            let currentData = {
-                _id: goods_id,
-                title: goodsResult[0].title,
-                price: goodsResult[0].shop_price,
-                goods_version: goodsResult[0].goods_version,
-                num: 1,
-                color: colorResult[0].color_name,
-                goods_img: goodsResult[0].goods_img,
-                goods_gift: goodsGift,
-                /*赠品*/
-                checked: true /*默认选中*/
-            }
+                let currentData = {
+                    _id: goods_id,
+                    title: goodsResult[0].title,
+                    price: goodsResult[0].shop_price,
+                    goods_version: goodsResult[0].goods_version,
+                    num: 1,
+                    color: colorResult[0].color_name,
+                    goods_img: goodsResult[0].goods_img,
+                    goods_gift: goodsGift,
+                    /*赠品*/
+                    checked: true /*默认选中*/
+                }
 
-            //2、判断购物车有没有数据
-            let cartList = this.service.cookies.get('cartList');
-            if (cartList && cartList.length) { //存在
-                //4、判断购物车有没有当前数据  
-                if (this.service.cart.cartHasData(cartList, currentData)) {
-                    for (let i = 0; i < cartList.length; i++) {
-                        if (cartList[i]._id == currentData._id) {
-                            cartList[i].num = cartList[i].num + 1;
+                //2、判断购物车有没有数据
+                let cartList = this.service.cookies.get('cartList');
+                if (cartList && cartList.length) { //存在
+                    //4、判断购物车有没有当前数据  
+                    if (this.service.cart.cartHasData(cartList, currentData)) {
+                        for (let i = 0; i < cartList.length; i++) {
+                            if (cartList[i]._id == currentData._id) {
+                                cartList[i].num = cartList[i].num + 1;
+                            }
                         }
+                        this.service.cookies.set('cartList', cartList);
+                    } else {
+                        // 如果购物车里面没有当前数据 把购物车以前的数据和当前数据拼接 然后重新写入
+                        let tempArr = cartList;
+                        tempArr.push(currentData);
+                        this.service.cookies.set('cartList', tempArr);
                     }
-                    this.service.cookies.set('cartList', cartList);
                 } else {
-                    // 如果购物车里面没有当前数据 把购物车以前的数据和当前数据拼接 然后重新写入
-                    let tempArr = cartList;
+                    // 3、如果购物车没有任何数据  直接把当前数据写入cookies
+                    let tempArr = [];
                     tempArr.push(currentData);
                     this.service.cookies.set('cartList', tempArr);
                 }
-            } else {
-                // 3、如果购物车没有任何数据  直接把当前数据写入cookies
-                let tempArr = [];
-                tempArr.push(currentData);
-                this.service.cookies.set('cartList', tempArr);
-            }
 
-            // this.ctx.body = '加入购物车成功';
-            this.ctx.redirect('/addCartSuccess?goods_id=' + goods_id + '&color_id=' + color_id);
+                // this.ctx.body = '加入购物车成功';
+                this.ctx.redirect('/addCartSuccess?goods_id=' + goods_id + '&color_id=' + color_id);
+            }
+        } catch (e) {
+            // 如有必要 egg-logger 【记录日志】TODO
+            console.log(err);
         }
     }
 
@@ -87,19 +92,24 @@ class CartController extends Controller {
         let goods_id = this.ctx.request.query.goods_id;
         let color_id = this.ctx.request.query.color_id;
 
-        //1、获取商品信息
-        let goodsResult = await this.ctx.model.Goods.find({ "_id": goods_id });
-        let colorResult = await this.ctx.model.GoodsColor.find({ "_id": color_id });
+        try {
+            //1、获取商品信息
+            let goodsResult = await this.ctx.model.Goods.find({ "_id": goods_id });
+            let colorResult = await this.ctx.model.GoodsColor.find({ "_id": color_id });
 
-        if (!goodsResult.length || !colorResult.length) {
-            this.ctx.status = 404;
-            this.ctx.body = '错误404'; //404
-        } else {
-            let title = goodsResult[0].title + '--' + goodsResult[0].goods_version + "--" + colorResult[0].color_name;
-            await this.ctx.render('web/cart/add_cart_suc.html', {
-                title: title,
-                goods_id: goods_id
-            });
+            if (!goodsResult.length || !colorResult.length) {
+                this.ctx.status = 404;
+                this.ctx.body = '错误404'; //404
+            } else {
+                let title = goodsResult[0].title + '--' + goodsResult[0].goods_version + "--" + colorResult[0].color_name;
+                await this.ctx.render('web/cart/add_cart_suc.html', {
+                    title: title,
+                    goods_id: goods_id
+                });
+            }
+        } catch (e) {
+            // 如有必要 egg-logger 【记录日志】TODO
+            console.log(err);
         }
     }
 
@@ -125,31 +135,37 @@ class CartController extends Controller {
     async incCart() {
         let goods_id = this.ctx.request.query.goods_id;
         let color = this.ctx.request.query.color;
-        let goodsResult = await this.ctx.model.Goods.find({ "_id": goods_id });
-        if (!goodsResult.length) {
-            this.ctx.body = {
-                "success": false,
-                msg: '修改数量失败'
-            }
-        } else {
-            let cartList = this.service.cookies.get('cartList');
-            let currentNum = 0; // 当前数量
-            let allPrice = 0; // 总价格
-            for (let i = 0; i < cartList.length; i++) {
-                if (cartList[i]._id == goods_id && cartList[i].color == color) {
-                    cartList[i].num += 1;
-                    currentNum = cartList[i].num;
+
+        try {
+            let goodsResult = await this.ctx.model.Goods.find({ "_id": goods_id });
+            if (!goodsResult.length) {
+                this.ctx.body = {
+                    "success": false,
+                    msg: '修改数量失败'
                 }
-                if (cartList[i].checked) {
-                    allPrice += cartList[i].price * cartList[i].num;
+            } else {
+                let cartList = this.service.cookies.get('cartList');
+                let currentNum = 0; // 当前数量
+                let allPrice = 0; // 总价格
+                for (let i = 0; i < cartList.length; i++) {
+                    if (cartList[i]._id == goods_id && cartList[i].color == color) {
+                        cartList[i].num += 1;
+                        currentNum = cartList[i].num;
+                    }
+                    if (cartList[i].checked) {
+                        allPrice += cartList[i].price * cartList[i].num;
+                    }
+                }
+                this.service.cookies.set('cartList', cartList);
+                this.ctx.body = {
+                    "success": true,
+                    num: currentNum,
+                    allPrice: allPrice
                 }
             }
-            this.service.cookies.set('cartList', cartList);
-            this.ctx.body = {
-                "success": true,
-                num: currentNum,
-                allPrice: allPrice
-            }
+        } catch (e) {
+            // 如有必要 egg-logger 【记录日志】TODO
+            console.log(err);
         }
     }
 
@@ -157,35 +173,40 @@ class CartController extends Controller {
     async decCart() {
         let goods_id = this.ctx.request.query.goods_id;
         let color = this.ctx.request.query.color;
-        let goodsResult = await this.ctx.model.Goods.find({ "_id": goods_id });
-        if (goodsResult.length == 0) {
-            this.ctx.body = {
-                "success": false,
-                msg: '修改数量失败'
-            }
-        } else {
-            let cartList = this.service.cookies.get('cartList');
-            let currentNum = 0; //当前数量
-            let allPrice = 0; //总价格
-            for (let i = 0; i < cartList.length; i++) {
-                if (cartList[i]._id == goods_id && cartList[i].color == color) {
-                    if (cartList[i].num > 1) {
-                        cartList[i].num -= 1;
+
+        try {
+            let goodsResult = await this.ctx.model.Goods.find({ "_id": goods_id });
+            if (!goodsResult.length) {
+                this.ctx.body = {
+                    "success": false,
+                    msg: '修改数量失败'
+                }
+            } else {
+                let cartList = this.service.cookies.get('cartList');
+                let currentNum = 0; //当前数量
+                let allPrice = 0; //总价格
+                for (let i = 0; i < cartList.length; i++) {
+                    if (cartList[i]._id == goods_id && cartList[i].color == color) {
+                        if (cartList[i].num > 1) {
+                            cartList[i].num -= 1;
+                        }
+                        currentNum = cartList[i].num;
                     }
-                    currentNum = cartList[i].num;
+                    if (cartList[i].checked) {
+                        allPrice += cartList[i].price * cartList[i].num;
+                    }
                 }
-                if (cartList[i].checked) {
-                    allPrice += cartList[i].price * cartList[i].num;
+
+                this.service.cookies.set('cartList', cartList);
+                this.ctx.body = {
+                    "success": true,
+                    num: currentNum,
+                    allPrice: allPrice
                 }
             }
-
-            this.service.cookies.set('cartList', cartList);
-
-            this.ctx.body = {
-                "success": true,
-                num: currentNum,
-                allPrice: allPrice
-            }
+        } catch (e) {
+            // 如有必要 egg-logger 【记录日志】TODO
+            console.log(err);
         }
     }
 
@@ -193,29 +214,35 @@ class CartController extends Controller {
     async changeOneCart() {
         let goods_id = this.ctx.request.query.goods_id;
         let color = this.ctx.request.query.color;
-        let goodsResult = await this.ctx.model.Goods.find({ "_id": goods_id });
-        if (!goodsResult || goodsResult.length == 0) {
-            this.ctx.body = {
-                "success": false,
-                msg: '改变状态失败'
-            }
-        } else {
-            let cartList = this.service.cookies.get('cartList');
-            let allPrice = 0; //总价格
-            for (let i = 0; i < cartList.length; i++) {
-                if (cartList[i]._id == goods_id && cartList[i].color == color) {
-                    cartList[i].checked = !cartList[i].checked;
+
+        try {
+            let goodsResult = await this.ctx.model.Goods.find({ "_id": goods_id });
+            if (!goodsResult || !goodsResult.length) {
+                this.ctx.body = {
+                    "success": false,
+                    msg: '改变状态失败'
                 }
-                //计算总价
-                if (cartList[i].checked) {
-                    allPrice += cartList[i].price * cartList[i].num;
+            } else {
+                let cartList = this.service.cookies.get('cartList');
+                let allPrice = 0; //总价格
+                for (let i = 0; i < cartList.length; i++) {
+                    if (cartList[i]._id == goods_id && cartList[i].color == color) {
+                        cartList[i].checked = !cartList[i].checked;
+                    }
+                    //计算总价
+                    if (cartList[i].checked) {
+                        allPrice += cartList[i].price * cartList[i].num;
+                    }
+                }
+                this.service.cookies.set('cartList', cartList);
+                this.ctx.body = {
+                    "success": true,
+                    allPrice: allPrice
                 }
             }
-            this.service.cookies.set('cartList', cartList);
-            this.ctx.body = {
-                "success": true,
-                allPrice: allPrice
-            }
+        } catch (e) {
+            // 如有必要 egg-logger 【记录日志】TODO
+            console.log(err);
         }
     }
 
@@ -238,21 +265,28 @@ class CartController extends Controller {
         }
     }
 
+    // 移出购物车
     async removeCart() {
         let goods_id = this.ctx.request.query.goods_id;
         let color = this.ctx.request.query.color;
-        let goodsResult = await this.ctx.model.Goods.find({ "_id": goods_id });
-        if (!goodsResult || !goodsResult.length) {
-            this.ctx.redirect('/cart');
-        } else {
-            let cartList = this.service.cookies.get('cartList');
-            for (let i = 0; i < cartList.length; i++) {
-                if (cartList[i]._id == goods_id && cartList[i].color == color) {
-                    cartList.splice(i, 1);
+
+        try {
+            let goodsResult = await this.ctx.model.Goods.find({ "_id": goods_id });
+            if (!goodsResult || !goodsResult.length) {
+                this.ctx.redirect('/cart');
+            } else {
+                let cartList = this.service.cookies.get('cartList');
+                for (let i = 0; i < cartList.length; i++) {
+                    if (cartList[i]._id == goods_id && cartList[i].color == color) {
+                        cartList.splice(i, 1);
+                    }
                 }
+                this.service.cookies.set('cartList', cartList);
+                this.ctx.redirect('/cart');
             }
-            this.service.cookies.set('cartList', cartList);
-            this.ctx.redirect('/cart');
+        } catch (e) {
+            // 如有必要 egg-logger 【记录日志】TODO
+            console.log(err);
         }
     }
 
@@ -261,33 +295,39 @@ class CartController extends Controller {
         // 获取购物车选中的商品
         let orderList = [];
         let allPrice = 0;
-        let cartList = this.service.cookies.get('cartList'); // 读取cookie
 
-        // 签名防止重复提交订单
-        let orderSign = this.service.tools.md5(this.service.tools.getRandomNum(8));
-        this.ctx.session.orderSign = orderSign;
+        try {
+            let cartList = this.service.cookies.get('cartList'); // 读取cookie
 
-        // 处理数据
-        if (cartList && cartList.length) {
-            for (let i = 0; i < cartList.length; i++) {
-                if (cartList[i].checked) {
-                    orderList.push(cartList[i]);
-                    allPrice += cartList[i].price * cartList[i].num;
+            // 签名防止重复提交订单
+            let orderSign = this.service.tools.md5(this.service.tools.getRandomNum(8));
+            this.ctx.session.orderSign = orderSign;
+
+            // 处理数据
+            if (cartList && cartList.length) {
+                for (let i = 0; i < cartList.length; i++) {
+                    if (cartList[i].checked) {
+                        orderList.push(cartList[i]);
+                        allPrice += cartList[i].price * cartList[i].num;
+                    }
                 }
-            }
-            // 获取当前用户的所有收货地址
-            const uid = this.ctx.service.cookies.get('userinfo')._id;
-            const addressList = await this.ctx.model.Address.find({ uid }).sort({ default_address: -1 });
+                // 获取当前用户的所有收货地址
+                const uid = this.ctx.service.cookies.get('userinfo')._id;
+                const addressList = await this.ctx.model.Address.find({ uid }).sort({ default_address: -1 });
 
-            await this.ctx.render('web/cart/checkout.html', {
-                orderList,
-                allPrice,
-                addressList,
-                orderSign
-            });
-        } else {
-            //恶意操作
-            this.ctx.redirect('/cart')
+                await this.ctx.render('web/cart/checkout.html', {
+                    orderList,
+                    allPrice,
+                    addressList,
+                    orderSign
+                });
+            } else {
+                //恶意操作
+                this.ctx.redirect('/cart')
+            }
+        } catch (e) {
+            // 如有必要 egg-logger 【记录日志】TODO
+            console.log(err);
         }
     }
 }
