@@ -46,7 +46,6 @@ module.exports = app => {
 
     // 用户 address 收货地址（api接口）
     router.post('/user/addAddress', webMiddleware, userAuthMiddleware, controller.web.address.addAddress);
-    router.get('/user/getAddressList', webMiddleware, userAuthMiddleware, controller.web.address.getAddressList);
     router.get('/user/getOneAddress', webMiddleware, userAuthMiddleware, controller.web.address.getOneAddress);
     router.get('/user/changeDefaultAddress', webMiddleware, userAuthMiddleware, controller.web.address.changeDefaultAddress);
     router.post('/user/editAddress', webMiddleware, userAuthMiddleware, controller.web.address.editAddress);

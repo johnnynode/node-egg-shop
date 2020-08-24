@@ -17,33 +17,31 @@ class AddressController extends Controller {
         const phone = this.ctx.request.body.phone;
         const address = this.ctx.request.body.address;
         const zipcode = this.ctx.request.body.zipcode;
-        const addressCount = await this.ctx.model.Address.find({ uid }).count();
 
-        // 增加收货地址的限制
-        if (addressCount > 20) {
-            this.ctx.body = {
-                success: false,
-                result: '增加收货地址失败 收货地址数量超过限制',
-            };
-        } else {
-            // 正常添加地址流程 用户表与地址表是一对多的关系
-            await this.ctx.model.Address.updateMany({ uid }, { default_address: 0 }); // 将该用户的所有收货地址默认收货地址属性置为0
-            const addressModel = new this.ctx.model.Address({ uid, name, phone, address, zipcode }); // 配置当前新的地址
-            await addressModel.save(); // 插入数据
-            const addressList = await this.ctx.model.Address.find({ uid }).sort({ default_address: -1 }); // 重新查询地址列表 按地址倒序排序
-            this.ctx.body = {
-                success: true,
-                result: addressList,
-            };
+        try {
+            const addressCount = await this.ctx.model.Address.find({ uid }).count();
+
+            // 增加收货地址的限制
+            if (addressCount > 20) {
+                this.ctx.body = {
+                    success: false,
+                    result: '增加收货地址失败 收货地址数量超过限制',
+                };
+            } else {
+                // 正常添加地址流程 用户表与地址表是一对多的关系
+                await this.ctx.model.Address.updateMany({ uid }, { default_address: 0 }); // 将该用户的所有收货地址默认收货地址属性置为0
+                const addressModel = new this.ctx.model.Address({ uid, name, phone, address, zipcode }); // 配置当前新的地址
+                await addressModel.save(); // 插入数据
+                const addressList = await this.ctx.model.Address.find({ uid }).sort({ default_address: -1 }); // 重新查询地址列表 按地址倒序排序
+                this.ctx.body = {
+                    success: true,
+                    result: addressList,
+                };
+            }
+        } catch (e) {
+            // 如有必要 egg-logger 【记录日志】TODO
+            console.log(err);
         }
-    }
-
-    // 获取收货地址列表
-    async getAddressList() {
-        /*
-           获取当前用户的所有收货地址
-        */
-        this.ctx.body = 'getAddressList';
     }
 
     // 获取一个收货地址 用于修改时，获取详情
@@ -54,11 +52,17 @@ class AddressController extends Controller {
 
         const uid = this.ctx.service.cookies.get('userinfo')._id;
         let id = this.ctx.request.query.id;
-        let result = await this.ctx.model.Address.find({ uid: uid, "_id": id });
-        this.ctx.body = {
-            success: true,
-            result: result,
-        };
+
+        try {
+            let result = await this.ctx.model.Address.find({ uid: uid, "_id": id });
+            this.ctx.body = {
+                success: true,
+                result: result,
+            };
+        } catch (e) {
+            // 如有必要 egg-logger 【记录日志】TODO
+            console.log(err);
+        }
     }
 
     // 编辑收货地址
@@ -77,12 +81,17 @@ class AddressController extends Controller {
         const address = this.ctx.request.body.address;
         const zipcode = this.ctx.request.body.zipcode;
 
-        await this.ctx.model.Address.updateOne({ "_id": id, "uid": uid }, { name, phone, address, zipcode });
-        const addressList = await this.ctx.model.Address.find({ uid }).sort({ default_address: -1 });
-        this.ctx.body = {
-            success: true,
-            result: addressList,
-        };
+        try {
+            await this.ctx.model.Address.updateOne({ "_id": id, "uid": uid }, { name, phone, address, zipcode });
+            const addressList = await this.ctx.model.Address.find({ uid }).sort({ default_address: -1 });
+            this.ctx.body = {
+                success: true,
+                result: addressList,
+            };
+        } catch (e) {
+            // 如有必要 egg-logger 【记录日志】TODO
+            console.log(err);
+        }
     }
 
     // 修改默认的收货地址
@@ -94,13 +103,18 @@ class AddressController extends Controller {
         */
         const uid = this.ctx.service.cookies.get('userinfo')._id;
         const id = this.ctx.request.query.id;
-        await this.ctx.model.Address.updateMany({ uid }, { default_address: 0 });
-        await this.ctx.model.Address.updateMany({ uid, "_id": id }, { default_address: 1 });
-        this.ctx.body = {
-            success: true,
-            msg: '更新默认收货地址成功'
-        };
 
+        try {
+            await this.ctx.model.Address.updateMany({ uid }, { default_address: 0 });
+            await this.ctx.model.Address.updateOne({ uid, "_id": id }, { default_address: 1 });
+            this.ctx.body = {
+                success: true,
+                msg: '更新默认收货地址成功'
+            };
+        } catch (e) {
+            // 如有必要 egg-logger 【记录日志】TODO
+            console.log(err);
+        }
     }
 }
 
