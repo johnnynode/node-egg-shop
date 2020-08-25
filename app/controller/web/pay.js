@@ -45,18 +45,23 @@ class PayController extends Controller {
 
     /* ************************ 支付宝相关 ************************ */
     async ali() {
-        let id = this.ctx.request.query.id;
-        let orderResult = await this.ctx.model.Order.find({ "_id": id });
-        if (!(orderResult && orderResult.length)) {
-            return this.ctx.redirect('/order/confirm?id=' + id); // 定位到当前页面, 或返回错误信息
+        try {
+            let id = this.ctx.request.query.id;
+            let orderResult = await this.ctx.model.Order.find({ "_id": id });
+            if (!(orderResult && orderResult.length)) {
+                return this.ctx.redirect('/order/confirm?id=' + id); // 定位到当前页面, 或返回错误信息
+            }
+            const data = {
+                subject: '支付宝支付', // 这里显示什么，同微信支付，看需求
+                out_trade_no: id, // 必须是string类型
+                total_amount: orderResult[0].all_price
+            }
+            let url = await this.service.pay.ali(data);
+            this.ctx.redirect(url); // 这里跳转到支付宝 我的收银台 进行扫码支付或登录账户支付
+        } catch (e) {
+            // 如有必要 egg-logger 【记录日志】TODO
+            console.log(err);
         }
-        const data = {
-            subject: '支付宝支付', // 这里显示什么，同微信支付，看需求
-            out_trade_no: id, // 必须是string类型
-            total_amount: orderResult[0].all_price
-        }
-        let url = await this.service.pay.ali(data);
-        this.ctx.redirect(url); // 这里跳转到支付宝 我的收银台 进行扫码支付或登录账户支付
     }
 
     // 这里是用户扫码之后的回调页面显示，扫码成功后会跳转到(重定向到)商户: /pay/alipay/return 这里
@@ -69,19 +74,24 @@ class PayController extends Controller {
 
     // 支付成功以后更新订单信息 必须正式上线, 或者起码配置一个测试的公网ip或域名
     async aliNotify() {
-        const params = this.ctx.request.body; // 接收 支付宝 post 的 XML 数据
-        // console.log(params);
-        let result = await this.service.pay.aliNotify(params); // 进行异步通知的数据验证
-        // console.log('-------------');
-        // console.log(result);
+        try {
+            const params = this.ctx.request.body; // 接收 支付宝 post 的 XML 数据
+            // console.log(params);
+            let result = await this.service.pay.aliNotify(params); // 进行异步通知的数据验证
+            // console.log('-------------');
+            // console.log(result);
 
-        // 校验正确的时候
-        if (result.code === '0') {
-            if (params.trade_status == 'TRADE_SUCCESS') {
-                // 更新订单
+            // 校验正确的时候
+            if (result.code === '0') {
+                if (params.trade_status == 'TRADE_SUCCESS') {
+                    // 更新订单
+                }
+            } else {
+                // 如果校验失败 理论上要追踪记录一下的，记录至数据库或者存入日志系统
             }
-        } else {
-            // 如果校验失败 理论上要追踪记录一下的，记录至数据库或者存入日志系统
+        } catch (e) {
+            // 如有必要 egg-logger 【记录日志】TODO
+            console.log(err);
         }
     }
 }
