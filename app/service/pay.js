@@ -31,7 +31,7 @@ class PayService extends Service {
                 if (error) {
                     console.log(error);
                 }
-                resolve(responseData.code_url)
+                resolve(responseData.code_url);
             });
         })
     }
@@ -39,12 +39,11 @@ class PayService extends Service {
     /*params微信官方post给我们服务器的数据*/
     wechatNotify(params) {
         let pay = new wechatPay(this.config.pay.wechat.config);
-        let notifyObj = params;
         let signObj = {};
-        for (let attr in notifyObj) {
+        for (let attr in params) {
             // 去除微信post的sign字段
             if (attr != 'sign') {
-                signObj[attr] = notifyObj[attr]
+                signObj[attr] = params[attr]
             }
         }
         let sign = pay.getSign(signObj);
