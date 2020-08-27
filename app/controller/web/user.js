@@ -320,6 +320,7 @@ class UserController extends Controller {
             // 商品名 模糊查询
             let orderItemJson = Object.assign({ "uid": this.app.mongoose.Types.ObjectId(uid) }, { "product_title": { $regex: new RegExp(keywords) } });
             let orderItemResult = await this.ctx.model.OrderItem.find(orderItemJson);
+            // 将查询到的数据进行数据转换
             if (orderItemResult.length) {
                 let tempArr = [];
                 orderItemResult.forEach(value => {
@@ -327,14 +328,14 @@ class UserController extends Controller {
                         _id: value.order_id
                     });
                 });
-
+                // 拼接json
                 json = Object.assign(json, {
                     $or: tempArr // 这里拼接查询的条件
-                })
+                });
             } else {
                 json = Object.assign(json, {
                     $or: [{ 1: -1 }] // 这里是一个不成立的条件
-                })
+                });
             }
         }
         const pageSize = this.config.pageSize;
